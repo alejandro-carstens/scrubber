@@ -13,6 +13,7 @@ services:
       environment:
         - "ES_JAVA_OPTS=-Xmx256m -Xms256m"
         - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
+      command: ['bash', '-c', 'chown -R 1000:1000 /usr/share/elasticsearch/backup']
       networks:
         - esnet
 
