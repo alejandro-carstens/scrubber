@@ -1,0 +1,5 @@
+action: delete_indices
+description: Deletes closed indices
+filters:
+  - filtertype: closed
+    exclude: false

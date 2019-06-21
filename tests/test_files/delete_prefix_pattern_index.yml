@@ -1,0 +1,6 @@
+action: delete_indices
+description: Deletes indices that match the specified prefix
+filters:
+  - filtertype: pattern
+    kind: prefix
+    value: alejandro-

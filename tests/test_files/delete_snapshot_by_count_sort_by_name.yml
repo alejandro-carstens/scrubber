@@ -1,0 +1,12 @@
+action: delete_snapshots
+description: "Delete selected snapshots from 'repository'"
+options:
+  repository: my_backup_repository
+  retry_interval: 1
+  retry_count: 3
+filters:
+  - filtertype: count
+    use_age: true
+    source: name
+    timestring: Y.m.d
+    count: 1

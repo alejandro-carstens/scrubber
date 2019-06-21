@@ -1,0 +1,10 @@
+action: snapshot
+description: Takes a snapshot of indices matching the specified pattern
+options:
+  repository: my_backup_repository
+  name: count_snapshot-2019.01.02
+  wait_for_completion: false
+filters:
+  - filtertype: pattern
+    kind: suffix
+    value: 1-01

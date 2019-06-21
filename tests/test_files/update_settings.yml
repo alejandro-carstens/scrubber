@@ -1,0 +1,13 @@
+action: index_settings
+description: Update the specified index settings
+options:
+  index_settings:
+    index:
+      refresh_interval: 7s
+      number_of_replicas: 2
+      blocks:
+        write: True
+filters:
+  - filtertype: pattern
+    kind: prefix
+    value: alejandro-

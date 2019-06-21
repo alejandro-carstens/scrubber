@@ -1,0 +1,14 @@
+action: create_index
+description: Creates the specified index with the specified settings
+options:
+  name: my_index
+extra_settings:
+  settings:
+    number_of_shards: 2
+    number_of_replicas: 3
+mappings:
+  type1:
+    properties:
+      field1:
+        type: string
+        index: not_analyzed

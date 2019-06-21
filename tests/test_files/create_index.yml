@@ -1,0 +1,31 @@
+action: create_index
+description: Creates the specified index with the specified settings
+options:
+  name: my_index
+  timeout_override: 300
+  disable_action: False
+extra_settings:
+  settings:
+    number_of_shards: 1
+    number_of_replicas: 0
+mappings:
+  properties:
+    id:
+      type: keyword
+      index: true
+    exception:
+      type: text
+      index: false
+    request:
+      type: keyword
+    message:
+      type: text
+      index: true
+    bytes:
+      type: integer
+    created_at:
+      type: date
+      index: true
+    number:
+      type: float
+      

@@ -1,0 +1,6 @@
+action: delete_indices
+description: Delete 3 indices based on space order alphabetically
+filters:
+  - filtertype: space
+    disk_space: 1
+    units: MB

@@ -1,0 +1,11 @@
+action: close_indices
+description: Closes indices older than 1 second base on the index creation date
+options:
+  timeout_override: 300
+  disable_action: False
+filters:
+  - filtertype: age
+    source: creation_date
+    direction: older
+    units: seconds
+    unit_count: 1

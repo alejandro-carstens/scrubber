@@ -1,0 +1,5 @@
+action: delete_indices
+description: Deletes 2 indices based on count
+filters:
+  - filtertype: count
+    count: 2

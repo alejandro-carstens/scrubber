@@ -1,0 +1,9 @@
+action: delete_indices
+description: Deletes indices that match the specified allocation key value pairs
+options:
+  timeout_override: 300
+  disable_action: False
+filters:
+  - filtertype: allocated
+    key: shards
+    value: 1

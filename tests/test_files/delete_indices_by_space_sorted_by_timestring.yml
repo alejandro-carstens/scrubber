@@ -1,0 +1,11 @@
+action: delete_indices
+description: Delete 2 indices based on space order by timestring descending
+filters:
+  - filtertype: space
+    use_age: true
+    source: name
+    timestring: "Y-m-d"
+    reverse: true
+    disk_space: 1
+    units: MB
+    

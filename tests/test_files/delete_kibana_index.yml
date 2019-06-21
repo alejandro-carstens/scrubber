@@ -1,0 +1,7 @@
+action: delete_indices
+description: Deletes kibana indices
+retry_count: 3
+async: true
+filters:
+  - filtertype: kibana
+    exclude: false

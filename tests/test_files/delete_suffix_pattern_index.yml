@@ -1,0 +1,6 @@
+action: delete_indices
+description: Deletes indices that match the specified suffix
+filters:
+  - filtertype: pattern
+    kind: suffix
+    value: s-1992.06.02

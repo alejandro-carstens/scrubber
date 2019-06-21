@@ -1,0 +1,5 @@
+action: delete_indices
+description: Deletes empty indices
+filters:
+  - filtertype: empty
+    exclude: false

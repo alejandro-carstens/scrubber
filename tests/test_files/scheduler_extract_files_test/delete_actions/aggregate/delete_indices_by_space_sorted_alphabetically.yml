@@ -1,0 +1,10 @@
+action: delete_indices
+description: Delete 3 indices based on space order alphabetically
+schedule: 
+  value: 3
+  unit: weeks
+  at: 17:30
+filters:
+  - filtertype: space
+    disk_space: 1
+    units: MB

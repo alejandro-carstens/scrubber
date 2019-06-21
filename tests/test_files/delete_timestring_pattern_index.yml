@@ -1,0 +1,6 @@
+action: delete_indices
+description: Deletes indices that match the specified regex
+filters:
+  - filtertype: pattern
+    kind: timestring
+    value: Y.m.d

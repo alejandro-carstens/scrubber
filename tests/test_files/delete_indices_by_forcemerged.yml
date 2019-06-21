@@ -1,0 +1,5 @@
+action: delete_indices
+description: Deletes indices that match the specified max_segements_count
+filters:
+  - filtertype: forcemerged
+    max_segment_count: 2

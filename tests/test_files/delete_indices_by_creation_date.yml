@@ -1,0 +1,11 @@
+action: delete_indices
+description: Deletes indices older than 3 seconds base on the index creation date
+options:
+  timeout_override: 300
+  disable_action: False
+filters:
+  - filtertype: age
+    source: creation_date
+    direction: older
+    units: seconds
+    unit_count: 1
