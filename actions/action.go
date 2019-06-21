@@ -34,15 +34,13 @@ func (a *action) Init(context contexts.Contextable, logger *logging.SrvLogger) e
 
 func (a *action) HasErrors() bool {
 	for _, report := range a.errorReportMap.reports {
-		if a.reporter.Logger() != nil {
-			for _, err := range report.errs {
-				a.reporter.Logger().Errorf("Errors: %v", err)
-			}
-
-			continue
+		if a.reporter.Logger() == nil {
+			break
 		}
 
-		break
+		for _, err := range report.errs {
+			a.reporter.Logger().Errorf("Errors: %v", err)
+		}
 	}
 
 	return a.errorReportMap.hasErrors()
