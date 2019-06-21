@@ -1,0 +1,10 @@
+action: delete_indices
+description: Deletes 2 indices based on count order by field_stats descending
+filters:
+  - filtertype: count
+    use_age: true
+    source: field_stats
+    field: created_at
+    stats_result: min
+    count: 2
+    reverse: true

@@ -1,0 +1,40 @@
+version: '3.3'
+
+services:
+
+  elasticsearch:
+      build:
+        context: elasticsearch/
+        args:
+          VERSION: $VERSION
+      volumes:
+        - elastic-backup:/usr/share/elasticsearch/backup
+        - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      environment:
+        - "ES_JAVA_OPTS=-Xmx256m -Xms256m"
+        - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
+      networks:
+        - esnet
+
+  dev:
+    tty: true
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - elasticsearch
+    environment:
+      - "ELASTICSEARCH_URI=http://elasticsearch:9200"
+      - "ELASTIC_USERNAME=${ELASTIC_USERNAME}"
+      - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
+    volumes:
+      - .:/app/workspace/src/scrubber
+    networks:
+      - esnet
+
+networks:
+  esnet:
+    driver: bridge
+
+volumes:
+    elastic-backup:

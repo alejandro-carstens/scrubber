@@ -1,0 +1,7 @@
+action: delete_indices
+description: Deletes indices by alias
+async: true
+retry_count: 3
+filters:
+  - filtertype: alias
+    aliases: ["my_alias", "my_other_alias", "my_extra_alias"]

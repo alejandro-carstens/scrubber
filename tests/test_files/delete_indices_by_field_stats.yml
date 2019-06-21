@@ -1,0 +1,10 @@
+action: delete_indices
+description: Deletes indices older than 3 seconds base on the index creation date
+filters:
+  - filtertype: age
+    source: field_stats
+    direction: older
+    units: minutes
+    unit_count: 45
+    field: created_at
+    stats_result: min

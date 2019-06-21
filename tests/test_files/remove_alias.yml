@@ -1,0 +1,9 @@
+action: alias
+description: Add/Remove selected indices to or from the specified alias
+options:
+  name: great_alias
+  type: remove
+filters:
+  - filtertype: pattern
+    kind: prefix
+    value: alejandro-

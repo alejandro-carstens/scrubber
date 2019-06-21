@@ -1,0 +1,5 @@
+FROM golang:latest 
+
+ADD . /go/src/scrubber
+
+WORKDIR /go/src/scrubber

@@ -1,0 +1,8 @@
+action: create_repository
+description: Creates a repository to backup snapshots
+options:
+  repository: my_backup_repository
+  location: /usr/share/elasticsearch/backup
+  repo_type: fs
+  timeout_override: 300
+  disable_action: False

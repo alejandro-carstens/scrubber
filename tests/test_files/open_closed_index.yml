@@ -1,0 +1,5 @@
+action: open_indices
+description: Opens closed indices
+filters:
+  - filtertype: closed
+    exclude: false

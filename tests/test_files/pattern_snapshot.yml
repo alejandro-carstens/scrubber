@@ -1,0 +1,10 @@
+action: snapshot
+description: Takes a snapshot of indices matching the specified pattern
+options:
+  repository: my_backup_repository
+  name: snapshot-1992.06.02
+  wait_for_completion: false
+filters:
+  - filtertype: pattern
+    kind: prefix
+    value: alejandro-

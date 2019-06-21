@@ -1,0 +1,19 @@
+action: restore
+description: "Restore selecte snapshots from 'repository'"
+options:
+  repository: my_backup_repository
+  retry_interval: 1
+  retry_count: 3
+  rename_pattern: 'index_(.+)'
+  rename_replacement: 'restored_index_$1'
+  wait_for_completion: false
+  wait_interval: 1
+  extra_settings:
+    index_settings:
+      number_of_replicas: 2
+filters:
+  - filtertype: age
+    source: creation_date
+    direction: older
+    units: seconds
+    unit_count: 1

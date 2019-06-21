@@ -1,0 +1,9 @@
+action: delete_indices
+description: Deletes 2 indices based on pattern order alphabetically ascending
+options:
+  timeout_override: 300
+  disable_action: False
+filters:
+  - filtertype: count
+    count: 3
+    pattern: ^(alejandro-|logstash-|charlie-).*$

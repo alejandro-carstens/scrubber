@@ -1,0 +1,7 @@
+action: delete_indices
+description: Delete 3 indices based on less than fe_threshold_behavior
+filters:
+  - filtertype: space
+    disk_space: 1
+    units: GB
+    fe_threshold_behavior: less_than
