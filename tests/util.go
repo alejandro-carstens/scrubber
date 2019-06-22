@@ -6,7 +6,7 @@ import (
 	"scrubber/actions"
 	"scrubber/actions/contexts"
 	"scrubber/logging"
-	yml "scrubber/yml_parser"
+	"scrubber/ymlparser"
 	"sync"
 	"testing"
 	"time"
@@ -51,7 +51,7 @@ func config(path string) (*gabs.Container, error) {
 		return nil, err
 	}
 
-	return yml.Parse(currentPath + path)
+	return ymlparser.Parse(currentPath + path)
 }
 
 func getAction(config *gabs.Container) (actions.Actionable, error) {
