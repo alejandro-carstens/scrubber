@@ -72,6 +72,10 @@ func (fa *filterAction) runFilter(element string) (bool, error) {
 		info, err = fa.fetchIndexCat(element)
 	}
 
+	if err != nil {
+		return false, err
+	}
+
 	if len(fa.info) == 0 {
 		fa.info = map[string]responses.Informable{}
 	}
