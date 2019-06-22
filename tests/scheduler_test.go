@@ -16,7 +16,7 @@ func TestSchedulerRunActionImmidiately(t *testing.T) {
 		t.Error(err)
 	}
 
-	scheduler := console.NewScheduler(currentPath + "/test_files/scheduler_extract_files_test/create_actions")
+	scheduler := console.NewScheduler(currentPath + "/../stubs/scheduler_extract_files_test/create_actions")
 
 	if err := scheduler.Run(); err != nil {
 		t.Error(err)
