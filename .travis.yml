@@ -7,9 +7,7 @@ matrix:
   allow_failures:
   - go: tip
 env:
-- VERSION=7.0.1
-- ELASTIC_PASSWORD=secret
-- ELASTIC_USERNAME=jdoe
+- VERSION=7.0.1 ELASTIC_PASSWORD=secret ELASTIC_USERNAME=jdoe
 addons:
   ssh_known_hosts: github.com
   apt:
