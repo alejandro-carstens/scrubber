@@ -1,4 +1,4 @@
-package yml_parser
+package ymlparser
 
 import (
 	"encoding/json"

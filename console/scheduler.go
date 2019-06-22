@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"scrubber/console/tasks"
-	yml "scrubber/yml_parser"
+	"scrubber/ymlparser"
 	"strings"
 
 	"github.com/Jeffail/gabs"
@@ -109,7 +109,7 @@ func (s *Scheduler) extractConfigs() (map[string]*gabs.Container, error) {
 		filePath := path
 
 		go func() {
-			container, err := yml.Parse(filePath)
+			container, err := ymlparser.Parse(filePath)
 
 			channel <- configMap{
 				container: container,
