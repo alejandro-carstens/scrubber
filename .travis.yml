@@ -1,0 +1,31 @@
+sudo: required
+language: go
+go:
+- "1.11.x"
+- "1.12.x"
+matrix:
+  allow_failures:
+  - go: tip
+env:
+- VERSION=7.0.1
+- ELASTIC_PASSWORD=secret
+- ELASTIC_USERNAME=jdoe
+addons:
+  ssh_known_hosts: github.com
+  apt:
+    update: true
+    packages:
+    - docker-ce
+services:
+- docker
+before_install:
+- if [[ "$TRAVIS_OS_NAME" == "linux" && ! $(which nc) ]] ; then sudo apt-get install -y netcat ; fi
+- sudo sysctl -w vm.max_map_count=262144
+- docker-compose up -d
+- docker-compose exec elasticsearch chown -R 1000:1000 /usr/share/elasticsearch/backup
+- docker-compose exec dev
+- go get github.com/stretchr/testify/assert
+- go get ./actions/... ./console/... ./logging/... ./yml_parser/...
+install: true
+script:
+- go test -failfast -v ./logging/... ./console/... ./yml_parser/... ./tests/...
