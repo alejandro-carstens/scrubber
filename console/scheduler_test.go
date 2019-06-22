@@ -15,7 +15,7 @@ func TestSchedulerExtractFiles(t *testing.T) {
 		t.Error(err)
 	}
 
-	configs, err := NewScheduler(currentPath + "/../tests/test_files/scheduler_extract_files_test").extractConfigs()
+	configs, err := NewScheduler(currentPath + "/../stubs/scheduler_extract_files_test").extractConfigs()
 
 	if err != nil {
 		t.Error(err)
@@ -43,7 +43,7 @@ func TestSchedulerSchedule(t *testing.T) {
 		t.Error(err)
 	}
 
-	scheduler := NewScheduler(currentPath + "/../tests/test_files/scheduler_extract_files_test/delete_actions/aggregate")
+	scheduler := NewScheduler(currentPath + "/../stubs/scheduler_extract_files_test/delete_actions/aggregate")
 
 	configs, err := scheduler.extractConfigs()
 

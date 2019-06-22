@@ -14,7 +14,7 @@ func TestParser(t *testing.T) {
 		t.Error(err)
 	}
 
-	data, err := Parse(currentPath + "/../tests/test_files/parser_test.yml")
+	data, err := Parse(currentPath + "/../stubs/parser_test.yml")
 
 	if err != nil {
 		t.Error(err)
