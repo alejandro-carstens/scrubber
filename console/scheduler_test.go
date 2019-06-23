@@ -28,14 +28,16 @@ func TestSchedulerExtractFiles(t *testing.T) {
 	assert.Equal(t, 4, len(configs))
 
 	for path, config := range configs {
+		description := config.S("description").Data().(string)
+
 		if strings.Contains(path, "delete_indices_by_alias.yml") {
-			assert.Equal(t, "Deletes indices by alias", config.S("description").Data().(string))
+			assert.Equal(t, "Deletes indices by alias", description)
 		} else if strings.Contains(path, "create_index.yml") {
-			assert.Equal(t, "Creates the specified index with the specified settings", config.S("description").Data().(string))
+			assert.Equal(t, "Creates the specified index with the specified settings", description)
 		} else if strings.Contains(path, "create_index_async.yml") {
-			assert.Equal(t, "Creates the specified index with the specified settings", config.S("description").Data().(string))
+			assert.Equal(t, "Creates the specified index with the specified settings", description)
 		} else {
-			assert.Equal(t, "Delete 3 indices based on space order alphabetically", config.S("description").Data().(string))
+			assert.Equal(t, "Delete 3 indices based on space order alphabetically", description)
 		}
 	}
 }

@@ -38,7 +38,7 @@ func (sfr *spaceFilterRunner) RunFilter(channel chan *FilterResponse, criteria c
 	go sfr.executeIndexStats(indicesStatsResponse)
 
 	var err error
-	sortedList := []string{}
+	var sortedList []string
 
 	space := criteria.(*criterias.Space)
 
