@@ -12,6 +12,7 @@ func Run() {
 	logger := logging.NewSrvLogger("", true, true, true, true)
 
 	rootCommand.AddCommand(new(deleteIndicesCommand).new(logger))
+	rootCommand.AddCommand(new(createIndexCommand).new(logger))
 
 	rootCommand.Execute()
 }

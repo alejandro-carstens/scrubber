@@ -8,15 +8,15 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
-type createIndexContext struct {
+type CreateIndexContext struct {
 	context
 }
 
-func (cic *createIndexContext) Action() string {
+func (cic *CreateIndexContext) Action() string {
 	return "create_index"
 }
 
-func (cic *createIndexContext) Config(container *gabs.Container) error {
+func (cic *CreateIndexContext) Config(container *gabs.Container) error {
 	config, err := container.ChildrenMap()
 
 	if err != nil {
@@ -44,7 +44,7 @@ func (cic *createIndexContext) Config(container *gabs.Container) error {
 	return cic.marshallOptions(options)
 }
 
-func (cic *createIndexContext) marshallOptions(container *gabs.Container) error {
+func (cic *CreateIndexContext) marshallOptions(container *gabs.Container) error {
 	cic.options = new(options.CreateIndexOptions)
 
 	if err := cic.options.FillFromContainer(container); err != nil {
