@@ -7,6 +7,7 @@ import (
 )
 
 type Reportable interface {
+	// Line returns a human readable string or a filter runner activity
 	Line() (string, error)
 
 	// SetCriteria sets the criteria used by the filter runner
@@ -15,6 +16,8 @@ type Reportable interface {
 	// ToJson converts the report to JSON
 	ToJson() (*gabs.Container, error)
 
+	// AddReason appends a reason for why an element of
+	// the actionable list remained or was excluded
 	AddReason(reason string, values ...interface{})
 
 	// Error adds an error message to the summary
