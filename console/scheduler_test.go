@@ -2,6 +2,7 @@ package console
 
 import (
 	"os"
+	"scrubber/logging"
 	"strings"
 	"testing"
 
@@ -15,7 +16,10 @@ func TestSchedulerExtractFiles(t *testing.T) {
 		t.Error(err)
 	}
 
-	configs, err := NewScheduler(currentPath + "/../stubs/scheduler_extract_files_test").extractConfigs()
+	filePath := currentPath + "/../stubs/scheduler_extract_files_test"
+	logger := logging.NewSrvLogger("", true, true, true, true)
+
+	configs, err := NewScheduler(filePath, logger).extractConfigs()
 
 	if err != nil {
 		t.Error(err)
@@ -43,7 +47,10 @@ func TestSchedulerSchedule(t *testing.T) {
 		t.Error(err)
 	}
 
-	scheduler := NewScheduler(currentPath + "/../stubs/scheduler_extract_files_test/delete_actions/aggregate")
+	filePath := currentPath + "/../stubs/scheduler_extract_files_test/delete_actions/aggregate"
+	logger := logging.NewSrvLogger("", true, true, true, true)
+
+	scheduler := NewScheduler(filePath, logger)
 
 	configs, err := scheduler.extractConfigs()
 

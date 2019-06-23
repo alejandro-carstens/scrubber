@@ -15,10 +15,11 @@ type context struct {
 	config          *gabs.Container
 	options         options.Optionable
 	builder         *criterias.Builder
-	Async           bool `json:"async"`
-	NumberOfWorkers int  `json:"number_of_workers"`
-	QueueLength     int  `json:"queue_length"`
-	RetryCount      int  `json:"retry_count"`
+	List            []string `json:"list"`
+	Async           bool     `json:"async"`
+	NumberOfWorkers int      `json:"number_of_workers"`
+	QueueLength     int      `json:"queue_length"`
+	RetryCount      int      `json:"retry_count"`
 }
 
 func (c *context) Builder() *criterias.Builder {
@@ -47,6 +48,20 @@ func (c *context) GetRetryCount() int {
 
 func (c *context) Options() options.Optionable {
 	return c.options
+}
+
+func (c *context) SetOptions(options options.Optionable) error {
+	c.options = options
+
+	return c.options.Validate()
+}
+
+func (c *context) SetList(list ...string) {
+	c.List = list
+}
+
+func (c *context) ActionableList() []string {
+	return c.List
 }
 
 func (c *context) setNumberOfWorkers(numberOfWorkers int) {

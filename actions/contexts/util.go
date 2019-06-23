@@ -52,7 +52,7 @@ func build(action string) (Contextable, error) {
 		ctx = new(createIndexContext)
 		break
 	case "delete_indices":
-		ctx = new(deleteIndicesContext)
+		ctx = new(DeleteIndicesContext)
 		break
 	case "create_repository":
 		ctx = new(createRepositoryContext)

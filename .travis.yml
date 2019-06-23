@@ -21,7 +21,8 @@ before_install:
 - sudo sysctl -w vm.max_map_count=262144
 - docker-compose up -d
 - docker-compose exec elasticsearch chown -R 1000:1000 /usr/share/elasticsearch/backup
-- docker-compose exec dev go get ./actions/... ./console/... ./logging/... ./ymlparser/... github.com/stretchr/testify/assert
+- docker-compose exec dev go get ./actions/... ./console/... ./logging/... ./ymlparser/... 
+- docker-compose exec dev go get github.com/stretchr/testify/assert
 install: true
 script:
 - docker-compose exec dev go test -failfast -v ./logging/... ./console/... ./ymlparser/... ./tests/...
