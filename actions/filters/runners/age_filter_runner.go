@@ -18,6 +18,7 @@ type ageFilterRunner struct {
 	builder golastic.Queryable
 }
 
+// Init initializes the filter runner
 func (afr *ageFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
 	if err := afr.BaseInit(info...); err != nil {
 		return nil, err
@@ -44,6 +45,7 @@ func (afr *ageFilterRunner) Init(info ...responses.Informable) (Runnerable, erro
 	return afr, nil
 }
 
+// RunFilter filters out elements from the actionable list
 func (afr *ageFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
 	if err := afr.validateCriteria(criteria); err != nil {
 		channel <- afr.response.setError(err)

@@ -11,12 +11,14 @@ type patternFilterRunner struct {
 	baseRunner
 }
 
+// Init initializes the filter runner
 func (pfr *patternFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
 	err := pfr.BaseInit(info...)
 
 	return pfr, err
 }
 
+// RunFilter filters out elements from the actionable list
 func (pfr *patternFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
 	if err := pfr.validateCriteria(criteria); err != nil {
 		channel <- pfr.response.setError(err)

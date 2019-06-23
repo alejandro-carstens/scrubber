@@ -12,6 +12,7 @@ type forcemergedFilterRunner struct {
 	builder golastic.Queryable
 }
 
+// Init initializes the filter runner
 func (ffr *forcemergedFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
 	if err := ffr.BaseInit(info...); err != nil {
 		return nil, err
@@ -20,6 +21,7 @@ func (ffr *forcemergedFilterRunner) Init(info ...responses.Informable) (Runnerab
 	return ffr, nil
 }
 
+// RunFilter filters out elements from the actionable list
 func (ffr *forcemergedFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
 	if err := ffr.validateCriteria(criteria); err != nil {
 		channel <- ffr.response.setError(err)

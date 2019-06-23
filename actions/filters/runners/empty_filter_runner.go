@@ -9,12 +9,14 @@ type emptyFilterRunner struct {
 	baseRunner
 }
 
+// Init initializes the filter runner
 func (efr *emptyFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
 	err := efr.BaseInit(info...)
 
 	return efr, err
 }
 
+// RunFilter filters out elements from the actionable list
 func (efr *emptyFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
 	if err := efr.validateCriteria(criteria); err != nil {
 		channel <- efr.response.setError(err)

@@ -13,6 +13,7 @@ type baseRunner struct {
 	response *FilterResponse
 }
 
+// BaseInit initializes the base properties for a filter runner
 func (br *baseRunner) BaseInit(info ...responses.Informable) error {
 	if len(info) != 1 {
 		return errors.New("This is not an aggregate filter runner and as such only accepts one index per run")

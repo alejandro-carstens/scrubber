@@ -8,6 +8,7 @@ type Report struct {
 	Result bool   `json:"result"`
 }
 
+// Error adds an error message to the summary
 func (r *Report) Error(err error) Reportable {
 	if len(r.Summary) == 0 {
 		r.Summary = append([]string{}, err.Error())
@@ -20,18 +21,21 @@ func (r *Report) Error(err error) Reportable {
 	return r
 }
 
+// SetName sets the name of the element being filtered
 func (r *Report) SetName(name string) *Report {
 	r.Name = name
 
 	return r
 }
 
+// SetResult sets the result of a given filter
 func (r *Report) SetResult(result bool) *Report {
 	r.Result = result
 
 	return r
 }
 
+// Line returns a human readable string or a filter runner activity
 func (r *Report) Line() (string, error) {
 	criteria, err := r.toJsonString(r.Criteria)
 
