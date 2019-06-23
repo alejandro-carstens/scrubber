@@ -16,7 +16,11 @@ type filterAction struct {
 }
 
 func (fa *filterAction) ApplyFilters() error {
-	if fa.context.Options().IsSnapshot() && fa.context.Options().Exists("name") {
+	if len(fa.context.ActionableList()) > 0 {
+		fa.list = append([]string{}, fa.context.ActionableList()...)
+
+		return nil
+	} else if fa.context.Options().IsSnapshot() && fa.context.Options().Exists("name") {
 		fa.list = append([]string{}, fa.context.Options().String("name"))
 
 		return nil

@@ -24,7 +24,13 @@ type Contextable interface {
 
 	Builder() *criterias.Builder
 
+	ActionableList() []string
+
 	Config(container *gabs.Container) error
+
+	SetOptions(options options.Optionable) error
+
+	SetList(list ...string)
 
 	setNumberOfWorkers(numberOfWorkers int)
 

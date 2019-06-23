@@ -6,15 +6,15 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
-type deleteIndicesContext struct {
+type DeleteIndicesContext struct {
 	context
 }
 
-func (dic *deleteIndicesContext) Action() string {
+func (dic *DeleteIndicesContext) Action() string {
 	return "delete_indices"
 }
 
-func (dic *deleteIndicesContext) Config(container *gabs.Container) error {
+func (dic *DeleteIndicesContext) Config(container *gabs.Container) error {
 	return dic.extractConfig(dic.Action(), container, func(container *gabs.Container) error {
 		dic.options = new(options.DeleteIndicesOptions)
 

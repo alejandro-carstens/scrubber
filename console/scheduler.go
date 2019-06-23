@@ -4,7 +4,8 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
-	"scrubber/console/tasks"
+	"scrubber/actions/contexts"
+	"scrubber/logging"
 	"scrubber/ymlparser"
 	"strings"
 
@@ -23,13 +24,11 @@ type configMap struct {
 
 type Scheduler struct {
 	basePath string
+	logger   *logging.SrvLogger
 }
 
-func NewScheduler(basePath string) *Scheduler {
-	scheduler := new(Scheduler)
-	scheduler.basePath = basePath
-
-	return scheduler
+func NewScheduler(basePath string, logger *logging.SrvLogger) *Scheduler {
+	return &Scheduler{basePath: basePath, logger: logger}
 }
 
 func (s *Scheduler) Run() error {
@@ -39,14 +38,18 @@ func (s *Scheduler) Run() error {
 		return err
 	}
 
-	asyncActions := []*tasks.RunAction{}
-	actions := []*tasks.RunAction{}
+	syncContexts := []contexts.Contextable{}
+	asyncContexts := []contexts.Contextable{}
 	startCron := false
 
 	defer gocron.Clear()
 
 	for _, config := range configs {
-		task := new(tasks.RunAction).SetConfig(config)
+		context, err := contexts.New(config)
+
+		if err != nil {
+			return err
+		}
 
 		if config.Exists("schedule") {
 			job, err := s.schedule(config)
@@ -55,7 +58,7 @@ func (s *Scheduler) Run() error {
 				return err
 			}
 
-			job.Do(task.Execute)
+			job.Do(Execute, context, s.logger)
 
 			startCron = true
 
@@ -63,20 +66,20 @@ func (s *Scheduler) Run() error {
 		}
 
 		if runMode, valid := config.S("run_mode").Data().(string); valid && runMode == "async" {
-			asyncActions = append(asyncActions, task)
+			asyncContexts = append(asyncContexts, context)
 
 			continue
 		}
 
-		actions = append(actions, task)
+		syncContexts = append(syncContexts, context)
 	}
 
-	if len(actions) > 0 {
-		s.runActions(actions)
+	if len(syncContexts) > 0 {
+		s.runActions(syncContexts)
 	}
 
-	if len(asyncActions) > 0 {
-		s.runAsyncActions(asyncActions)
+	if len(asyncContexts) > 0 {
+		s.runAsyncActions(asyncContexts)
 	}
 
 	if startCron {
@@ -134,18 +137,18 @@ func (s *Scheduler) extractConfigs() (map[string]*gabs.Container, error) {
 	return containers, nil
 }
 
-func (s *Scheduler) runAsyncActions(actions []*tasks.RunAction) {
-	pool := grpool.NewPool(NUMBER_OF_WORKERS, len(actions))
+func (s *Scheduler) runAsyncActions(contexts []contexts.Contextable) {
+	pool := grpool.NewPool(NUMBER_OF_WORKERS, len(contexts))
 
-	pool.WaitCount(len(actions))
+	pool.WaitCount(len(contexts))
 
-	for _, action := range actions {
-		task := action
+	for _, context := range contexts {
+		action := context
 
 		pool.JobQueue <- func() {
 			defer pool.JobDone()
 
-			task.Execute()
+			Execute(action, s.logger)
 		}
 	}
 
@@ -153,9 +156,9 @@ func (s *Scheduler) runAsyncActions(actions []*tasks.RunAction) {
 	pool.Release()
 }
 
-func (s *Scheduler) runActions(actions []*tasks.RunAction) {
-	for _, action := range actions {
-		action.Execute()
+func (s *Scheduler) runActions(contexts []contexts.Contextable) {
+	for _, context := range contexts {
+		Execute(context, s.logger)
 	}
 }
 
