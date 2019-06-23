@@ -8,11 +8,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type baseCommand struct {
+type baseActionCommand struct {
 	context contexts.Contextable
 	logger  *logging.SrvLogger
 }
 
-func (bc *baseCommand) Handle(cmd *cobra.Command, args []string) {
-	console.Execute(bc.context, bc.logger)
+func (bac *baseActionCommand) Handle(cmd *cobra.Command, args []string) {
+	console.Execute(bac.context, bac.logger)
 }

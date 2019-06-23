@@ -10,7 +10,7 @@ import (
 )
 
 type deleteIndicesCommand struct {
-	baseCommand
+	baseActionCommand
 }
 
 func (dic *deleteIndicesCommand) new(logger *logging.SrvLogger) *cobra.Command {
