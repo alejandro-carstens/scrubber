@@ -49,7 +49,7 @@ func build(action string) (Contextable, error) {
 
 	switch action {
 	case "create_index":
-		ctx = new(createIndexContext)
+		ctx = new(CreateIndexContext)
 		break
 	case "delete_indices":
 		ctx = new(DeleteIndicesContext)

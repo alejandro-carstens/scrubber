@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 
+	"github.com/spf13/pflag"
+
 	"github.com/Jeffail/gabs"
 )
 
@@ -22,6 +24,29 @@ func (cio *CreateIndexOptions) FillFromContainer(container *gabs.Container) erro
 func (cio *CreateIndexOptions) Validate() error {
 	if len(cio.Name) == 0 {
 		return errors.New("The name option is required")
+	}
+
+	return nil
+}
+
+func (cio *CreateIndexOptions) BindFlags(flags *pflag.FlagSet) error {
+	timeout, _ := flags.GetInt("timeout")
+	disableAction, _ := flags.GetBool("disable_action")
+	name, _ := flags.GetString("name")
+	extraSettings, _ := flags.GetString("extra_settings")
+
+	cio.Timeout = timeout
+	cio.DisableAction = disableAction
+	cio.Name = name
+
+	if len(extraSettings) > 0 {
+		es := map[string]interface{}{}
+
+		if err := json.Unmarshal([]byte(extraSettings), &es); err != nil {
+			return err
+		}
+
+		cio.ExtraSettings = es
 	}
 
 	return nil

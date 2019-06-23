@@ -16,7 +16,7 @@ type deleteIndicesCommand struct {
 func (dic *deleteIndicesCommand) new(logger *logging.SrvLogger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "delete-indices",
-		Short: "Deletes the specified list of indices",
+		Short: "deletes the specified list of indices",
 		Args:  dic.Validate,
 		Run:   dic.Handle,
 	}
@@ -31,12 +31,6 @@ func (dic *deleteIndicesCommand) new(logger *logging.SrvLogger) *cobra.Command {
 }
 
 func (dic *deleteIndicesCommand) Validate(cmd *cobra.Command, args []string) error {
-	options := &options.DeleteIndicesOptions{}
-
-	if err := options.BindFlags(cmd.Flags()); err != nil {
-		return err
-	}
-
 	indices, _ := cmd.Flags().GetStringSlice("indices")
 
 	if len(indices) == 0 {
@@ -45,6 +39,9 @@ func (dic *deleteIndicesCommand) Validate(cmd *cobra.Command, args []string) err
 
 	dic.context = new(contexts.DeleteIndicesContext)
 	dic.context.SetList(indices...)
+
+	options := &options.DeleteIndicesOptions{}
+	options.BindFlags(cmd.Flags())
 
 	return dic.context.SetOptions(options)
 }
