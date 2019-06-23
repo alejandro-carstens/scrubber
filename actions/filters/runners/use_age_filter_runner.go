@@ -12,6 +12,7 @@ import (
 	"github.com/araddon/dateparse"
 )
 
+// NOT_VALID_DATE_PARAMETER error message
 const NOT_VALID_DATE_PARAMETER = "Field is not a valid date parameter"
 
 type useAgeFilterRunner struct {

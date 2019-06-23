@@ -11,6 +11,7 @@ type countFilterRunner struct {
 	useAgeFilterRunner
 }
 
+// Init initializes the filter runner
 func (cfr *countFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
 	if err := cfr.BaseInit(info...); err != nil {
 		return nil, err
@@ -19,6 +20,7 @@ func (cfr *countFilterRunner) Init(info ...responses.Informable) (Runnerable, er
 	return cfr, nil
 }
 
+// RunFilter filters out elements from the actionable list
 func (cfr *countFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
 	if err := cfr.validateCriteria(criteria); err != nil {
 		channel <- cfr.response.setError(err)

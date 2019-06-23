@@ -2,12 +2,14 @@ package reports
 
 import "fmt"
 
+// AggregateReport represents an aggregate filter report
 type AggregateReport struct {
 	baseReport
 	Names   []string `json:"names"`
 	Results []string `json:"results"`
 }
 
+// AddName appends actionable list names to the report
 func (ar *AggregateReport) AddName(name string) *AggregateReport {
 	if len(ar.Names) == 0 {
 		ar.Names = []string{}
@@ -18,6 +20,7 @@ func (ar *AggregateReport) AddName(name string) *AggregateReport {
 	return ar
 }
 
+// AddResults appends report results
 func (ar *AggregateReport) AddResults(results ...string) *AggregateReport {
 	if len(ar.Results) == 0 {
 		ar.Results = []string{}
@@ -28,12 +31,14 @@ func (ar *AggregateReport) AddResults(results ...string) *AggregateReport {
 	return ar
 }
 
+// Error adds an error message to the summary
 func (ar *AggregateReport) Error(err error) Reportable {
 	ar.Summary = append([]string{}, err.Error())
 
 	return ar
 }
 
+// Line returns a human readable string or a filter runner activity
 func (ar *AggregateReport) Line() (string, error) {
 	criteria, err := ar.toJsonString(ar.Criteria)
 

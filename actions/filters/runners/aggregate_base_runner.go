@@ -13,6 +13,7 @@ type aggregateBaseRunner struct {
 	response *FilterResponse
 }
 
+// BaseInit initializes the base properties for a filter runner
 func (abr *aggregateBaseRunner) BaseInit(info ...responses.Informable) error {
 	if len(info) == 0 {
 		return errors.New("info cannot be empty")

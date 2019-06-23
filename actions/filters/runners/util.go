@@ -18,18 +18,22 @@ type fieldStatsResponse struct {
 
 type timeSlice []time.Time
 
+// Less timeSlice sorting method
 func (ts timeSlice) Less(i int, j int) bool {
 	return ts[i].Before(ts[j])
 }
 
+// Swap timeSlice sorting method
 func (ts timeSlice) Swap(i int, j int) {
 	ts[i], ts[j] = ts[j], ts[i]
 }
 
+// Len timeSlice sorting method
 func (ts timeSlice) Len() int {
 	return len(ts)
 }
 
+// NewRunner return a filter runner
 func NewRunner(criteria string, info ...responses.Informable) (Runnerable, error) {
 	var runner Runnerable
 

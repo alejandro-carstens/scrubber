@@ -19,6 +19,7 @@ type spaceFilterRunner struct {
 	useAgeFilterRunner
 }
 
+// Init initializes the filter runner
 func (sfr *spaceFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
 	if err := sfr.BaseInit(info...); err != nil {
 		return nil, err
@@ -27,6 +28,7 @@ func (sfr *spaceFilterRunner) Init(info ...responses.Informable) (Runnerable, er
 	return sfr, nil
 }
 
+// RunFilter filters out elements from the actionable list
 func (sfr *spaceFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
 	if err := sfr.validateCriteria(criteria); err != nil {
 		channel <- sfr.response.setError(err)

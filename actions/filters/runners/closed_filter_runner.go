@@ -13,6 +13,7 @@ type closedFilterRunner struct {
 	baseRunner
 }
 
+// Init initializes the filter runner
 func (cfr *closedFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
 	if err := cfr.BaseInit(info...); err != nil {
 		return nil, err
@@ -21,6 +22,7 @@ func (cfr *closedFilterRunner) Init(info ...responses.Informable) (Runnerable, e
 	return cfr, nil
 }
 
+// RunFilter filters out elements from the actionable list
 func (cfr *closedFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
 	if err := cfr.validateCriteria(criteria); err != nil {
 		channel <- cfr.response.setError(err)

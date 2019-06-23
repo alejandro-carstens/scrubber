@@ -9,12 +9,14 @@ type kibanaFilterRunner struct {
 	baseRunner
 }
 
+// Init initializes the filter runner
 func (kfr *kibanaFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
 	err := kfr.BaseInit(info...)
 
 	return kfr, err
 }
 
+// RunFilter filters out elements from the actionable list
 func (kfr *kibanaFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
 	if err := kfr.validateCriteria(criteria); err != nil {
 		channel <- kfr.response.setError(err)

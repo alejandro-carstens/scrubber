@@ -12,6 +12,7 @@ type aliasFilterRunner struct {
 	builder golastic.Queryable
 }
 
+// Init initializes the filter runner
 func (afr *aliasFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
 	if err := afr.BaseInit(info...); err != nil {
 		return nil, err
@@ -31,6 +32,7 @@ func (afr *aliasFilterRunner) Init(info ...responses.Informable) (Runnerable, er
 	return afr, nil
 }
 
+// RunFilter filters out elements from the actionable list
 func (afr *aliasFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
 	if err := afr.validateCriteria(criteria); err != nil {
 		channel <- afr.response.setError(err)
