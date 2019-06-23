@@ -2,6 +2,7 @@ package reports
 
 import "fmt"
 
+// Report represents a filter report
 type Report struct {
 	baseReport
 	Name   string `json:"name"`
