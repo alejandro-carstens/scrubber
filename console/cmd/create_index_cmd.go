@@ -20,8 +20,6 @@ func (cic *createIndexCmd) new(logger *logging.SrvLogger) *cobra.Command {
 		Run:   cic.Handle,
 	}
 
-	command.Flags().Int("timeout", 300, "elasticsearch operation timeout")
-	command.Flags().Bool("disable_action", false, "flag for preventing the action to be ran")
 	command.Flags().String("name", "", "name of the index to be created")
 	command.Flags().String("extra_settings", "", "index settings and mappings as JSON")
 
