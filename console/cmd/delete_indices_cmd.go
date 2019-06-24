@@ -21,8 +21,6 @@ func (dic *deleteIndicesCmd) new(logger *logging.SrvLogger) *cobra.Command {
 		Run:   dic.Handle,
 	}
 
-	command.Flags().Int("timeout", 300, "elasticsearch operation timeout")
-	command.Flags().Bool("disable_action", false, "flag for preventing the action to be ran")
 	command.Flags().StringSlice("indices", []string{}, "indices to be deleted")
 
 	dic.logger = logger
