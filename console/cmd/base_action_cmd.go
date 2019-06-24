@@ -1,4 +1,4 @@
-package commands
+package cmd
 
 import (
 	"scrubber/actions/contexts"
@@ -8,11 +8,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type baseActionCommand struct {
+type baseActionCmd struct {
 	context contexts.Contextable
 	logger  *logging.SrvLogger
 }
 
-func (bac *baseActionCommand) Handle(cmd *cobra.Command, args []string) {
+func (bac *baseActionCmd) Handle(cmd *cobra.Command, args []string) {
 	console.Execute(bac.context, bac.logger)
 }
