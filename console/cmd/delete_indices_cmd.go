@@ -1,4 +1,4 @@
-package commands
+package cmd
 
 import (
 	"errors"
@@ -9,11 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type deleteIndicesCommand struct {
-	baseActionCommand
+type deleteIndicesCmd struct {
+	baseActionCmd
 }
 
-func (dic *deleteIndicesCommand) new(logger *logging.SrvLogger) *cobra.Command {
+func (dic *deleteIndicesCmd) new(logger *logging.SrvLogger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "delete-indices",
 		Short: "deletes the specified list of indices",
@@ -30,7 +30,7 @@ func (dic *deleteIndicesCommand) new(logger *logging.SrvLogger) *cobra.Command {
 	return command
 }
 
-func (dic *deleteIndicesCommand) Validate(cmd *cobra.Command, args []string) error {
+func (dic *deleteIndicesCmd) Validate(cmd *cobra.Command, args []string) error {
 	indices, _ := cmd.Flags().GetStringSlice("indices")
 
 	if len(indices) == 0 {
