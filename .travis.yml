@@ -28,4 +28,4 @@ before_install:
 install: true
 script:
 # - docker-compose exec dev go test -failfast -v -covermode=count -coverprofile=coverage.out ./logging/... ./console/... ./ymlparser/... ./tests/...
-- docker-compose exec dev $(go env GOPATH | awk 'BEGIN{FS=":"} {print $1}')/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
+- docker-compose exec dev - $GOPATH/bin/goveralls -service=travis-ci
