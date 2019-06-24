@@ -9,8 +9,6 @@ matrix:
 env:
   matrix:
   - VERSION=7.0.1 ELASTIC_PASSWORD=secret ELASTIC_USERNAME=jdoe
-  global:
-    secure: mgE47OVb7/lovyMoD5reFa3Pzsy1kr5YBHy/Sxpqftg+kizZVFHcsTB/JMYheK/treWq/pmLaShkU/JsuGY3h7MKK7GfTBCZ7ylm+yJd4TxEFkaJv1cV1GJFqNasvHYcgR1bZau/djj04bPTYhhbkLnJNJeT2XRiH+3lpSgZySi5emraE4HXwcj1gAbeg7bjauwSR31rd1AANj9h1j6nikLA32VGJZF3MDObFWiiiHiLKzevMNh5dzG2fs54JWr61V7+DE2/xzgl3/QS3uicyaKnou1Zgyikt1SgIubx4Hg7/F8bUkjgxfu72INDK3qofx9uFy+wkO/2+m9mkaSiQwCpMHmqaHi4RFpCVuBdJG3XZ8qhtyZTUFWtEW75YpAr1H538Ovc9GtambYybDvkNFzDyeu26DZYNI19shlRQF70oXEOdRMqVXI5eeSUI2TzYTkGkd1PzxnF+55MCaNUH0n+8WXVOOpMqGYmwWkQRFjkMVsOsUniON14uYSXRfp4fvyQ2xqX2j7MHVRv1b7yO5CynX9e+t1BKiU6pk++qbpd0jdZvzM7lomhnNy22RyaJtW5vNJ4g71R8XYG5x2m5XL8SuHnGihvr4XcbwtgmoGh+qxXdByHpPpjU54ODdzZDwDlTZbcpuzg20lXbPqeS/cy6joszyOg2iWr7XcXBMw=
 addons:
   ssh_known_hosts: github.com
   apt:
@@ -29,5 +27,5 @@ before_install:
 - docker-compose exec dev go get github.com/mattn/goveralls
 install: true
 script:
-- docker-compose exec dev go test -failfast -v -covermode=count -coverprofile=coverage.out ./logging/... ./console/... ./ymlparser/... ./tests/...
+# - docker-compose exec dev go test -failfast -v -covermode=count -coverprofile=coverage.out ./logging/... ./console/... ./ymlparser/... ./tests/...
 - docker-compose exec dev $(go env GOPATH | awk 'BEGIN{FS=":"} {print $1}')/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
