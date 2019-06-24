@@ -22,11 +22,5 @@ func (dio *DeleteIndicesOptions) Validate() error {
 }
 
 func (dio *DeleteIndicesOptions) BindFlags(flags *pflag.FlagSet) error {
-	timeout, _ := flags.GetInt("timeout")
-	disableAction, _ := flags.GetBool("disable_action")
-
-	dio.Timeout = timeout
-	dio.DisableAction = disableAction
-
-	return nil
+	return dio.defaultBindFlags(flags)
 }

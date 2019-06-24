@@ -3,6 +3,8 @@ package options
 import (
 	"fmt"
 
+	"github.com/spf13/pflag"
+
 	"github.com/Jeffail/gabs"
 )
 
@@ -42,4 +44,14 @@ func (do *defaultOptions) String(value string) string {
 
 func (do *defaultOptions) IsSnapshot() bool {
 	return false
+}
+
+func (do *defaultOptions) defaultBindFlags(flags *pflag.FlagSet) error {
+	timeout, _ := flags.GetInt("timeout")
+	disableAction, _ := flags.GetBool("disable_action")
+
+	do.Timeout = timeout
+	do.DisableAction = disableAction
+
+	return nil
 }
