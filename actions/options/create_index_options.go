@@ -30,13 +30,11 @@ func (cio *CreateIndexOptions) Validate() error {
 }
 
 func (cio *CreateIndexOptions) BindFlags(flags *pflag.FlagSet) error {
-	timeout, _ := flags.GetInt("timeout")
-	disableAction, _ := flags.GetBool("disable_action")
+	cio.defaultBindFlags(flags)
+
 	name, _ := flags.GetString("name")
 	extraSettings, _ := flags.GetString("extra_settings")
 
-	cio.Timeout = timeout
-	cio.DisableAction = disableAction
 	cio.Name = name
 
 	if len(extraSettings) > 0 {

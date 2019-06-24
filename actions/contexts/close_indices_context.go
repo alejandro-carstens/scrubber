@@ -6,15 +6,15 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
-type closeIndicesContext struct {
+type CloseIndicesContext struct {
 	context
 }
 
-func (cic *closeIndicesContext) Action() string {
+func (cic *CloseIndicesContext) Action() string {
 	return "close_indices"
 }
 
-func (cic *closeIndicesContext) Config(container *gabs.Container) error {
+func (cic *CloseIndicesContext) Config(container *gabs.Container) error {
 	return cic.extractConfig(cic.Action(), container, func(container *gabs.Container) error {
 		cic.options = new(options.CloseIndicesOptions)
 
