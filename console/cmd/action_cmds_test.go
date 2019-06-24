@@ -7,38 +7,56 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDeleteIndicesCmd(t *testing.T) {
-	rootCmd := Init(logging.NewSrvLogger("", true, true, true, true))
+func TestActionCmds(t *testing.T) {
+	for _, data := range cmdParamsDataProvider() {
+		rootCmd := Init(logging.NewSrvLogger("", true, true, true, true))
 
-	_, err := executeCommand(rootCmd, "delete-indices", "--disable_action=true")
+		_, err := executeCommand(rootCmd, data["error_params"]...)
 
-	assert.NotNil(t, err)
+		assert.NotNil(t, err)
 
-	if _, err := executeCommand(rootCmd, "delete-indices", "--indices=my,index,1", "--disable_action=true"); err != nil {
-		t.Errorf("%v", err.Error())
+		if _, err := executeCommand(rootCmd, data["success_params"]...); err != nil {
+			t.Errorf("%v", err.Error())
+		}
 	}
 }
 
-func TestCloseIndicesCmd(t *testing.T) {
-	rootCmd := Init(logging.NewSrvLogger("", true, true, true, true))
+func cmdParamsDataProvider() []map[string][]string {
+	data := []map[string][]string{}
 
-	_, err := executeCommand(rootCmd, "close-indices", "--disable_action=true")
+	data = append(data, map[string][]string{
+		"error_params": []string{
+			"delete-indices",
+			"--disable_action=true",
+		},
+		"success_params": []string{
+			"delete-indices",
+			"--indices=my,index,1",
+			"--disable_action=true",
+		},
+	})
+	data = append(data, map[string][]string{
+		"error_params": []string{
+			"close-indices",
+			"--disable_action=true",
+		},
+		"success_params": []string{
+			"close-indices",
+			"--indices=my,index,1",
+			"--disable_action=true",
+		},
+	})
+	data = append(data, map[string][]string{
+		"error_params": []string{
+			"create-index",
+			"--disable_action=true",
+		},
+		"success_params": []string{
+			"create-index",
+			"--name=my_index",
+			"--disable_action=true",
+		},
+	})
 
-	assert.NotNil(t, err)
-
-	if _, err := executeCommand(rootCmd, "close-indices", "--indices=my,index,1", "--disable_action=true"); err != nil {
-		t.Errorf("%v", err.Error())
-	}
-}
-
-func TestCreateIndexCmd(t *testing.T) {
-	rootCmd := Init(logging.NewSrvLogger("", true, true, true, true))
-
-	_, err := executeCommand(rootCmd, "create-index", "--disable_action=true")
-
-	assert.NotNil(t, err)
-
-	if _, err := executeCommand(rootCmd, "create-index", "--name=my_index", "--disable_action=true"); err != nil {
-		t.Errorf("%v", err.Error())
-	}
+	return data
 }
