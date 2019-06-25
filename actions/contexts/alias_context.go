@@ -6,15 +6,15 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
-type aliasContext struct {
+type AliasContext struct {
 	context
 }
 
-func (ac *aliasContext) Action() string {
+func (ac *AliasContext) Action() string {
 	return "alias"
 }
 
-func (ac *aliasContext) Config(container *gabs.Container) error {
+func (ac *AliasContext) Config(container *gabs.Container) error {
 	return ac.extractConfig(ac.Action(), container, func(container *gabs.Container) error {
 		ac.options = new(options.AliasOptions)
 

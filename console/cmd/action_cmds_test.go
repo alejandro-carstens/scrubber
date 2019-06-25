@@ -59,6 +59,20 @@ func cmdParamsDataProvider() []map[string][]string {
 	})
 	data = append(data, map[string][]string{
 		"error_params": []string{
+			"alias",
+			"--disable_action=true",
+		},
+		"success_params": []string{
+			"alias",
+			"--indices=my,index,1",
+			"--name=alias",
+			"--routing=1",
+			"--search_routing=2",
+			"--disable_action=true",
+		},
+	})
+	data = append(data, map[string][]string{
+		"error_params": []string{
 			"create-index",
 			"--disable_action=true",
 		},
