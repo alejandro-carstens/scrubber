@@ -73,7 +73,7 @@ func build(action string) (Contextable, error) {
 		ctx = new(indexSettingsContext)
 		break
 	case "alias":
-		ctx = new(aliasContext)
+		ctx = new(AliasContext)
 		break
 	case "restore":
 		ctx = new(restoreContext)

@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/Jeffail/gabs"
+	"github.com/spf13/pflag"
 )
 
 type AliasOptions struct {
@@ -33,6 +34,33 @@ func (ao *AliasOptions) Validate() error {
 
 	if ao.Type != "add" && ao.Type != "remove" {
 		return errors.New("type option can only be add or remove")
+	}
+
+	return nil
+}
+
+func (ao *AliasOptions) BindFlags(flags *pflag.FlagSet) error {
+	ao.defaultBindFlags(flags)
+
+	aliasfilter := map[string]interface{}{}
+
+	if filter, _ := flags.GetString("filter"); len(filter) > 0 {
+		if err := json.Unmarshal([]byte(filter), &aliasfilter); err != nil {
+			return err
+		}
+	}
+
+	name, _ := flags.GetString("name")
+	aliasType, _ := flags.GetString("type")
+	routing, _ := flags.GetString("routing")
+	searchRouting, _ := flags.GetString("search_routing")
+
+	ao.Name = name
+	ao.Type = aliasType
+	ao.ExtraSettings = &AliasExtraSettingsOption{
+		Routing:       routing,
+		SearchRouting: searchRouting,
+		Filter:        aliasfilter,
 	}
 
 	return nil
