@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/Jeffail/gabs"
+	"github.com/spf13/pflag"
 )
 
 type OpenIndicesOptions struct {
@@ -18,4 +19,8 @@ func (oio *OpenIndicesOptions) FillFromContainer(container *gabs.Container) erro
 
 func (oio *OpenIndicesOptions) Validate() error {
 	return nil
+}
+
+func (oio *OpenIndicesOptions) BindFlags(flags *pflag.FlagSet) error {
+	return oio.defaultBindFlags(flags)
 }

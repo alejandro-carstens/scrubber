@@ -6,15 +6,15 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
-type openIndicesContext struct {
+type OpenIndicesContext struct {
 	context
 }
 
-func (oic *openIndicesContext) Action() string {
+func (oic *OpenIndicesContext) Action() string {
 	return "open_indices"
 }
 
-func (oic *openIndicesContext) Config(container *gabs.Container) error {
+func (oic *OpenIndicesContext) Config(container *gabs.Container) error {
 	return oic.extractConfig(oic.Action(), container, func(container *gabs.Container) error {
 		oic.options = new(options.OpenIndicesOptions)
 
