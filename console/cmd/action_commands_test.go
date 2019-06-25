@@ -80,6 +80,7 @@ func cmdParamsDataProvider() []map[string][]string {
 			"alias",
 			"--indices=my,index,1",
 			"--name=alias",
+			"--type=add"
 			"--routing=1",
 			"--search_routing=2",
 			"--disable_action=true",
