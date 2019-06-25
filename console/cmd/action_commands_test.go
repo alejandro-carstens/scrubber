@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"bytes"
 	"scrubber/logging"
 	"testing"
 
+	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,6 +21,18 @@ func TestActionCmds(t *testing.T) {
 			t.Errorf("%v", err.Error())
 		}
 	}
+}
+
+func executeCommand(root *cobra.Command, args ...string) (string, error) {
+	buf := new(bytes.Buffer)
+
+	root.SetOutput(buf)
+
+	root.SetArgs(args)
+
+	_, err := root.ExecuteC()
+
+	return buf.String(), err
 }
 
 func cmdParamsDataProvider() []map[string][]string {

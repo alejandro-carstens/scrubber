@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"scrubber/logging"
 
 	"github.com/spf13/cobra"
@@ -23,16 +22,4 @@ func Init(logger *logging.SrvLogger) *cobra.Command {
 	rootCmd.AddCommand(new(aliasCmd).new(logger))
 
 	return rootCmd
-}
-
-func executeCommand(root *cobra.Command, args ...string) (string, error) {
-	buf := new(bytes.Buffer)
-
-	root.SetOutput(buf)
-
-	root.SetArgs(args)
-
-	_, err := root.ExecuteC()
-
-	return buf.String(), err
 }
