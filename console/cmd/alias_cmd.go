@@ -15,8 +15,8 @@ type aliasCmd struct {
 
 func (ac *aliasCmd) new(logger *logging.SrvLogger) *cobra.Command {
 	command := &cobra.Command{
-		Use:   "close-indices",
-		Short: "closes the specified list of indices",
+		Use:   "alias",
+		Short: "add or remove indices from an alias",
 		Args:  ac.Validate,
 		Run:   ac.Handle,
 	}
