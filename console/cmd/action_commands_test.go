@@ -97,6 +97,30 @@ func cmdParamsDataProvider() []map[string][]string {
 			"--disable_action=true",
 		},
 	})
+	data = append(data, map[string][]string{
+		"error_params": []string{
+			"create-repository",
+			"--chunk_size=10m",
+			"--max_restore_bytes_per_sec=30mb",
+			"--max_snapshot_bytes_per_second=30mb",
+			"--repo_type=fs",
+			"--compress=true",
+			"--verify=false",
+			"--disable_action=true",
+		},
+		"success_params": []string{
+			"create-repository",
+			"--repository=whatever",
+			"--location=whatever",
+			"--chunk_size=10m",
+			"--max_restore_bytes_per_sec=30mb",
+			"--max_snapshot_bytes_per_second=30mb",
+			"--repo_type=fs",
+			"--compress=true",
+			"--verify=false",
+			"--disable_action=true",
+		},
+	})
 
 	return data
 }

@@ -8,15 +8,15 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
-type createRepositoryContext struct {
+type CreateRepositoryContext struct {
 	context
 }
 
-func (crc *createRepositoryContext) Action() string {
+func (crc *CreateRepositoryContext) Action() string {
 	return "create_repository"
 }
 
-func (crc *createRepositoryContext) Config(container *gabs.Container) error {
+func (crc *CreateRepositoryContext) Config(container *gabs.Container) error {
 	config, err := container.ChildrenMap()
 
 	if err != nil {
@@ -44,7 +44,7 @@ func (crc *createRepositoryContext) Config(container *gabs.Container) error {
 	return crc.marshallOptions(options)
 }
 
-func (crc *createRepositoryContext) marshallOptions(container *gabs.Container) error {
+func (crc *CreateRepositoryContext) marshallOptions(container *gabs.Container) error {
 	crc.options = new(options.CreateRepositoryOptions)
 
 	if err := crc.options.FillFromContainer(container); err != nil {
