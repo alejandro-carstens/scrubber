@@ -46,8 +46,8 @@ func (so *SnapshotOptions) BindFlags(flags *pflag.FlagSet) error {
 	maxWait, _ := flags.GetInt("max_wait")
 	waitInterval, _ := flags.GetInt("wait_interval")
 
-	so.Repository = name
-	so.Name = repository
+	so.Repository = repository
+	so.Name = name
 	so.IgnoreUnavailable = ignoreUnavailable
 	so.IncludeGlobalState = includeGlobalState
 	so.Partial = partial
