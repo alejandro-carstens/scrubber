@@ -3,7 +3,6 @@ package criterias
 import (
 	"encoding/json"
 	"errors"
-	"log"
 
 	"github.com/Jeffail/gabs"
 )
@@ -32,8 +31,6 @@ func (s *Space) Validate() error {
 }
 
 func (s *Space) FillFromContainer(container *gabs.Container) (Criteriable, error) {
-	log.Println(container.String())
-
 	err := json.Unmarshal(container.Bytes(), s)
 
 	if err != nil {

@@ -20,6 +20,7 @@ func Init(logger *logging.SrvLogger) *cobra.Command {
 	rootCmd.AddCommand(new(closeIndicesCmd).new(logger))
 	rootCmd.AddCommand(new(openIndicesCmd).new(logger))
 	rootCmd.AddCommand(new(aliasCmd).new(logger))
+	rootCmd.AddCommand(new(createRepositoryCmd).new(logger))
 
 	return rootCmd
 }
