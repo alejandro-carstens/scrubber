@@ -6,15 +6,15 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
-type snapshotContext struct {
+type SnapshotContext struct {
 	context
 }
 
-func (sc *snapshotContext) Action() string {
+func (sc *SnapshotContext) Action() string {
 	return "snapshot"
 }
 
-func (sc *snapshotContext) Config(container *gabs.Container) error {
+func (sc *SnapshotContext) Config(container *gabs.Container) error {
 	return sc.extractConfig(sc.Action(), container, func(container *gabs.Container) error {
 		sc.options = new(options.SnapshotOptions)
 

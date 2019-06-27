@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/Jeffail/gabs"
+	"github.com/spf13/pflag"
 )
 
 type SnapshotOptions struct {
@@ -29,6 +30,30 @@ func (so *SnapshotOptions) Validate() error {
 	if len(so.Repository) == 0 {
 		return errors.New("repository value is required")
 	}
+
+	return nil
+}
+
+func (so *SnapshotOptions) BindFlags(flags *pflag.FlagSet) error {
+	so.defaultBindFlags(flags)
+
+	name, _ := flags.GetString("name")
+	repository, _ := flags.GetString("repository")
+	ignoreUnavailable, _ := flags.GetBool("ignore_unavailable")
+	includeGlobalState, _ := flags.GetBool("include_global_state")
+	partial, _ := flags.GetBool("partial")
+	waitForCompletion, _ := flags.GetBool("wait_for_completion")
+	maxWait, _ := flags.GetInt("max_wait")
+	waitInterval, _ := flags.GetInt("wait_interval")
+
+	so.Repository = name
+	so.Name = repository
+	so.IgnoreUnavailable = ignoreUnavailable
+	so.IncludeGlobalState = includeGlobalState
+	so.Partial = partial
+	so.WaitForCompletion = waitForCompletion
+	so.MaxWait = maxWait
+	so.WaitInterval = waitInterval
 
 	return nil
 }

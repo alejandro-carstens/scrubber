@@ -58,7 +58,7 @@ func build(action string) (Contextable, error) {
 		ctx = new(CreateRepositoryContext)
 		break
 	case "snapshot":
-		ctx = new(snapshotContext)
+		ctx = new(SnapshotContext)
 		break
 	case "open_indices":
 		ctx = new(OpenIndicesContext)
