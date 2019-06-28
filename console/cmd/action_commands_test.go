@@ -148,6 +148,25 @@ func cmdParamsDataProvider() []map[string][]string {
 			"--disable_action=true",
 		},
 	})
+	data = append(data, map[string][]string{
+		"error_params": []string{
+			"delete-snapshots",
+			"--disable_action=true",
+			"--snapshots=snapshot_1,snapshot_2,snapshot_3",
+			"--retry_count=5",
+			"--retry_interval=30",
+			"--disable_action=true",
+		},
+		"success_params": []string{
+			"delete-snapshots",
+			"--disable_action=true",
+			"--repository=my_repository",
+			"--snapshots=snapshot_1,snapshot_2,snapshot_3",
+			"--retry_count=5",
+			"--retry_interval=30",
+			"--disable_action=true",
+		},
+	})
 
 	return data
 }

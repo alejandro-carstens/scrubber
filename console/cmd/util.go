@@ -22,6 +22,7 @@ func Init(logger *logging.SrvLogger) *cobra.Command {
 	rootCmd.AddCommand(new(aliasCmd).new(logger))
 	rootCmd.AddCommand(new(createRepositoryCmd).new(logger))
 	rootCmd.AddCommand(new(snapshotCmd).new(logger))
+	rootCmd.AddCommand(new(deleteSnaphotsCmd).new(logger))
 
 	return rootCmd
 }

@@ -67,7 +67,7 @@ func build(action string) (Contextable, error) {
 		ctx = new(CloseIndicesContext)
 		break
 	case "delete_snapshots":
-		ctx = new(deleteSnapshotsContext)
+		ctx = new(DeleteSnapshotsContext)
 		break
 	case "index_settings":
 		ctx = new(indexSettingsContext)
