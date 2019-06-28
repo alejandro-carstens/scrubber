@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 
+	"github.com/spf13/pflag"
+
 	"github.com/Jeffail/gabs"
 )
 
@@ -23,6 +25,20 @@ func (dso *DeleteSnapshotsOptions) Validate() error {
 	if len(dso.Repository) == 0 {
 		return errors.New("The repository option is required")
 	}
+
+	return nil
+}
+
+func (dso *DeleteSnapshotsOptions) BindFlags(flags *pflag.FlagSet) error {
+	dso.defaultBindFlags(flags)
+
+	repository, _ := flags.GetString("repository")
+	retryCount, _ := flags.GetInt("retry_count")
+	retryInterval, _ := flags.GetInt("retry_interval")
+
+	dso.Repository = repository
+	dso.RetryCount = retryCount
+	dso.RetryInterval = retryInterval
 
 	return nil
 }

@@ -6,15 +6,15 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
-type deleteSnapshotsContext struct {
+type DeleteSnapshotsContext struct {
 	context
 }
 
-func (dsc *deleteSnapshotsContext) Action() string {
+func (dsc *DeleteSnapshotsContext) Action() string {
 	return "delete_snapshots"
 }
 
-func (dsc *deleteSnapshotsContext) Config(container *gabs.Container) error {
+func (dsc *DeleteSnapshotsContext) Config(container *gabs.Container) error {
 	return dsc.extractConfig(dsc.Action(), container, func(container *gabs.Container) error {
 		dsc.options = new(options.DeleteSnapshotsOptions)
 
