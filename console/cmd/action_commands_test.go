@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestActionCmds(t *testing.T) {
+func TestActionCommands(t *testing.T) {
 	for _, data := range cmdParamsDataProvider() {
 		rootCmd := Init(logging.NewSrvLogger("", true, true, true, true))
 
