@@ -42,7 +42,7 @@ func (rc *restoreCmd) new(logger *logging.SrvLogger) *cobra.Command {
 func (rc *restoreCmd) Validate(cmd *cobra.Command, args []string) error {
 	rc.context = new(contexts.RestoreContext)
 
-	options := &options.DeleteSnapshotsOptions{}
+	options := &options.RestoreOptions{}
 
 	if err := options.BindFlags(cmd.Flags()); err != nil {
 		return err
