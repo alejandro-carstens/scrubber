@@ -10,7 +10,6 @@ func Execute(context contexts.Contextable, logger *logging.SrvLogger) {
 	action, err := actions.Create(context, logger)
 
 	if err != nil {
-		logger.Debugf("What the fuck")
 		logger.Errorf("%v", err.Error())
 
 		return
