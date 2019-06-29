@@ -6,15 +6,15 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
-type indexSettingsContext struct {
+type IndexSettingsContext struct {
 	context
 }
 
-func (isc *indexSettingsContext) Action() string {
+func (isc *IndexSettingsContext) Action() string {
 	return "index_settings"
 }
 
-func (isc *indexSettingsContext) Config(container *gabs.Container) error {
+func (isc *IndexSettingsContext) Config(container *gabs.Container) error {
 	return isc.extractConfig(isc.Action(), container, func(container *gabs.Container) error {
 		isc.options = new(options.IndexSettingsOptions)
 
