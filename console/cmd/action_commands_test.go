@@ -167,6 +167,41 @@ func cmdParamsDataProvider() []map[string][]string {
 			"--disable_action=true",
 		},
 	})
+	data = append(data, map[string][]string{
+		"error_params": []string{
+			"restore",
+			"--name=my_snapshot",
+			"--indices=my_index_1,my_index_2",
+			"--rename_pattern=regex",
+			"--rename_replacement=regex",
+			`--extra_settings={"some":"json"}`,
+			"--max_wait=20",
+			"--wait_interval=2",
+			"--ignore_unavailable=false",
+			"--include_global_state=true",
+			"--partial=true",
+			"--wait_for_completion=false",
+			"--include_aliases=true",
+			"--disable_action=true",
+		},
+		"success_params": []string{
+			"restore",
+			"--repository=my_repo",
+			"--name=my_snapshot",
+			"--indices=my_index_1,my_index_2",
+			"--rename_pattern=regex",
+			"--rename_replacement=regex",
+			`--extra_settings={"some":"json"}`,
+			"--max_wait=20",
+			"--wait_interval=2",
+			"--ignore_unavailable=false",
+			"--include_global_state=true",
+			"--partial=true",
+			"--wait_for_completion=false",
+			"--include_aliases=true",
+			"--disable_action=true",
+		},
+	})
 
 	return data
 }
