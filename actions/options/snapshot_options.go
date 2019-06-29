@@ -9,7 +9,8 @@ import (
 )
 
 type SnapshotOptions struct {
-	baseSnapshotOptions
+	defaultOptions
+	Repository         string `json:"repository"`
 	Name               string `json:"name"`
 	IgnoreUnavailable  bool   `json:"ignore_unavailable"`
 	IncludeGlobalState bool   `json:"include_global_state"`
