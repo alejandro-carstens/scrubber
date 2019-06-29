@@ -155,7 +155,6 @@ func cmdParamsDataProvider() []map[string][]string {
 			"--snapshots=snapshot_1,snapshot_2,snapshot_3",
 			"--retry_count=5",
 			"--retry_interval=30",
-			"--disable_action=true",
 		},
 		"success_params": []string{
 			"delete-snapshots",
@@ -164,7 +163,6 @@ func cmdParamsDataProvider() []map[string][]string {
 			"--snapshots=snapshot_1,snapshot_2,snapshot_3",
 			"--retry_count=5",
 			"--retry_interval=30",
-			"--disable_action=true",
 		},
 	})
 	data = append(data, map[string][]string{
@@ -174,7 +172,6 @@ func cmdParamsDataProvider() []map[string][]string {
 			"--indices=my_index_1,my_index_2",
 			"--rename_pattern=regex",
 			"--rename_replacement=regex",
-			`--extra_settings={"some":"json"}`,
 			"--max_wait=20",
 			"--wait_interval=2",
 			"--ignore_unavailable=false",
@@ -191,7 +188,6 @@ func cmdParamsDataProvider() []map[string][]string {
 			"--indices=my_index_1,my_index_2",
 			"--rename_pattern=regex",
 			"--rename_replacement=regex",
-			`--extra_settings={"some":"json"}`,
 			"--max_wait=20",
 			"--wait_interval=2",
 			"--ignore_unavailable=false",

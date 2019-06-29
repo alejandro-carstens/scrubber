@@ -11,19 +11,19 @@ func Run(logger *logging.SrvLogger) {
 }
 
 func Init(logger *logging.SrvLogger) *cobra.Command {
-	rootCmd := &cobra.Command{Use: "scrubber"}
+	actionCmd := &cobra.Command{Use: "scrubber"}
 
-	rootCmd.PersistentFlags().Int("timeout", 300, "elasticsearch operation timeout")
-	rootCmd.PersistentFlags().Bool("disable_action", false, "flag for preventing the action to be ran")
-	rootCmd.AddCommand(new(createIndexCmd).new(logger))
-	rootCmd.AddCommand(new(deleteIndicesCmd).new(logger))
-	rootCmd.AddCommand(new(closeIndicesCmd).new(logger))
-	rootCmd.AddCommand(new(openIndicesCmd).new(logger))
-	rootCmd.AddCommand(new(aliasCmd).new(logger))
-	rootCmd.AddCommand(new(createRepositoryCmd).new(logger))
-	rootCmd.AddCommand(new(snapshotCmd).new(logger))
-	rootCmd.AddCommand(new(deleteSnaphotsCmd).new(logger))
-	rootCmd.AddCommand(new(restoreCmd).new(logger))
+	actionCmd.PersistentFlags().Int("timeout", 300, "elasticsearch operation timeout")
+	actionCmd.PersistentFlags().Bool("disable_action", false, "flag for preventing the action to be ran")
+	actionCmd.AddCommand(new(createIndexCmd).new(logger))
+	actionCmd.AddCommand(new(deleteIndicesCmd).new(logger))
+	actionCmd.AddCommand(new(closeIndicesCmd).new(logger))
+	actionCmd.AddCommand(new(openIndicesCmd).new(logger))
+	actionCmd.AddCommand(new(aliasCmd).new(logger))
+	actionCmd.AddCommand(new(createRepositoryCmd).new(logger))
+	actionCmd.AddCommand(new(snapshotCmd).new(logger))
+	actionCmd.AddCommand(new(deleteSnaphotsCmd).new(logger))
+	actionCmd.AddCommand(new(restoreCmd).new(logger))
 
-	return rootCmd
+	return actionCmd
 }
