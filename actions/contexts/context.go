@@ -23,6 +23,10 @@ type context struct {
 }
 
 func (c *context) Builder() *criterias.Builder {
+	if c.builder == nil {
+		c.builder = criterias.NewBuilder()
+	}
+
 	return c.builder
 }
 
