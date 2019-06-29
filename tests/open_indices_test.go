@@ -9,7 +9,7 @@ import (
 )
 
 func TestOpenIndices(t *testing.T) {
-	if _, err := createTestIndex("/../stubs/create_index.yml"); err != nil {
+	if _, err := createTestIndex("/test_files/create_index.yml"); err != nil {
 		t.Error(err)
 	}
 
@@ -27,7 +27,7 @@ func TestOpenIndices(t *testing.T) {
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
 
-	takeAction("/../stubs/open_closed_index.yml", t)
+	takeAction("/test_files/open_closed_index.yml", t)
 
 	response, err := builder.IndexCat("my_index")
 
