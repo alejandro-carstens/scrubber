@@ -6,15 +6,15 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
-type restoreContext struct {
+type RestoreContext struct {
 	context
 }
 
-func (rc *restoreContext) Action() string {
+func (rc *RestoreContext) Action() string {
 	return "restore"
 }
 
-func (rc *restoreContext) Config(container *gabs.Container) error {
+func (rc *RestoreContext) Config(container *gabs.Container) error {
 	return rc.extractConfig(rc.Action(), container, func(container *gabs.Container) error {
 		rc.options = new(options.RestoreOptions)
 

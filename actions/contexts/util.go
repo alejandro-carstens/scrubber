@@ -76,7 +76,7 @@ func build(action string) (Contextable, error) {
 		ctx = new(AliasContext)
 		break
 	case "restore":
-		ctx = new(restoreContext)
+		ctx = new(RestoreContext)
 		break
 	default:
 		return nil, errors.New("Invalid action")
