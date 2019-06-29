@@ -48,5 +48,7 @@ func (rc *restoreCmd) Validate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	rc.context.SetList(options.Name)
+
 	return rc.context.SetOptions(options)
 }

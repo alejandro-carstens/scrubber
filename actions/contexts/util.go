@@ -70,7 +70,7 @@ func build(action string) (Contextable, error) {
 		ctx = new(DeleteSnapshotsContext)
 		break
 	case "index_settings":
-		ctx = new(indexSettingsContext)
+		ctx = new(IndexSettingsContext)
 		break
 	case "alias":
 		ctx = new(AliasContext)
