@@ -9,7 +9,8 @@ import (
 )
 
 type RestoreOptions struct {
-	baseSnapshotOptions
+	defaultOptions
+	Repository         string                 `json:"repository"`
 	IncludeAliases     bool                   `json:"include_aliases"`
 	Partial            bool                   `json:"partial"`
 	WaitForCompletion  bool                   `json:"wait_for_completion"`
