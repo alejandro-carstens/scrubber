@@ -17,7 +17,7 @@ func TestSchedulerRunActionImmidiately(t *testing.T) {
 		t.Error(err)
 	}
 
-	filePath := currentPath + "/../stubs/scheduler_extract_files_test/create_actions"
+	filePath := currentPath + "/test_files/scheduler_extract_files_test/create_actions"
 	logger := logging.NewSrvLogger("", true, true, true, true)
 
 	scheduler := console.NewScheduler(filePath, logger)

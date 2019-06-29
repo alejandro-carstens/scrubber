@@ -8,7 +8,7 @@ import (
 )
 
 func TestCreateIndex(t *testing.T) {
-	action, err := createTestIndex("/../stubs/create_index.yml")
+	action, err := createTestIndex("/test_files/create_index.yml")
 
 	if err != nil {
 		t.Error(err)

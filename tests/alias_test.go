@@ -9,13 +9,13 @@ import (
 )
 
 func TestAlias(t *testing.T) {
-	if _, err := createTestIndex("/../stubs/create_pattern_index.yml"); err != nil {
+	if _, err := createTestIndex("/test_files/create_pattern_index.yml"); err != nil {
 		t.Error(err)
 	}
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
 
-	takeAction("/../stubs/add_alias.yml", t)
+	takeAction("/test_files/add_alias.yml", t)
 
 	builder, err := golastic.NewBuilder(nil, nil)
 
@@ -36,7 +36,7 @@ func TestAlias(t *testing.T) {
 	assert.Equal(t, "1", response[0].RoutingIndex)
 	assert.Equal(t, "1,2,3", response[0].RoutingSearch)
 
-	takeAction("/../stubs/remove_alias.yml", t)
+	takeAction("/test_files/remove_alias.yml", t)
 
 	response, err = builder.AliasesCat()
 
