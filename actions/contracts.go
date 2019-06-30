@@ -17,4 +17,6 @@ type Actionable interface {
 	ApplyOptions() Actionable
 
 	DisableAction() bool
+
+	List() []string
 }

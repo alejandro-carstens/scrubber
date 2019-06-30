@@ -1,0 +1,9 @@
+action: list_indices
+description: List indices in the actionable list
+filters:
+  - filtertype: age
+    source: name
+    timestring: "Y-m-d"
+    direction: older
+    units: days
+    unit_count: 2
