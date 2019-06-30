@@ -66,6 +66,10 @@ func (fa *filterAction) ApplyFilters() error {
 	return err
 }
 
+func (fa *filterAction) List() []string {
+	return fa.list
+}
+
 func (fa *filterAction) runFilter(element string) (bool, error) {
 	var info responses.Informable
 	var err error

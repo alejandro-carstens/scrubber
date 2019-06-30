@@ -91,6 +91,12 @@ func build(name string) (Actionable, error) {
 	case "restore":
 		action = new(restore)
 		break
+	case "list_indices":
+		action = new(listIndices)
+		break
+	case "list_snapshots":
+		action = new(listSnapshots)
+		break
 	default:
 		return nil, errors.New("Invalid action type")
 	}
@@ -129,6 +135,8 @@ func isSnapshotAction(action string) bool {
 	case "restore":
 		return true
 	case "delete_snapshots":
+		return true
+	case "list_snapshots":
 		return true
 	}
 

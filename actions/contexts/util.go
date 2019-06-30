@@ -78,6 +78,12 @@ func build(action string) (Contextable, error) {
 	case "restore":
 		ctx = new(RestoreContext)
 		break
+	case "list_indices":
+		ctx = new(ListIndicesContext)
+		break
+	case "list_snapshots":
+		ctx = new(ListSnapshots)
+		break
 	default:
 		return nil, errors.New("Invalid action")
 	}
@@ -90,6 +96,8 @@ func isSnapshotAction(action string) bool {
 	case "delete_snapshots":
 		return true
 	case "restore":
+		return true
+	case "list_snapshots":
 		return true
 	}
 
