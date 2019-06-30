@@ -107,3 +107,9 @@ func snapshotCleanup(repository, snapshot, index string, builder *golastic.Elast
 
 	return builder.DeleteIndex(index)
 }
+
+func takeActionAsync(path string, t *testing.T, waitGroup *sync.WaitGroup) {
+	defer waitGroup.Done()
+
+	takeAction(path, t)
+}

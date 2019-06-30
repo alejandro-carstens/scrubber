@@ -82,7 +82,6 @@ func TestFilterSnapshotsByCount(t *testing.T) {
 		waitGroup.Add(len(createSnapshotFiles))
 
 		for i, createSnapshotFile := range createSnapshotFiles {
-			log.Println(createSnapshotFile)
 			go takeActionAsync(createSnapshotFile, t, &waitGroup)
 
 			if _, valid := data["wait"]; valid && i+1 < len(createSnapshotFiles) {
@@ -194,10 +193,4 @@ func filterSnapshotsByCountDataProvider() []map[string]string {
 	})
 
 	return data
-}
-
-func takeActionAsync(path string, t *testing.T, waitGroup *sync.WaitGroup) {
-	defer waitGroup.Done()
-
-	takeAction(path, t)
 }

@@ -39,9 +39,7 @@ func TestListIndices(t *testing.T) {
 		t.Error(err)
 	}
 
-	for _, index := range expectedIndices {
-		if err := builder.DeleteIndex(index); err != nil {
-			t.Error(err)
-		}
+	if err := builder.DeleteIndex("_all"); err != nil {
+		t.Error(err)
 	}
 }

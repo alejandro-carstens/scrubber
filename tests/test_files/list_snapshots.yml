@@ -1,0 +1,8 @@
+action: list_snapshots
+description: "list snapshots from the provided 'repository'"
+options:
+  repository: my_backup_repository
+filters:
+  - filtertype: count
+    count: 2
+    pattern: ^(count_snapshot-|logstash-|whatever-).*$
