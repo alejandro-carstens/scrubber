@@ -211,6 +211,15 @@ func cmdParamsDataProvider() []map[string][]string {
 			"--indices=index_1,index_2,index_3",
 		},
 	})
+	data = append(data, map[string][]string{
+		"error_params": []string{
+			"run-action",
+		},
+		"success_params": []string{
+			"run-action",
+			"--file_path=tests/test_files/disable_index_create.yml",
+		},
+	})
 
 	return data
 }
