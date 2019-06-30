@@ -6,15 +6,15 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
-type ListSnapshots struct {
+type ListSnapshotsContext struct {
 	context
 }
 
-func (ls *ListSnapshots) Action() string {
+func (ls *ListSnapshotsContext) Action() string {
 	return "list_snapshots"
 }
 
-func (ls *ListSnapshots) Config(container *gabs.Container) error {
+func (ls *ListSnapshotsContext) Config(container *gabs.Container) error {
 	return ls.extractConfig(ls.Action(), container, func(container *gabs.Container) error {
 		ls.options = new(options.ListSnapshotsOptions)
 

@@ -27,6 +27,8 @@ func Init(logger *logging.SrvLogger) *cobra.Command {
 	scrubber.AddCommand(new(restoreCmd).new(logger))
 	scrubber.AddCommand(new(indexSettingsCmd).new(logger))
 	scrubber.AddCommand(new(runActionCmd).new(logger))
+	scrubber.AddCommand(new(listIndicesCmd).new(logger))
+	scrubber.AddCommand(new(listSnapshotsCmd).new(logger))
 
 	return scrubber
 }

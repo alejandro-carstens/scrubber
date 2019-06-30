@@ -82,7 +82,7 @@ func build(action string) (Contextable, error) {
 		ctx = new(ListIndicesContext)
 		break
 	case "list_snapshots":
-		ctx = new(ListSnapshots)
+		ctx = new(ListSnapshotsContext)
 		break
 	default:
 		return nil, errors.New("Invalid action")

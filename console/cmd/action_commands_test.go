@@ -13,9 +13,11 @@ func TestActionCommands(t *testing.T) {
 	for _, data := range cmdParamsDataProvider() {
 		rootCmd := Init(logging.NewSrvLogger("", true, true, true, true))
 
-		_, err := executeCommand(rootCmd, data["error_params"]...)
+		if len(data["error_params"]) > 0 {
+			_, err := executeCommand(rootCmd, data["error_params"]...)
 
-		assert.NotNil(t, err)
+			assert.NotNil(t, err)
+		}
 
 		if _, err := executeCommand(rootCmd, data["success_params"]...); err != nil {
 			t.Errorf("%v", err.Error())
@@ -218,6 +220,23 @@ func cmdParamsDataProvider() []map[string][]string {
 		"success_params": []string{
 			"run-action",
 			"--file_path=tests/test_files/disable_index_create.yml",
+		},
+	})
+	data = append(data, map[string][]string{
+		"error_params": []string{},
+		"success_params": []string{
+			"list-indices",
+			"--disable_action=true",
+		},
+	})
+	data = append(data, map[string][]string{
+		"error_params": []string{
+			"list-snapshots",
+		},
+		"success_params": []string{
+			"list-snapshots",
+			"--repository=my_repository",
+			"--disable_action=true",
 		},
 	})
 
