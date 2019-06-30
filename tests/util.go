@@ -64,7 +64,7 @@ func getAction(config *gabs.Container) (actions.Actionable, error) {
 	return actions.Create(context, logging.NewSrvLogger("", true, true, true, true))
 }
 
-func takeAction(path string, t *testing.T) {
+func takeAction(path string, t *testing.T) actions.Actionable {
 	config, err := config(path)
 
 	if err != nil {
@@ -80,6 +80,8 @@ func takeAction(path string, t *testing.T) {
 	assert.False(t, action.Perform().HasErrors())
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
+
+	return action
 }
 
 func snapshotCleanup(repository, snapshot, index string, builder *golastic.ElasticsearchBuilder) error {

@@ -49,3 +49,7 @@ func (a *action) HasErrors() bool {
 func (a *action) DisableAction() bool {
 	return a.context.Options().GetDisableAction()
 }
+
+func (a *action) List() []string {
+	return []string{}
+}
