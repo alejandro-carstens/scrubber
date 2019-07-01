@@ -3,6 +3,7 @@ package options
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/Jeffail/gabs"
 	"github.com/spf13/pflag"
@@ -27,11 +28,25 @@ func (lso *ListSnapshotsOptions) Validate() error {
 }
 
 func (lso *ListSnapshotsOptions) BindFlags(flags *pflag.FlagSet) error {
-	lso.defaultBindFlags(flags)
-
 	repository, _ := flags.GetString("repository")
 
 	lso.Repository = repository
 
-	return nil
+	return lso.defaultBindFlags(flags)
+}
+
+func (lso *ListSnapshotsOptions) Exists(value string) bool {
+	if lso.container == nil {
+		lso.container = toContainer(lso)
+	}
+
+	return lso.container.Exists(value)
+}
+
+func (lso *ListSnapshotsOptions) String(value string) string {
+	if lso.container == nil {
+		lso.container = toContainer(lso)
+	}
+
+	return fmt.Sprint(lso.container.S(value).Data())
 }

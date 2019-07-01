@@ -46,7 +46,7 @@ func (rac *runActionCmd) Validate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	config, err := ymlparser.Parse(currentDirectory + "/../../" + filePath)
+	config, err := ymlparser.Parse(currentDirectory + filePath)
 
 	if err != nil {
 		return err
