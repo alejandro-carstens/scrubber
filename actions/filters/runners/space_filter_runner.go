@@ -10,6 +10,7 @@ import (
 const GIGABYTE_CONVERSION float64 = 1000000000
 const MEGABYTE_CONVERSION float64 = 1000000
 
+// IndexStatsResponse represents the response of an index stats call
 type IndexStatsResponse struct {
 	sizeInBytes map[string]float64
 	err         error

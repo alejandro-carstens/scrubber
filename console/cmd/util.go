@@ -7,10 +7,10 @@ import (
 )
 
 func Run(logger *logging.SrvLogger) {
-	Init(logger).Execute()
+	boot(logger).Execute()
 }
 
-func Init(logger *logging.SrvLogger) *cobra.Command {
+func boot(logger *logging.SrvLogger) *cobra.Command {
 	scrubber := &cobra.Command{Use: "scrubber"}
 
 	scrubber.PersistentFlags().Int("timeout", 300, "elasticsearch operation timeout")
@@ -29,6 +29,7 @@ func Init(logger *logging.SrvLogger) *cobra.Command {
 	scrubber.AddCommand(new(runActionCmd).new(logger))
 	scrubber.AddCommand(new(listIndicesCmd).new(logger))
 	scrubber.AddCommand(new(listSnapshotsCmd).new(logger))
+	scrubber.AddCommand(new(schedulerCmd).new(logger))
 
 	return scrubber
 }

@@ -5,6 +5,8 @@ import (
 	"scrubber/actions/responses"
 )
 
+// Runnerable represents a contract to be
+// implemented by filter runners
 type Runnerable interface {
 	// RunFilter filters out elements from the actionable list
 	RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable)

@@ -11,7 +11,7 @@ import (
 
 func TestActionCommands(t *testing.T) {
 	for _, data := range cmdParamsDataProvider() {
-		rootCmd := Init(logging.NewSrvLogger("", true, true, true, true))
+		rootCmd := boot(logging.NewSrvLogger("", true, true, true, true))
 
 		if len(data["error_params"]) > 0 {
 			_, err := executeCommand(rootCmd, data["error_params"]...)
