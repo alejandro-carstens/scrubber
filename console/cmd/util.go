@@ -6,8 +6,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Run(logger *logging.SrvLogger) {
-	boot(logger).Execute()
+func Run(logger *logging.SrvLogger) error {
+	return boot(logger).Execute()
 }
 
 func boot(logger *logging.SrvLogger) *cobra.Command {
