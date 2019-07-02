@@ -37,23 +37,14 @@ func (so *SnapshotOptions) Validate() error {
 func (so *SnapshotOptions) BindFlags(flags *pflag.FlagSet) error {
 	so.defaultBindFlags(flags)
 
-	name, _ := flags.GetString("name")
-	repository, _ := flags.GetString("repository")
-	ignoreUnavailable, _ := flags.GetBool("ignore_unavailable")
-	includeGlobalState, _ := flags.GetBool("include_global_state")
-	partial, _ := flags.GetBool("partial")
-	waitForCompletion, _ := flags.GetBool("wait_for_completion")
-	maxWait, _ := flags.GetInt("max_wait")
-	waitInterval, _ := flags.GetInt("wait_interval")
-
-	so.Repository = repository
-	so.Name = name
-	so.IgnoreUnavailable = ignoreUnavailable
-	so.IncludeGlobalState = includeGlobalState
-	so.Partial = partial
-	so.WaitForCompletion = waitForCompletion
-	so.MaxWait = maxWait
-	so.WaitInterval = waitInterval
+	so.Repository = stringFromFlags(flags, "repository")
+	so.Name = stringFromFlags(flags, "name")
+	so.IgnoreUnavailable = boolFromFlags(flags, "ignore_unavailable")
+	so.IncludeGlobalState = boolFromFlags(flags, "include_global_state")
+	so.Partial = boolFromFlags(flags, "partial")
+	so.WaitForCompletion = boolFromFlags(flags, "wait_for_completion")
+	so.MaxWait = intFromFlags(flags, "max_wait")
+	so.WaitInterval = intFromFlags(flags, "wait_interval")
 
 	return nil
 }

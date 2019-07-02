@@ -32,19 +32,14 @@ func (cio *CreateIndexOptions) Validate() error {
 func (cio *CreateIndexOptions) BindFlags(flags *pflag.FlagSet) error {
 	cio.defaultBindFlags(flags)
 
-	name, _ := flags.GetString("name")
-	extraSettings, _ := flags.GetString("extra_settings")
+	cio.Name = stringFromFlags(flags, "name")
 
-	cio.Name = name
+	if len(stringFromFlags(flags, "extra_settings")) > 0 {
+		cio.ExtraSettings = map[string]interface{}{}
 
-	if len(extraSettings) > 0 {
-		es := map[string]interface{}{}
-
-		if err := json.Unmarshal([]byte(extraSettings), &es); err != nil {
+		if err := json.Unmarshal([]byte(stringFromFlags(flags, "extra_settings")), &cio.ExtraSettings); err != nil {
 			return err
 		}
-
-		cio.ExtraSettings = es
 	}
 
 	return nil

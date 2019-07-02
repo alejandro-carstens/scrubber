@@ -44,22 +44,17 @@ func (ao *AliasOptions) BindFlags(flags *pflag.FlagSet) error {
 
 	aliasfilter := map[string]interface{}{}
 
-	if filter, _ := flags.GetString("filter"); len(filter) > 0 {
-		if err := json.Unmarshal([]byte(filter), &aliasfilter); err != nil {
+	if len(stringFromFlags(flags, "filter")) > 0 {
+		if err := json.Unmarshal([]byte(stringFromFlags(flags, "filter")), &aliasfilter); err != nil {
 			return err
 		}
 	}
 
-	name, _ := flags.GetString("name")
-	aliasType, _ := flags.GetString("type")
-	routing, _ := flags.GetString("routing")
-	searchRouting, _ := flags.GetString("search_routing")
-
-	ao.Name = name
-	ao.Type = aliasType
+	ao.Name = stringFromFlags(flags, "name")
+	ao.Type = stringFromFlags(flags, "type")
 	ao.ExtraSettings = &AliasExtraSettingsOption{
-		Routing:       routing,
-		SearchRouting: searchRouting,
+		Routing:       stringFromFlags(flags, "routing"),
+		SearchRouting: stringFromFlags(flags, "search_routing"),
 		Filter:        aliasfilter,
 	}
 

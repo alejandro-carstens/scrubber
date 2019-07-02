@@ -50,42 +50,26 @@ func (ro *RestoreOptions) Validate() error {
 func (ro *RestoreOptions) BindFlags(flags *pflag.FlagSet) error {
 	ro.defaultBindFlags(flags)
 
-	repository, _ := flags.GetString("repository")
-	includeAliases, _ := flags.GetBool("include_aliases")
-	partial, _ := flags.GetBool("partial")
-	waitForCompletion, _ := flags.GetBool("wait_for_completion")
-	includeGlobalState, _ := flags.GetBool("include_global_state")
-	ignoreUnavailable, _ := flags.GetBool("ignore_unavailable")
-	maxWait, _ := flags.GetInt("max_wait")
-	waitInterval, _ := flags.GetInt("wait_interval")
-	renamePattern, _ := flags.GetString("rename_pattern")
-	renameReplacement, _ := flags.GetString("rename_replacement")
-	indices, _ := flags.GetString("indices")
-	name, _ := flags.GetString("name")
-	extraSettings, _ := flags.GetString("extra_settings")
+	ro.Repository = stringFromFlags(flags, "repository")
+	ro.IncludeAliases = boolFromFlags(flags, "include_aliases")
+	ro.Partial = boolFromFlags(flags, "partial")
+	ro.WaitForCompletion = boolFromFlags(flags, "wait_for_completion")
+	ro.MaxWait = intFromFlags(flags, "max_wait")
+	ro.WaitInterval = intFromFlags(flags, "wait_interval")
+	ro.RenamePattern = stringFromFlags(flags, "rename_pattern")
+	ro.RenameReplacement = stringFromFlags(flags, "rename_replacement")
+	ro.Indices = stringFromFlags(flags, "indices")
+	ro.IncludeGlobalState = boolFromFlags(flags, "include_global_state")
+	ro.IgnoreUnavailable = boolFromFlags(flags, "ignore_unavailable")
+	ro.Name = stringFromFlags(flags, "name")
 
-	if len(extraSettings) > 0 {
-		es := map[string]interface{}{}
+	if len(stringFromFlags(flags, "extra_settings")) > 0 {
+		ro.ExtraSettings = map[string]interface{}{}
 
-		if err := json.Unmarshal([]byte(extraSettings), &es); err != nil {
+		if err := json.Unmarshal([]byte(stringFromFlags(flags, "extra_settings")), &ro.ExtraSettings); err != nil {
 			return err
 		}
-
-		ro.ExtraSettings = es
 	}
-
-	ro.Repository = repository
-	ro.IncludeAliases = includeAliases
-	ro.Partial = partial
-	ro.WaitForCompletion = waitForCompletion
-	ro.MaxWait = maxWait
-	ro.WaitInterval = waitInterval
-	ro.RenamePattern = renamePattern
-	ro.RenameReplacement = renameReplacement
-	ro.Indices = indices
-	ro.IncludeGlobalState = includeGlobalState
-	ro.IgnoreUnavailable = ignoreUnavailable
-	ro.Name = name
 
 	return nil
 }

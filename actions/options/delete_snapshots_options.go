@@ -32,13 +32,9 @@ func (dso *DeleteSnapshotsOptions) Validate() error {
 func (dso *DeleteSnapshotsOptions) BindFlags(flags *pflag.FlagSet) error {
 	dso.defaultBindFlags(flags)
 
-	repository, _ := flags.GetString("repository")
-	retryCount, _ := flags.GetInt("retry_count")
-	retryInterval, _ := flags.GetInt("retry_interval")
-
-	dso.Repository = repository
-	dso.RetryCount = retryCount
-	dso.RetryInterval = retryInterval
+	dso.Repository = stringFromFlags(flags, "repository")
+	dso.RetryCount = intFromFlags(flags, "retry_count")
+	dso.RetryInterval = intFromFlags(flags, "retry_interval")
 
 	return nil
 }

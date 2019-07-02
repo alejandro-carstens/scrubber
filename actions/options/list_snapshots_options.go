@@ -28,9 +28,7 @@ func (lso *ListSnapshotsOptions) Validate() error {
 }
 
 func (lso *ListSnapshotsOptions) BindFlags(flags *pflag.FlagSet) error {
-	repository, _ := flags.GetString("repository")
-
-	lso.Repository = repository
+	lso.Repository = stringFromFlags(flags, "repository")
 
 	return lso.defaultBindFlags(flags)
 }

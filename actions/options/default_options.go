@@ -47,11 +47,8 @@ func (do *defaultOptions) IsSnapshot() bool {
 }
 
 func (do *defaultOptions) defaultBindFlags(flags *pflag.FlagSet) error {
-	timeout, _ := flags.GetInt("timeout")
-	disableAction, _ := flags.GetBool("disable_action")
-
-	do.Timeout = timeout
-	do.DisableAction = disableAction
+	do.Timeout = intFromFlags(flags, "timeout")
+	do.DisableAction = boolFromFlags(flags, "disable_action")
 
 	return nil
 }

@@ -30,19 +30,13 @@ func (iso *IndexSettingsOptions) Validate() error {
 func (iso *IndexSettingsOptions) BindFlags(flags *pflag.FlagSet) error {
 	iso.defaultBindFlags(flags)
 
-	indexSettings, _ := flags.GetString("index_settings")
+	if len(stringFromFlags(flags, "index_settings")) > 0 {
+		iso.IndexSettings = map[string]interface{}{}
 
-	if len(indexSettings) == 0 {
-		return nil
+		if err := json.Unmarshal([]byte(stringFromFlags(flags, "index_settings")), &iso.IndexSettings); err != nil {
+			return err
+		}
 	}
-
-	is := map[string]interface{}{}
-
-	if err := json.Unmarshal([]byte(indexSettings), &is); err != nil {
-		return err
-	}
-
-	iso.IndexSettings = is
 
 	return nil
 }

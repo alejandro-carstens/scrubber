@@ -49,23 +49,14 @@ func (cro *CreateRepositoryOptions) Validate() error {
 func (cro *CreateRepositoryOptions) BindFlags(flags *pflag.FlagSet) error {
 	cro.defaultBindFlags(flags)
 
-	compress, _ := flags.GetBool("compress")
-	chunkSize, _ := flags.GetString("chunk_size")
-	maxRestoreBytesPerSecond, _ := flags.GetString("max_restore_bytes_per_second")
-	maxSnapshotBytesPerSecond, _ := flags.GetString("max_snapshot_bytes_per_second")
-	location, _ := flags.GetString("location")
-	repository, _ := flags.GetString("repository")
-	repoType, _ := flags.GetString("repo_type")
-	verify, _ := flags.GetBool("verify")
-
-	cro.Compress = compress
-	cro.ChunkSize = chunkSize
-	cro.MaxRestoreBytesPerSecond = maxRestoreBytesPerSecond
-	cro.MaxSnapshotBytesPerSecond = maxSnapshotBytesPerSecond
-	cro.Location = location
-	cro.Repository = repository
-	cro.RepoType = repoType
-	cro.Verify = verify
+	cro.Compress = boolFromFlags(flags, "compress")
+	cro.ChunkSize = stringFromFlags(flags, "chunk_size")
+	cro.MaxRestoreBytesPerSecond = stringFromFlags(flags, "max_restore_bytes_per_second")
+	cro.MaxSnapshotBytesPerSecond = stringFromFlags(flags, "max_snapshot_bytes_per_second")
+	cro.Location = stringFromFlags(flags, "location")
+	cro.Repository = stringFromFlags(flags, "repository")
+	cro.RepoType = stringFromFlags(flags, "repo_type")
+	cro.Verify = boolFromFlags(flags, "verify")
 
 	return nil
 }
