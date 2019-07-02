@@ -6,6 +6,8 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
+// Reportable is a contract implemented by structs that report
+// on the activity of a filter runner
 type Reportable interface {
 	// Line returns a human readable string or a filter runner activity
 	Line() (string, error)

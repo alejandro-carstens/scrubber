@@ -38,7 +38,7 @@ func (ar *AggregateReport) Error(err error) Reportable {
 	return ar
 }
 
-// Line returns a human readable string or a filter runner activity
+// Line returns a human readable string for a filter runner's activity
 func (ar *AggregateReport) Line() (string, error) {
 	criteria, err := ar.toJsonString(ar.Criteria)
 

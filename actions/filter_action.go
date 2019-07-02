@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"log"
 	"scrubber/actions/filters"
 	"scrubber/actions/responses"
 
@@ -15,15 +16,14 @@ type filterAction struct {
 	list []string
 }
 
+// ApplyFilters runs filters for each element on the actionable list
 func (fa *filterAction) ApplyFilters() error {
 	if len(fa.context.ActionableList()) > 0 {
 		fa.list = append([]string{}, fa.context.ActionableList()...)
 
 		return nil
 	} else if fa.context.Options().IsSnapshot() && fa.context.Options().Exists("name") {
-		fa.list = append([]string{}, fa.context.Options().String("name"))
-
-		return nil
+		return fa.setSanpshotInfo()
 	}
 
 	var actionableList []string
@@ -190,4 +190,25 @@ func (fa *filterAction) fetchIndexCat(index string) (responses.Informable, error
 	}
 
 	return new(responses.IndexInfo).Marshal(children[0])
+}
+
+func (fa *filterAction) setSanpshotInfo() error {
+	name := fa.context.Options().String("name")
+
+	fa.list = append([]string{}, name)
+
+	log.Println("FASDFASDFASDFASDFASD")
+	log.Println(name)
+
+	info, err := fa.fetchSnapshot(name)
+
+	if err != nil {
+		return err
+	}
+
+	fa.info = map[string]responses.Informable{
+		name: info,
+	}
+
+	return nil
 }

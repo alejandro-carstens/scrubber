@@ -3,6 +3,7 @@ package options
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/Jeffail/gabs"
 	"github.com/spf13/pflag"
@@ -87,4 +88,20 @@ func (ro *RestoreOptions) BindFlags(flags *pflag.FlagSet) error {
 	ro.Name = name
 
 	return nil
+}
+
+func (ro *RestoreOptions) Exists(value string) bool {
+	if ro.container == nil {
+		ro.container = toContainer(ro)
+	}
+
+	return ro.container.Exists(value)
+}
+
+func (ro *RestoreOptions) String(value string) string {
+	if ro.container == nil {
+		ro.container = toContainer(ro)
+	}
+
+	return fmt.Sprint(ro.container.S(value).Data())
 }
