@@ -1,7 +1,6 @@
 package actions
 
 import (
-	"log"
 	"scrubber/actions/filters"
 	"scrubber/actions/responses"
 
@@ -196,9 +195,6 @@ func (fa *filterAction) setSanpshotInfo() error {
 	name := fa.context.Options().String("name")
 
 	fa.list = append([]string{}, name)
-
-	log.Println("FASDFASDFASDFASDFASD")
-	log.Println(name)
 
 	info, err := fa.fetchSnapshot(name)
 
