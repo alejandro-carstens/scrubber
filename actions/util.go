@@ -97,6 +97,9 @@ func build(name string) (Actionable, error) {
 	case "list_snapshots":
 		action = new(listSnapshots)
 		break
+	case "delete_repositories":
+		action = new(deleteRepositories)
+		break
 	default:
 		return nil, errors.New("Invalid action type")
 	}

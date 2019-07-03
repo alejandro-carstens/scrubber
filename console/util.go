@@ -6,6 +6,10 @@ import (
 	"scrubber/logging"
 )
 
+func NewScheduler(basePath string, logger *logging.SrvLogger) *Scheduler {
+	return &Scheduler{basePath: basePath, logger: logger}
+}
+
 func Execute(context contexts.Contextable, logger *logging.SrvLogger) {
 	action, err := actions.Create(context, logger)
 

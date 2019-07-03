@@ -84,6 +84,9 @@ func build(action string) (Contextable, error) {
 	case "list_snapshots":
 		ctx = new(ListSnapshotsContext)
 		break
+	case "delete_repositories":
+		ctx = new(DeleteRepositoriesContext)
+		break
 	default:
 		return nil, errors.New("Invalid action")
 	}

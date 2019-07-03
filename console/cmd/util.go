@@ -30,6 +30,7 @@ func boot(logger *logging.SrvLogger) *cobra.Command {
 	scrubber.AddCommand(new(listIndicesCmd).new(logger))
 	scrubber.AddCommand(new(listSnapshotsCmd).new(logger))
 	scrubber.AddCommand(new(schedulerCmd).new(logger))
+	scrubber.AddCommand(new(deleteRepositoriesCmd).new(logger))
 
 	return scrubber
 }

@@ -27,10 +27,6 @@ type Scheduler struct {
 	logger   *logging.SrvLogger
 }
 
-func NewScheduler(basePath string, logger *logging.SrvLogger) *Scheduler {
-	return &Scheduler{basePath: basePath, logger: logger}
-}
-
 func (s *Scheduler) Run() error {
 	configs, err := s.extractConfigs()
 

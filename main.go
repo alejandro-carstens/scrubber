@@ -7,7 +7,9 @@ import (
 )
 
 func main() {
-	if err := cmd.Run(logging.NewSrvLogger("", true, true, true, true)); err != nil {
+	logger := logging.NewSrvLogger(os.Getenv("LOG_FILE"), true, true, true, true)
+
+	if err := cmd.Run(logger); err != nil {
 		os.Exit(1)
 	}
 }
