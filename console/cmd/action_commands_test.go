@@ -239,6 +239,17 @@ func cmdParamsDataProvider() []map[string][]string {
 			"--disable_action=true",
 		},
 	})
+	data = append(data, map[string][]string{
+		"error_params": []string{
+			"delete-repositories",
+			"--disable_action=true",
+		},
+		"success_params": []string{
+			"delete-repositories",
+			"--repositories=my_repository,other_repository",
+			"--disable_action=true",
+		},
+	})
 
 	return data
 }

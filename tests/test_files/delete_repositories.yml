@@ -1,0 +1,4 @@
+action: delete_repositories
+description: Deletes snapshot repositories
+options:
+  repositories: my_backup_repository
