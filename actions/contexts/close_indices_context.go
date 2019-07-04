@@ -15,7 +15,7 @@ func (cic *CloseIndicesContext) Action() string {
 }
 
 func (cic *CloseIndicesContext) Config(container *gabs.Container) error {
-	return cic.extractConfig(cic.Action(), container, func(container *gabs.Container) error {
+	return cic.extractConfig(cic.Action(), container, true, func(container *gabs.Container) error {
 		cic.options = new(options.CloseIndicesOptions)
 
 		if err := cic.options.FillFromContainer(container); err != nil {

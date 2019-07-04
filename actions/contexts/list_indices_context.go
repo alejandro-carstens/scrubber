@@ -15,7 +15,7 @@ func (lic *ListIndicesContext) Action() string {
 }
 
 func (lic *ListIndicesContext) Config(container *gabs.Container) error {
-	return lic.extractConfig(lic.Action(), container, func(container *gabs.Container) error {
+	return lic.extractConfig(lic.Action(), container, true, func(container *gabs.Container) error {
 		lic.options = new(options.ListIndicesOptions)
 
 		if err := lic.options.FillFromContainer(container); err != nil {

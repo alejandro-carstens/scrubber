@@ -76,7 +76,7 @@ func (c *context) setQueueLength(queueLength int) {
 	c.QueueLength = queueLength
 }
 
-func (c *context) extractConfig(action string, container *gabs.Container, fn extractOptions) error {
+func (c *context) extractConfig(action string, container *gabs.Container, extractFilters bool, fn extractOptions) error {
 	config, err := container.ChildrenMap()
 
 	if err != nil {
@@ -93,8 +93,10 @@ func (c *context) extractConfig(action string, container *gabs.Container, fn ext
 		return errors.New("action not of type " + action)
 	}
 
-	if err := c.extractFilters(action, config); err != nil {
-		return err
+	if extractFilters {
+		if err := c.extractFilters(action, config); err != nil {
+			return err
+		}
 	}
 
 	options, valid := config["options"]

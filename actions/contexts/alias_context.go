@@ -15,7 +15,7 @@ func (ac *AliasContext) Action() string {
 }
 
 func (ac *AliasContext) Config(container *gabs.Container) error {
-	return ac.extractConfig(ac.Action(), container, func(container *gabs.Container) error {
+	return ac.extractConfig(ac.Action(), container, true, func(container *gabs.Container) error {
 		ac.options = new(options.AliasOptions)
 
 		if err := ac.options.FillFromContainer(container); err != nil {

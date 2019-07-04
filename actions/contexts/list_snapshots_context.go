@@ -15,7 +15,7 @@ func (ls *ListSnapshotsContext) Action() string {
 }
 
 func (ls *ListSnapshotsContext) Config(container *gabs.Container) error {
-	return ls.extractConfig(ls.Action(), container, func(container *gabs.Container) error {
+	return ls.extractConfig(ls.Action(), container, true, func(container *gabs.Container) error {
 		ls.options = new(options.ListSnapshotsOptions)
 
 		if err := ls.options.FillFromContainer(container); err != nil {

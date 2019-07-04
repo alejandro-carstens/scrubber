@@ -15,7 +15,7 @@ func (isc *IndexSettingsContext) Action() string {
 }
 
 func (isc *IndexSettingsContext) Config(container *gabs.Container) error {
-	return isc.extractConfig(isc.Action(), container, func(container *gabs.Container) error {
+	return isc.extractConfig(isc.Action(), container, true, func(container *gabs.Container) error {
 		isc.options = new(options.IndexSettingsOptions)
 
 		if err := isc.options.FillFromContainer(container); err != nil {

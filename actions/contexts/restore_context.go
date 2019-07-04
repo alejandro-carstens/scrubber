@@ -15,7 +15,7 @@ func (rc *RestoreContext) Action() string {
 }
 
 func (rc *RestoreContext) Config(container *gabs.Container) error {
-	return rc.extractConfig(rc.Action(), container, func(container *gabs.Container) error {
+	return rc.extractConfig(rc.Action(), container, true, func(container *gabs.Container) error {
 		rc.options = new(options.RestoreOptions)
 
 		if err := rc.options.FillFromContainer(container); err != nil {

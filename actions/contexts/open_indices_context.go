@@ -15,7 +15,7 @@ func (oic *OpenIndicesContext) Action() string {
 }
 
 func (oic *OpenIndicesContext) Config(container *gabs.Container) error {
-	return oic.extractConfig(oic.Action(), container, func(container *gabs.Container) error {
+	return oic.extractConfig(oic.Action(), container, true, func(container *gabs.Container) error {
 		oic.options = new(options.OpenIndicesOptions)
 
 		if err := oic.options.FillFromContainer(container); err != nil {

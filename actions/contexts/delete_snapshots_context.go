@@ -15,7 +15,7 @@ func (dsc *DeleteSnapshotsContext) Action() string {
 }
 
 func (dsc *DeleteSnapshotsContext) Config(container *gabs.Container) error {
-	return dsc.extractConfig(dsc.Action(), container, func(container *gabs.Container) error {
+	return dsc.extractConfig(dsc.Action(), container, true, func(container *gabs.Container) error {
 		dsc.options = new(options.DeleteSnapshotsOptions)
 
 		if err := dsc.options.FillFromContainer(container); err != nil {
