@@ -140,7 +140,7 @@ func (c *context) validateSnapshotAction(filters []*gabs.Container) error {
 			return errors.New("Could not retrieve filtertype value")
 		}
 
-		if filterType != "count" && filterType != "age" && filterType != "pattern" {
+		if filterType != "count" && filterType != "age" && filterType != "pattern" && filterType != "state" {
 			return errors.New("Invalid filtertype for snapshot action")
 		}
 	}

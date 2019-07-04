@@ -10,3 +10,5 @@ filters:
     direction: older
     units: seconds
     unit_count: 1
+  - filtertype: state
+    state: SUCCESS

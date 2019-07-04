@@ -8,12 +8,7 @@ import (
 	"github.com/alejandro-carstens/golastic"
 )
 
-func NewFilterRunner(
-	info responses.Informable,
-	builder *criterias.Builder,
-	elasticsearchBuilder *golastic.ElasticsearchBuilder,
-	isSnapshotAction bool,
-) (*FilterRunner, error) {
+func NewFilterRunner(info responses.Informable, builder *criterias.Builder, elasticsearchBuilder *golastic.ElasticsearchBuilder, isSnapshotAction bool) (*FilterRunner, error) {
 	filterRunner := new(FilterRunner)
 
 	filterRunner.info = info
@@ -23,11 +18,7 @@ func NewFilterRunner(
 	return filterRunner, err
 }
 
-func NewAggregateFilterRunner(
-	info []responses.Informable,
-	builder *criterias.Builder,
-	elasticsearchBuilder *golastic.ElasticsearchBuilder,
-) (*AggregateFilterRunner, error) {
+func NewAggregateFilterRunner(info []responses.Informable, builder *criterias.Builder, elasticsearchBuilder *golastic.ElasticsearchBuilder) (*AggregateFilterRunner, error) {
 	aggregateFilterRunner := new(AggregateFilterRunner)
 
 	if len(info) == 0 {

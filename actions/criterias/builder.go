@@ -23,7 +23,7 @@ func (b *Builder) Build(action string, filters []*gabs.Container) error {
 		}
 
 		if b.isSnapshotAction(action) && !b.isSnapshotFilterType(filterType) {
-			return errors.New("Invalid filter for snapshot action")
+			return errors.New("Invalid filter " + filterType + " for snapshot action")
 		}
 
 		filterCriteria, err := b.fillCriteria(filterType, filter)
@@ -90,6 +90,9 @@ func (b *Builder) fillCriteria(filterType string, filter *gabs.Container) (Crite
 	case "forcemerged":
 		criteria, err = new(Forcemerged).FillFromContainer(filter)
 		break
+	case "state":
+		criteria, err = new(State).FillFromContainer(filter)
+		break
 	}
 
 	if err != nil || criteria == nil {
@@ -127,6 +130,8 @@ func (b *Builder) isSnapshotAction(action string) bool {
 		return true
 	case "delete_snapshot":
 		return true
+	case "list_snapshots":
+		return true
 	}
 
 	return false
@@ -139,6 +144,8 @@ func (b *Builder) isSnapshotFilterType(filterType string) bool {
 	case "pattern":
 		return true
 	case "count":
+		return true
+	case "state":
 		return true
 	}
 

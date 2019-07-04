@@ -68,6 +68,8 @@ func NewRunner(criteria string, info ...responses.Informable) (Runnerable, error
 	case "space":
 		runner = new(spaceFilterRunner)
 		break
+	case "state":
+		runner = new(stateFilterRunner)
 	default:
 		return nil, errors.New("Invalid criteria")
 	}
