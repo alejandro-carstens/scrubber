@@ -61,6 +61,10 @@ func (b *Builder) AggregateCriteria() []Criteriable {
 	return b.aggregateCriteria
 }
 
+func (b *Builder) IsEmpty() bool {
+	return len(b.criteria) == 0 && len(b.aggregateCriteria) == 0
+}
+
 func (b *Builder) fillCriteria(filterType string, filter *gabs.Container) (Criteriable, error) {
 	var criteria Criteriable
 	var err error

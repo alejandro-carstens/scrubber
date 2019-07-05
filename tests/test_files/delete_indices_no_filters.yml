@@ -1,0 +1,4 @@
+action: delete_indices
+description: Deletes all indices since we did not specified filters
+retry_count: 2
+async: true

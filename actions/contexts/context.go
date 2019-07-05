@@ -112,7 +112,7 @@ func (c *context) extractFilters(action string, config map[string]*gabs.Containe
 	filterContainer, valid := config["filters"]
 
 	if !valid {
-		return errors.New("Filters are required")
+		return nil
 	}
 
 	filters, err := filterContainer.Children()

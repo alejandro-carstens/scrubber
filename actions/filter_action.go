@@ -38,6 +38,12 @@ func (fa *filterAction) ApplyFilters() error {
 		return err
 	}
 
+	if fa.context.Builder().IsEmpty() {
+		fa.list = actionableList
+
+		return nil
+	}
+
 	list := []string{}
 
 	for _, element := range actionableList {

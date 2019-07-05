@@ -116,6 +116,30 @@ func TestFilterClosedIndex(t *testing.T) {
 	assert.False(t, exists)
 }
 
+func TestNoFilters(t *testing.T) {
+	if _, err := createTestIndex("/test_files/create_index.yml"); err != nil {
+		t.Error(err)
+	}
+
+	time.Sleep(time.Duration(int64(2)) * time.Second)
+
+	takeAction("/test_files/delete_indices_no_filters.yml", t)
+
+	builder, err := golastic.NewBuilder(nil, nil)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	exists, err := builder.Exists("my_index")
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.False(t, exists)
+}
+
 func TestFilterIndicesByAlias(t *testing.T) {
 	if _, err := createTestIndex("/test_files/create_index.yml"); err != nil {
 		t.Error(err)
