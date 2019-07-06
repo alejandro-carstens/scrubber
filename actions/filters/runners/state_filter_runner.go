@@ -2,7 +2,7 @@ package runners
 
 import (
 	"scrubber/actions/criterias"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 )
 
 type stateFilterRunner struct {
@@ -10,7 +10,7 @@ type stateFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (sfr *stateFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
+func (sfr *stateFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
 	err := sfr.BaseInit(info...)
 
 	return sfr, err
@@ -24,7 +24,7 @@ func (sfr *stateFilterRunner) RunFilter(channel chan *FilterResponse, criteria c
 	}
 
 	state := criteria.(*criterias.State)
-	snapshotInfo := sfr.info.(*responses.SnapshotInfo)
+	snapshotInfo := sfr.info.(*infos.SnapshotInfo)
 
 	passed := state.State == snapshotInfo.State
 

@@ -2,12 +2,12 @@ package filters
 
 import (
 	"scrubber/actions/filters/runners"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 )
 
 type AggregateFilterRunner struct {
 	baseFilterRunner
-	info     []responses.Informable
+	info     []infos.Informable
 	countMap map[string]int
 }
 

@@ -3,12 +3,12 @@ package filters
 import (
 	"scrubber/actions/filters/runners"
 	"scrubber/actions/filters/runners/reports"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 )
 
 type FilterRunner struct {
 	baseFilterRunner
-	info responses.Informable
+	info infos.Informable
 }
 
 func (fr *FilterRunner) ApplyFilters() (bool, error) {

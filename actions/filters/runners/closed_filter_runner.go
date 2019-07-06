@@ -3,7 +3,7 @@ package runners
 import (
 	"errors"
 	"scrubber/actions/criterias"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 )
 
 const CLOSED_STATUS string = "close"
@@ -14,7 +14,7 @@ type closedFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (cfr *closedFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
+func (cfr *closedFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
 	if err := cfr.BaseInit(info...); err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (cfr *closedFilterRunner) RunFilter(channel chan *FilterResponse, criteria 
 
 	passed := false
 
-	status := cfr.info.(*responses.IndexInfo).Status
+	status := cfr.info.(*infos.IndexInfo).Status
 
 	if len(status) == 0 {
 		cfr.response.setError(errors.New("Could not determine if the index is closed"))

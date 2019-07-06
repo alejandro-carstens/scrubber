@@ -2,7 +2,7 @@ package actions
 
 import (
 	"scrubber/actions/filters"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 
 	"github.com/ivpusic/grpool"
 )
@@ -11,7 +11,7 @@ type runAction func(element string) error
 
 type filterAction struct {
 	action
-	info map[string]responses.Informable
+	info map[string]infos.Informable
 	list []string
 }
 
@@ -76,7 +76,7 @@ func (fa *filterAction) List() []string {
 }
 
 func (fa *filterAction) runFilter(element string) (bool, error) {
-	var info responses.Informable
+	var info infos.Informable
 	var err error
 
 	if fa.context.Options().IsSnapshot() {
@@ -90,7 +90,7 @@ func (fa *filterAction) runFilter(element string) (bool, error) {
 	}
 
 	if len(fa.info) == 0 {
-		fa.info = map[string]responses.Informable{}
+		fa.info = map[string]infos.Informable{}
 	}
 
 	fa.info[element] = info
@@ -109,7 +109,7 @@ func (fa *filterAction) runFilter(element string) (bool, error) {
 }
 
 func (fa *filterAction) runAggregateFilters(list []string) ([]string, error) {
-	info := []responses.Informable{}
+	info := []infos.Informable{}
 
 	for _, name := range list {
 		info = append(info, fa.info[name])
@@ -165,7 +165,7 @@ func (fa *filterAction) exec(fn runAction) {
 	}
 }
 
-func (fa *filterAction) fetchSnapshot(snapshot string) (responses.Informable, error) {
+func (fa *filterAction) fetchSnapshot(snapshot string) (infos.Informable, error) {
 	response, err := fa.builder.GetSnapshots(fa.context.Options().String("repository"), snapshot)
 
 	if err != nil {
@@ -178,10 +178,10 @@ func (fa *filterAction) fetchSnapshot(snapshot string) (responses.Informable, er
 		return nil, err
 	}
 
-	return new(responses.SnapshotInfo).Marshal(children[0])
+	return new(infos.SnapshotInfo).Marshal(children[0])
 }
 
-func (fa *filterAction) fetchIndexCat(index string) (responses.Informable, error) {
+func (fa *filterAction) fetchIndexCat(index string) (infos.Informable, error) {
 	response, err := fa.builder.IndexCat(index)
 
 	if err != nil {
@@ -194,7 +194,7 @@ func (fa *filterAction) fetchIndexCat(index string) (responses.Informable, error
 		return nil, err
 	}
 
-	return new(responses.IndexInfo).Marshal(children[0])
+	return new(infos.IndexInfo).Marshal(children[0])
 }
 
 func (fa *filterAction) setSanpshotInfo() error {
@@ -208,7 +208,7 @@ func (fa *filterAction) setSanpshotInfo() error {
 		return err
 	}
 
-	fa.info = map[string]responses.Informable{
+	fa.info = map[string]infos.Informable{
 		name: info,
 	}
 

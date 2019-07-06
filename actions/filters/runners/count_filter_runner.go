@@ -3,7 +3,7 @@ package runners
 import (
 	"regexp"
 	"scrubber/actions/criterias"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 	"sort"
 )
 
@@ -12,7 +12,7 @@ type countFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (cfr *countFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
+func (cfr *countFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
 	if err := cfr.BaseInit(info...); err != nil {
 		return nil, err
 	}

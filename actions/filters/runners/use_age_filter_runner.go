@@ -4,7 +4,7 @@ import (
 	"errors"
 	"regexp"
 	"scrubber/actions/criterias"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 	"sort"
 	"time"
 
@@ -288,7 +288,7 @@ func (uafr *useAgeFilterRunner) createList(criteria criterias.Sortable, indicesM
 	return indicesList, nil
 }
 
-func (uafr *useAgeFilterRunner) creantionDate(info responses.Informable) (string, error) {
+func (uafr *useAgeFilterRunner) creantionDate(info infos.Informable) (string, error) {
 	creationDate := info.CreationDate()
 
 	if len(creationDate) == 0 {

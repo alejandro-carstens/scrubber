@@ -3,7 +3,7 @@ package runners
 import (
 	"regexp"
 	"scrubber/actions/criterias"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 	"strings"
 )
 
@@ -12,7 +12,7 @@ type patternFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (pfr *patternFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
+func (pfr *patternFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
 	err := pfr.BaseInit(info...)
 
 	return pfr, err

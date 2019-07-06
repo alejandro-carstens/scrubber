@@ -2,7 +2,7 @@ package runners
 
 import (
 	"scrubber/actions/criterias"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 
 	"github.com/alejandro-carstens/golastic"
 )
@@ -21,7 +21,7 @@ type spaceFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (sfr *spaceFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
+func (sfr *spaceFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
 	if err := sfr.BaseInit(info...); err != nil {
 		return nil, err
 	}

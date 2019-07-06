@@ -2,7 +2,7 @@ package runners
 
 import (
 	"errors"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 	"time"
 )
 
@@ -34,7 +34,7 @@ func (ts timeSlice) Len() int {
 }
 
 // NewRunner return a filter runner
-func NewRunner(criteria string, info ...responses.Informable) (Runnerable, error) {
+func NewRunner(criteria string, info ...infos.Informable) (Runnerable, error) {
 	var runner Runnerable
 
 	switch criteria {

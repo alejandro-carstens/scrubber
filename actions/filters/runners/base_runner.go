@@ -4,17 +4,17 @@ import (
 	"errors"
 	"scrubber/actions/criterias"
 	"scrubber/actions/filters/runners/reports"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 )
 
 type baseRunner struct {
-	info     responses.Informable
+	info     infos.Informable
 	report   *reports.Report
 	response *FilterResponse
 }
 
 // BaseInit initializes the base properties for a filter runner
-func (br *baseRunner) BaseInit(info ...responses.Informable) error {
+func (br *baseRunner) BaseInit(info ...infos.Informable) error {
 	if len(info) != 1 {
 		return errors.New("This is not an aggregate filter runner and as such only accepts one index per run")
 	}

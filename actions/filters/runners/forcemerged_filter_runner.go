@@ -2,7 +2,7 @@ package runners
 
 import (
 	"scrubber/actions/criterias"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 
 	"github.com/alejandro-carstens/golastic"
 )
@@ -13,7 +13,7 @@ type forcemergedFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (ffr *forcemergedFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
+func (ffr *forcemergedFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
 	if err := ffr.BaseInit(info...); err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func (ffr *forcemergedFilterRunner) RunFilter(channel chan *FilterResponse, crit
 		return
 	}
 
-	segments := ffr.info.(*responses.IndexInfo).SegmentsCount
+	segments := ffr.info.(*infos.IndexInfo).SegmentsCount
 
 	forcemerged := criteria.(*criterias.Forcemerged)
 

@@ -4,24 +4,24 @@ import (
 	"errors"
 	"scrubber/actions/criterias"
 	"scrubber/actions/filters/runners/reports"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 )
 
 type aggregateBaseRunner struct {
-	info     map[string]responses.Informable
+	info     map[string]infos.Informable
 	report   *reports.AggregateReport
 	response *FilterResponse
 }
 
 // BaseInit initializes the base properties for a filter runner
-func (abr *aggregateBaseRunner) BaseInit(info ...responses.Informable) error {
+func (abr *aggregateBaseRunner) BaseInit(info ...infos.Informable) error {
 	if len(info) == 0 {
 		return errors.New("info cannot be empty")
 	}
 
 	abr.report = reports.NewAggregateReport()
 	abr.response = new(FilterResponse)
-	abr.info = map[string]responses.Informable{}
+	abr.info = map[string]infos.Informable{}
 
 	for _, element := range info {
 		if len(element.Name()) == 0 {

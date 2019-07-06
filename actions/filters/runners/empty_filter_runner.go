@@ -2,7 +2,7 @@ package runners
 
 import (
 	"scrubber/actions/criterias"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 )
 
 type emptyFilterRunner struct {
@@ -10,7 +10,7 @@ type emptyFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (efr *emptyFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
+func (efr *emptyFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
 	err := efr.BaseInit(info...)
 
 	return efr, err
@@ -25,7 +25,7 @@ func (efr *emptyFilterRunner) RunFilter(channel chan *FilterResponse, criteria c
 
 	empty := criteria.(*criterias.Empty)
 	passed := false
-	docsCount := efr.info.(*responses.IndexInfo).DocsCount
+	docsCount := efr.info.(*infos.IndexInfo).DocsCount
 
 	if docsCount == 0 {
 		passed = true

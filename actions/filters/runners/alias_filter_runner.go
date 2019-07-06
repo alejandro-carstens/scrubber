@@ -2,7 +2,7 @@ package runners
 
 import (
 	"scrubber/actions/criterias"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 
 	"github.com/alejandro-carstens/golastic"
 )
@@ -13,7 +13,7 @@ type aliasFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (afr *aliasFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
+func (afr *aliasFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
 	if err := afr.BaseInit(info...); err != nil {
 		return nil, err
 	}

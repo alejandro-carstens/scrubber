@@ -2,7 +2,7 @@ package runners
 
 import (
 	"scrubber/actions/criterias"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 )
 
 type kibanaFilterRunner struct {
@@ -10,7 +10,7 @@ type kibanaFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (kfr *kibanaFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
+func (kfr *kibanaFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
 	err := kfr.BaseInit(info...)
 
 	return kfr, err

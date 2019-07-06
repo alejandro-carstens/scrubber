@@ -4,7 +4,7 @@ import (
 	"errors"
 	"regexp"
 	"scrubber/actions/options"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 	"strings"
 	"time"
 
@@ -112,7 +112,7 @@ func (r *restore) runAndWaitForCompletion(snapshot string) error {
 		return err
 	}
 
-	if len(indices) != len(r.info[snapshot].(*responses.SnapshotInfo).Indices) {
+	if len(indices) != len(r.info[snapshot].(*infos.SnapshotInfo).Indices) {
 		return errors.New("One or more indices failed to restore")
 	}
 
@@ -123,7 +123,7 @@ func (r *restore) checkRestoreStatus(snapshot string) error {
 	indexList := strings.Split(r.options.Indices, ",")
 
 	if len(indexList) == 0 {
-		for _, index := range r.info[snapshot].(*responses.SnapshotInfo).Indices {
+		for _, index := range r.info[snapshot].(*infos.SnapshotInfo).Indices {
 			indexList = append(indexList, index)
 		}
 	}

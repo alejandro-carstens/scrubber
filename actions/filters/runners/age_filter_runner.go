@@ -5,7 +5,7 @@ import (
 	"math"
 	"regexp"
 	"scrubber/actions/criterias"
-	"scrubber/actions/responses"
+	"scrubber/actions/infos"
 	"strconv"
 	"time"
 
@@ -19,7 +19,7 @@ type ageFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (afr *ageFilterRunner) Init(info ...responses.Informable) (Runnerable, error) {
+func (afr *ageFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
 	if err := afr.BaseInit(info...); err != nil {
 		return nil, err
 	}
