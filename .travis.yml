@@ -5,9 +5,9 @@ go:
 - 1.12.x
 env:
   matrix:
-  - VERSION=7.2.0 ELASTIC_PASSWORD=secret ELASTIC_USERNAME=jdoe GO111MODULE=on
-  - VERSION=7.1.0 ELASTIC_PASSWORD=secret ELASTIC_USERNAME=jdoe GO111MODULE=on
-  - VERSION=7.0.0 ELASTIC_PASSWORD=secret ELASTIC_USERNAME=jdoe GO111MODULE=on
+  - VERSION=7.0.0 ELASTIC_PASSWORD=secret ELASTIC_USERNAME=jdoe
+  - VERSION=7.1.0 ELASTIC_PASSWORD=secret ELASTIC_USERNAME=jdoe
+  - VERSION=7.2.0 ELASTIC_PASSWORD=secret ELASTIC_USERNAME=jdoe
 addons:
   ssh_known_hosts: github.com
   apt:
@@ -21,7 +21,9 @@ before_install:
 - sudo sysctl -w vm.max_map_count=262144
 - docker-compose up -d
 - docker-compose exec elasticsearch chown -R 1000:1000 /usr/share/elasticsearch/backup
+- docker-compose exec dev export GO111MODULE=on
 - docker-compose exec dev go get
+- docker-compose exec dev go get github.com/stretchr/testify/assert
 - docker-compose exec dev go get github.com/mattn/goveralls
 install: true
 script:
