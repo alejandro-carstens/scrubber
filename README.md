@@ -2,7 +2,7 @@
 
 # Scrubber
 
-A simple policy driven elasticsearch indices manager that "just works"
+A simple policy driven elasticsearch indices manager that "just works".
 
 ## Philosophy
 
