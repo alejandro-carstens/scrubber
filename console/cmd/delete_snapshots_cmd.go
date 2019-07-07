@@ -4,7 +4,7 @@ import (
 	"errors"
 	"scrubber/actions/contexts"
 	"scrubber/actions/options"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ type deleteSnaphotsCmd struct {
 	baseActionCmd
 }
 
-func (dsc *deleteSnaphotsCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (dsc *deleteSnaphotsCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "delete-snapshots",
 		Short: "delete the specified snapshots",

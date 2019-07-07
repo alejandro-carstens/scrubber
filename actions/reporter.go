@@ -3,12 +3,12 @@ package actions
 import (
 	"fmt"
 	"scrubber/actions/filters/runners/reports"
-	"scrubber/logging"
+	"scrubber/logger"
 )
 
 type reporter struct {
 	reports []reports.Reportable
-	logger  *logging.SrvLogger
+	logger  *logger.Logger
 }
 
 func (r *reporter) AddReports(reports ...reports.Reportable) *reporter {
@@ -23,7 +23,7 @@ func (r *reporter) AddReports(reports ...reports.Reportable) *reporter {
 	return r
 }
 
-func (r *reporter) Logger() *logging.SrvLogger {
+func (r *reporter) Logger() *logger.Logger {
 	return r.logger
 }
 
@@ -37,11 +37,9 @@ func (r *reporter) LogFilterResults() error {
 
 		if r.logger != nil {
 			r.logger.Debugf("%v", line)
-
-			continue
+		} else {
+			fmt.Println(line)
 		}
-
-		fmt.Println(line)
 	}
 
 	return nil

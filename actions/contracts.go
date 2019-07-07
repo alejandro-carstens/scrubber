@@ -2,11 +2,11 @@ package actions
 
 import (
 	"scrubber/actions/contexts"
-	"scrubber/logging"
+	"scrubber/logger"
 )
 
 type Actionable interface {
-	Init(context contexts.Contextable, logger *logging.SrvLogger) error
+	Init(context contexts.Contextable, logger *logger.Logger) error
 
 	Perform() Actionable
 

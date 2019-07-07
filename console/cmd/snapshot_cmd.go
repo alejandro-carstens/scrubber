@@ -4,7 +4,7 @@ import (
 	"errors"
 	"scrubber/actions/contexts"
 	"scrubber/actions/options"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ type snapshotCmd struct {
 	baseActionCmd
 }
 
-func (sc *snapshotCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (sc *snapshotCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "snapshot",
 		Short: "take a snapshot of the specified list of indices",

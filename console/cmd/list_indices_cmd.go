@@ -3,7 +3,7 @@ package cmd
 import (
 	"scrubber/actions/contexts"
 	"scrubber/actions/options"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -12,7 +12,7 @@ type listIndicesCmd struct {
 	baseActionCmd
 }
 
-func (lic *listIndicesCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (lic *listIndicesCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "list-indices",
 		Short: "list all indices",

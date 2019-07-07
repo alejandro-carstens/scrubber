@@ -1,16 +1,16 @@
 package cmd
 
 import (
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
 
-func Run(logger *logging.SrvLogger) error {
+func Run(logger *logger.Logger) error {
 	return boot(logger).Execute()
 }
 
-func boot(logger *logging.SrvLogger) *cobra.Command {
+func boot(logger *logger.Logger) *cobra.Command {
 	scrubber := &cobra.Command{Use: "scrubber"}
 
 	scrubber.PersistentFlags().Int("timeout", 300, "elasticsearch operation timeout")

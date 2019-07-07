@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"scrubber/actions/contexts"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/Jeffail/gabs"
 )
 
-func Create(context contexts.Contextable, logger *logging.SrvLogger) (Actionable, error) {
+func Create(context contexts.Contextable, logger *logger.Logger) (Actionable, error) {
 	action, err := build(context.Action())
 
 	if err != nil {
@@ -27,7 +27,7 @@ func Create(context contexts.Contextable, logger *logging.SrvLogger) (Actionable
 	return action, nil
 }
 
-func newReporter(logger *logging.SrvLogger) *reporter {
+func newReporter(logger *logger.Logger) *reporter {
 	return &reporter{
 		logger: logger,
 	}

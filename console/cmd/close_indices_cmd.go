@@ -4,7 +4,7 @@ import (
 	"errors"
 	"scrubber/actions/contexts"
 	"scrubber/actions/options"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ type closeIndicesCmd struct {
 	baseActionCmd
 }
 
-func (cic *closeIndicesCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (cic *closeIndicesCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "close-indices",
 		Short: "closes the specified list of indices",

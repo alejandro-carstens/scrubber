@@ -1,4 +1,4 @@
-package logging
+package logger
 
 type loggable interface {
 	Close() error

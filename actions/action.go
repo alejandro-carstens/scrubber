@@ -2,7 +2,7 @@ package actions
 
 import (
 	"scrubber/actions/contexts"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/alejandro-carstens/golastic"
 )
@@ -17,7 +17,7 @@ type action struct {
 }
 
 // Init initializes an action 
-func (a *action) Init(context contexts.Contextable, logger *logging.SrvLogger) error {
+func (a *action) Init(context contexts.Contextable, logger *logger.Logger) error {
 	builder, err := golastic.NewBuilder(nil, nil)
 
 	if err != nil {

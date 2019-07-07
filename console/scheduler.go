@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"scrubber/actions/contexts"
-	"scrubber/logging"
+	"scrubber/logger"
 	"scrubber/ymlparser"
 	"strings"
 
@@ -24,7 +24,7 @@ type configMap struct {
 
 type Scheduler struct {
 	basePath string
-	logger   *logging.SrvLogger
+	logger   *logger.Logger
 }
 
 func (s *Scheduler) Run() error {

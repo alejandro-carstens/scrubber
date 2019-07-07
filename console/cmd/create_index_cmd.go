@@ -3,7 +3,7 @@ package cmd
 import (
 	"scrubber/actions/contexts"
 	"scrubber/actions/options"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -12,7 +12,7 @@ type createIndexCmd struct {
 	baseActionCmd
 }
 
-func (cic *createIndexCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (cic *createIndexCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "create-index",
 		Short: "creates an index",

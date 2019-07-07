@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"bytes"
-	"scrubber/logging"
+	"scrubber/logger"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -11,7 +11,7 @@ import (
 
 func TestActionCommands(t *testing.T) {
 	for _, data := range cmdParamsDataProvider() {
-		rootCmd := boot(logging.NewSrvLogger("", true, true, true, true))
+		rootCmd := boot(logger.NewLogger("", true, true, true, true))
 
 		if len(data["error_params"]) > 0 {
 			_, err := executeCommand(rootCmd, data["error_params"]...)

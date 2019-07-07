@@ -4,7 +4,7 @@ import (
 	"errors"
 	"scrubber/actions/contexts"
 	"scrubber/actions/options"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ type deleteIndicesCmd struct {
 	baseActionCmd
 }
 
-func (dic *deleteIndicesCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (dic *deleteIndicesCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "delete-indices",
 		Short: "deletes the specified list of indices",

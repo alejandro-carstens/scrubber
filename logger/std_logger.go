@@ -1,4 +1,4 @@
-package logging
+package logger
 
 type stdLogger struct {
 	baseLogger

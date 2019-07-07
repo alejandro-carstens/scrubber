@@ -4,7 +4,7 @@ import (
 	"errors"
 	"scrubber/actions/contexts"
 	"scrubber/actions/options"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ type indexSettingsCmd struct {
 	baseActionCmd
 }
 
-func (isc *indexSettingsCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (isc *indexSettingsCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "index-settings",
 		Short: "updates the index settings for the indices in the actionable list",

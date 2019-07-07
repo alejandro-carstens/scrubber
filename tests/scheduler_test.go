@@ -3,7 +3,7 @@ package tests
 import (
 	"os"
 	"scrubber/console"
-	"scrubber/logging"
+	"scrubber/logger"
 	"testing"
 
 	"github.com/alejandro-carstens/golastic"
@@ -18,7 +18,7 @@ func TestSchedulerRunActionImmidiately(t *testing.T) {
 	}
 
 	filePath := currentPath + "/test_files/scheduler_extract_files_test/create_actions"
-	logger := logging.NewSrvLogger("", true, true, true, true)
+	logger := logger.NewLogger("", true, true, true, true)
 
 	scheduler := console.NewScheduler(filePath, logger)
 

@@ -3,14 +3,14 @@ package console
 import (
 	"scrubber/actions"
 	"scrubber/actions/contexts"
-	"scrubber/logging"
+	"scrubber/logger"
 )
 
-func NewScheduler(basePath string, logger *logging.SrvLogger) *Scheduler {
+func NewScheduler(basePath string, logger *logger.Logger) *Scheduler {
 	return &Scheduler{basePath: basePath, logger: logger}
 }
 
-func Execute(context contexts.Contextable, logger *logging.SrvLogger) {
+func Execute(context contexts.Contextable, logger *logger.Logger) {
 	action, err := actions.Create(context, logger)
 
 	if err != nil {

@@ -5,7 +5,7 @@ import (
 	"os"
 	"scrubber/actions"
 	"scrubber/actions/contexts"
-	"scrubber/logging"
+	"scrubber/logger"
 	"scrubber/ymlparser"
 	"sync"
 	"testing"
@@ -61,7 +61,7 @@ func getAction(config *gabs.Container) (actions.Actionable, error) {
 		return nil, err
 	}
 
-	return actions.Create(context, logging.NewSrvLogger("", true, true, true, true))
+	return actions.Create(context, logger.NewLogger("", true, true, true, true))
 }
 
 func takeAction(path string, t *testing.T) actions.Actionable {

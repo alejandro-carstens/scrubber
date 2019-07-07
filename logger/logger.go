@@ -1,4 +1,4 @@
-package logging
+package logger
 
 import "sync"
 
@@ -12,49 +12,49 @@ type opts struct {
 	pid      bool
 }
 
-type SrvLogger struct {
+type Logger struct {
 	sync.RWMutex
 	opts   *opts
 	logger loggable
 }
 
-func (sl *SrvLogger) Noticef(format string, v ...interface{}) {
+func (sl *Logger) Noticef(format string, v ...interface{}) {
 	sl.executeLogCall(func(logger loggable, format string, v ...interface{}) {
 		logger.Noticef(format, v...)
 	}, format, v...)
 }
 
-func (sl *SrvLogger) Errorf(format string, v ...interface{}) {
+func (sl *Logger) Errorf(format string, v ...interface{}) {
 	sl.executeLogCall(func(logger loggable, format string, v ...interface{}) {
 		logger.Errorf(format, v...)
 	}, format, v...)
 }
 
-func (sl *SrvLogger) Warnf(format string, v ...interface{}) {
+func (sl *Logger) Warnf(format string, v ...interface{}) {
 	sl.executeLogCall(func(logger loggable, format string, v ...interface{}) {
 		logger.Warnf(format, v...)
 	}, format, v...)
 }
 
-func (sl *SrvLogger) Fatalf(format string, v ...interface{}) {
+func (sl *Logger) Fatalf(format string, v ...interface{}) {
 	sl.executeLogCall(func(logger loggable, format string, v ...interface{}) {
 		logger.Fatalf(format, v...)
 	}, format, v...)
 }
 
-func (sl *SrvLogger) Debugf(format string, v ...interface{}) {
+func (sl *Logger) Debugf(format string, v ...interface{}) {
 	sl.executeLogCall(func(logger loggable, format string, v ...interface{}) {
 		logger.Debugf(format, v...)
 	}, format, v...)
 }
 
-func (sl *SrvLogger) Tracef(format string, v ...interface{}) {
+func (sl *Logger) Tracef(format string, v ...interface{}) {
 	sl.executeLogCall(func(logger loggable, format string, v ...interface{}) {
 		logger.Tracef(format, v...)
 	}, format, v...)
 }
 
-func (sl *SrvLogger) executeLogCall(fn logfn, format string, args ...interface{}) {
+func (sl *Logger) executeLogCall(fn logfn, format string, args ...interface{}) {
 	sl.RLock()
 
 	defer sl.RUnlock()
@@ -66,7 +66,7 @@ func (sl *SrvLogger) executeLogCall(fn logfn, format string, args ...interface{}
 	fn(sl.logger, format, args...)
 }
 
-func (sl *SrvLogger) ReOpenLogFile() {
+func (sl *Logger) ReOpenLogFile() {
 	sl.RLock()
 
 	logger := sl.logger

@@ -1,4 +1,4 @@
-package logging
+package logger
 
 import (
 	"fmt"
@@ -6,16 +6,16 @@ import (
 	"os"
 )
 
-func NewSrvLogger(filename string, time, debug, trace, pid bool) *SrvLogger {
-	srvLogger := &SrvLogger{}
+func NewLogger(filename string, time, debug, trace, pid bool) *Logger {
+	Logger := &Logger{}
 
 	if len(filename) > 0 {
-		srvLogger.logger = newFileLogger(filename, time, debug, trace, pid)
+		Logger.logger = newFileLogger(filename, time, debug, trace, pid)
 	} else {
-		srvLogger.logger = newStdLogger(time, debug, trace, true, pid)
+		Logger.logger = newStdLogger(time, debug, trace, true, pid)
 	}
 
-	srvLogger.opts = &opts{
+	Logger.opts = &opts{
 		filename,
 		time,
 		debug,
@@ -23,7 +23,7 @@ func NewSrvLogger(filename string, time, debug, trace, pid bool) *SrvLogger {
 		pid,
 	}
 
-	return srvLogger
+	return Logger
 }
 
 func newFileLogger(filename string, time, debug, trace, pid bool) loggable {

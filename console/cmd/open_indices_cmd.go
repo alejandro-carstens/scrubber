@@ -4,7 +4,7 @@ import (
 	"errors"
 	"scrubber/actions/contexts"
 	"scrubber/actions/options"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ type openIndicesCmd struct {
 	baseActionCmd
 }
 
-func (oic *openIndicesCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (oic *openIndicesCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "open-indices",
 		Short: "open the specified list of indices",

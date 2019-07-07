@@ -3,17 +3,17 @@ package cmd
 import (
 	"errors"
 	"scrubber/console"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
 
 type schedulerCmd struct {
-	logger *logging.SrvLogger
+	logger *logger.Logger
 	path   string
 }
 
-func (sc *schedulerCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (sc *schedulerCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "scheduler",
 		Short: "run the scheduler",

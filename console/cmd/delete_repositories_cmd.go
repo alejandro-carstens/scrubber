@@ -3,7 +3,7 @@ package cmd
 import (
 	"scrubber/actions/contexts"
 	"scrubber/actions/options"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -12,7 +12,7 @@ type deleteRepositoriesCmd struct {
 	baseActionCmd
 }
 
-func (drc *deleteRepositoriesCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (drc *deleteRepositoriesCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "delete-repositories",
 		Short: "delete the specified list of repositories",

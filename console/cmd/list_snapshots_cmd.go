@@ -3,7 +3,7 @@ package cmd
 import (
 	"scrubber/actions/contexts"
 	"scrubber/actions/options"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -12,7 +12,7 @@ type listSnapshotsCmd struct {
 	baseActionCmd
 }
 
-func (lsc *listSnapshotsCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (lsc *listSnapshotsCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "list-snapshots",
 		Short: "list all snapshots for the given repository",

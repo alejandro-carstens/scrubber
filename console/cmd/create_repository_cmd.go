@@ -3,7 +3,7 @@ package cmd
 import (
 	"scrubber/actions/contexts"
 	"scrubber/actions/options"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -12,7 +12,7 @@ type createRepositoryCmd struct {
 	baseActionCmd
 }
 
-func (crc *createRepositoryCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (crc *createRepositoryCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "create-repository",
 		Short: "create repository for storing snapshots",

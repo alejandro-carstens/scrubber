@@ -4,7 +4,7 @@ import (
 	"errors"
 	"os"
 	"scrubber/actions/contexts"
-	"scrubber/logging"
+	"scrubber/logger"
 	"scrubber/ymlparser"
 
 	"github.com/spf13/cobra"
@@ -14,7 +14,7 @@ type runActionCmd struct {
 	baseActionCmd
 }
 
-func (rac *runActionCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (rac *runActionCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "run-action",
 		Short: "runs an action from the specified action file",

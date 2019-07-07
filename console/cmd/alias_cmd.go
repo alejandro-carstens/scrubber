@@ -4,7 +4,7 @@ import (
 	"errors"
 	"scrubber/actions/contexts"
 	"scrubber/actions/options"
-	"scrubber/logging"
+	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ type aliasCmd struct {
 	baseActionCmd
 }
 
-func (ac *aliasCmd) new(logger *logging.SrvLogger) *cobra.Command {
+func (ac *aliasCmd) new(logger *logger.Logger) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "alias",
 		Short: "add or remove indices from an alias",
