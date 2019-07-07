@@ -23,9 +23,17 @@ func (abr *aggregateBaseRunner) BaseInit(info ...infos.Informable) error {
 	abr.response = new(FilterResponse)
 	abr.info = map[string]infos.Informable{}
 
-	for _, element := range info {
+	for i, element := range info {
 		if len(element.Name()) == 0 {
 			return errors.New("Could not retrieve name")
+		}
+
+		if i == 0 {
+			if element.IsSnapshotInfo() {
+				abr.report.SetType("snapshot")
+			} else {
+				abr.report.SetType("index")
+			}
 		}
 
 		abr.info[element.Name()] = element

@@ -30,7 +30,7 @@ func (si *SnapshotInfo) Marshal(container *gabs.Container) (Informable, error) {
 }
 
 func (si *SnapshotInfo) IsSnapshotInfo() bool {
-	return false
+	return true
 }
 
 func (si *SnapshotInfo) Name() string {
