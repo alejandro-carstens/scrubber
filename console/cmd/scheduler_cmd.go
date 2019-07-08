@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"os"
 	"scrubber/console"
 	"scrubber/logger"
 
@@ -30,6 +31,10 @@ func (sc *schedulerCmd) new(logger *logger.Logger) *cobra.Command {
 
 func (sc *schedulerCmd) Validate(cmd *cobra.Command, args []string) error {
 	path, _ := cmd.Flags().GetString("path")
+
+	if len(path) == 0 {
+		path = os.Getenv("ACTIONS_PATH")
+	}
 
 	if len(path) == 0 {
 		return errors.New("the path field is required")

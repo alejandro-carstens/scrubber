@@ -1,3 +1,7 @@
 .env
 TODO.txt
 vendor/
+Dockerfile.build
+push.sh
+Dockerfile.scrubber
+build/
