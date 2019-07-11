@@ -1,13 +1,14 @@
 package cmd
 
 import (
+	"os"
 	"scrubber/logger"
 
 	"github.com/spf13/cobra"
 )
 
-func Run(logger *logger.Logger) error {
-	return boot(logger).Execute()
+func Run() error {
+	return boot(logger.NewLogger(os.Getenv("LOG_FILE"), true, true, true, true)).Execute()
 }
 
 func boot(logger *logger.Logger) *cobra.Command {
