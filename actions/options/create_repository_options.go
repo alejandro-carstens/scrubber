@@ -18,6 +18,7 @@ type CreateRepositoryOptions struct {
 	Repository                string `json:"repository"`
 	RepoType                  string `json:"repo_type"`
 	Verify                    bool   `json:"verify"`
+	Bucket                    string `json:"bucket"`
 }
 
 func (cro *CreateRepositoryOptions) FillFromContainer(container *gabs.Container) error {
@@ -31,12 +32,16 @@ func (cro *CreateRepositoryOptions) Validate() error {
 		return errors.New("repo_type is a required option")
 	}
 
-	if cro.RepoType != "fs" {
-		return errors.New("repo_type must be of type 'fs'")
+	if cro.RepoType != "fs" && cro.RepoType != "gcs" {
+		return errors.New("repo_type must be of type 'fs' or 'gcs")
 	}
 
-	if len(cro.Location) == 0 {
-		return errors.New("location option is required")
+	if cro.RepoType == "gcs" && len(cro.Bucket) == 0 {
+		return errors.New("bucket is required for 'gcs' repo type")
+	}
+
+	if cro.RepoType == "fs" && len(cro.Location) == 0 {
+		return errors.New("location option is required for 'fs' repo type")
 	}
 
 	if len(cro.Repository) == 0 {
@@ -57,6 +62,7 @@ func (cro *CreateRepositoryOptions) BindFlags(flags *pflag.FlagSet) error {
 	cro.Repository = stringFromFlags(flags, "repository")
 	cro.RepoType = stringFromFlags(flags, "repo_type")
 	cro.Verify = boolFromFlags(flags, "verify")
+	cro.Bucket = stringFromFlags(flags, "bucket")
 
 	return nil
 }

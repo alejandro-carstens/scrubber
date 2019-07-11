@@ -44,13 +44,18 @@ func (cr *createRepository) ApplyOptions() Actionable {
 func (cr *createRepository) Perform() Actionable {
 	settings := map[string]interface{}{}
 
-	settings["location"] = cr.options.Location
 	settings["compress"] = cr.options.Compress
 	settings["max_restore_bytes_per_sec"] = cr.options.MaxRestoreBytesPerSecond
 	settings["max_snapshot_bytes_per_sec"] = cr.options.MaxSnapshotBytesPerSecond
 
 	if cr.options.Exists("chunk_size") {
 		settings["chunk_size"] = cr.options.ChunkSize
+	}
+
+	if cr.options.RepoType == "fs" {
+		settings["location"] = cr.options.Location
+	} else if cr.options.RepoType == "gcs" {
+		settings["bucket"] = cr.options.Bucket
 	}
 
 	response, err := cr.builder.CreateRepository(cr.options.Repository, cr.options.RepoType, cr.options.Verify, settings)

@@ -5,3 +5,4 @@ Dockerfile.build
 push.sh
 Dockerfile.scrubber
 build/
+credentials.json

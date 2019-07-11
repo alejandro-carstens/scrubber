@@ -27,7 +27,8 @@ func (crc *createRepositoryCmd) new(logger *logger.Logger) *cobra.Command {
 	command.Flags().String("max_snapshot_bytes_per_second", "40mb", "throttles per node snapshot rate")
 	command.Flags().String("repository", "", "the repository name, it is a required field")
 	command.Flags().String("location", "", "location of the snapshots, it is a required field")
-	command.Flags().String("repo_type", "", "repository type, ex: fs, gcs, s3")
+	command.Flags().String("repo_type", "", "repository type, ex: fs or gcs")
+	command.Flags().String("bucket", "", "bucket for gcs repository")
 	command.Flags().Bool("compress", true, "turns on compression for snapshot files")
 	command.Flags().Bool("verify", false, "disable the repository verification when registering or updating a repository")
 
