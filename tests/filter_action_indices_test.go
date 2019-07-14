@@ -75,7 +75,7 @@ func TestFilterInidicesByFieldStats(t *testing.T) {
 
 	waitGroup.Wait()
 
-	takeAction("/test_files/delete_indices_by_field_stats.yml", t)
+	takeAction("/testfiles/delete_indices_by_field_stats.yml", t)
 
 	exists, err := builder.Exists("my_index")
 
@@ -87,7 +87,7 @@ func TestFilterInidicesByFieldStats(t *testing.T) {
 }
 
 func TestFilterClosedIndex(t *testing.T) {
-	if _, err := createTestIndex("/test_files/create_index.yml"); err != nil {
+	if _, err := createTestIndex("/testfiles/create_index.yml"); err != nil {
 		t.Error(err)
 	}
 
@@ -105,7 +105,7 @@ func TestFilterClosedIndex(t *testing.T) {
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
 
-	takeAction("/test_files/delete_closed_index.yml", t)
+	takeAction("/testfiles/delete_closed_index.yml", t)
 
 	exists, err := builder.Exists("my_index")
 
@@ -117,13 +117,13 @@ func TestFilterClosedIndex(t *testing.T) {
 }
 
 func TestNoFilters(t *testing.T) {
-	if _, err := createTestIndex("/test_files/create_index.yml"); err != nil {
+	if _, err := createTestIndex("/testfiles/create_index.yml"); err != nil {
 		t.Error(err)
 	}
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
 
-	takeAction("/test_files/delete_indices_no_filters.yml", t)
+	takeAction("/testfiles/delete_indices_no_filters.yml", t)
 
 	builder, err := golastic.NewBuilder(nil, nil)
 
@@ -141,7 +141,7 @@ func TestNoFilters(t *testing.T) {
 }
 
 func TestFilterIndicesByAlias(t *testing.T) {
-	if _, err := createTestIndex("/test_files/create_index.yml"); err != nil {
+	if _, err := createTestIndex("/testfiles/create_index.yml"); err != nil {
 		t.Error(err)
 	}
 
@@ -159,7 +159,7 @@ func TestFilterIndicesByAlias(t *testing.T) {
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
 
-	takeAction("/test_files/delete_indices_by_alias.yml", t)
+	takeAction("/testfiles/delete_indices_by_alias.yml", t)
 
 	exists, err := builder.Exists("my_index")
 
@@ -273,7 +273,7 @@ func TestFilterIndicesByCountSortedByFieldStats(t *testing.T) {
 
 	waitGroup.Wait()
 
-	takeAction("/test_files/delete_indices_by_count_sorted_by_field_stats.yml", t)
+	takeAction("/testfiles/delete_indices_by_count_sorted_by_field_stats.yml", t)
 
 	resultList, err := builder.ListIndices()
 
@@ -372,7 +372,7 @@ func TestFilterIndicesBySpace(t *testing.T) {
 }
 
 func TestFilterIndicesByAllocation(t *testing.T) {
-	if _, err := createTestIndex("/test_files/create_index.yml"); err != nil {
+	if _, err := createTestIndex("/testfiles/create_index.yml"); err != nil {
 		t.Error(err)
 	}
 
@@ -392,7 +392,7 @@ func TestFilterIndicesByAllocation(t *testing.T) {
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
 
-	takeAction("/test_files/delete_indices_by_allocation.yml", t)
+	takeAction("/testfiles/delete_indices_by_allocation.yml", t)
 
 	exists, err := builder.Exists("my_index")
 
@@ -404,7 +404,7 @@ func TestFilterIndicesByAllocation(t *testing.T) {
 }
 
 func TestFilterIndicesByForcemerged(t *testing.T) {
-	if _, err := createTestIndex("/test_files/create_index.yml"); err != nil {
+	if _, err := createTestIndex("/testfiles/create_index.yml"); err != nil {
 		t.Error(err)
 	}
 
@@ -416,7 +416,7 @@ func TestFilterIndicesByForcemerged(t *testing.T) {
 		t.Error(err)
 	}
 
-	takeAction("/test_files/delete_indices_by_forcemerged.yml", t)
+	takeAction("/testfiles/delete_indices_by_forcemerged.yml", t)
 
 	exists, err := builder.Exists("my_index")
 
@@ -431,51 +431,51 @@ func filterIndicesDataProvider() []map[string]string {
 	dataProvider := []map[string]string{}
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":   "TestDeleteIndicesByCreationDate",
-		"create_mock": "/test_files/create_index.yml",
-		"action_mock": "/test_files/delete_indices_by_creation_date.yml",
+		"create_mock": "/testfiles/create_index.yml",
+		"action_mock": "/testfiles/delete_indices_by_creation_date.yml",
 		"index_name":  "my_index",
 		"sleep_time":  "1",
 	})
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":   "TestDeleteIndicesByName",
-		"create_mock": "/test_files/create_index_by_name.yml",
-		"action_mock": "/test_files/delete_indices_by_name.yml",
+		"create_mock": "/testfiles/create_index_by_name.yml",
+		"action_mock": "/testfiles/delete_indices_by_name.yml",
 		"index_name":  "my_index-2019-01-01",
 	})
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":   "TestDeleteEmptyIndex",
-		"create_mock": "/test_files/create_index.yml",
-		"action_mock": "/test_files/delete_empty_index.yml",
+		"create_mock": "/testfiles/create_index.yml",
+		"action_mock": "/testfiles/delete_empty_index.yml",
 		"index_name":  "my_index",
 	})
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":   "TestDeleteKibanaIndex",
-		"create_mock": "/test_files/create_kibana_index.yml",
-		"action_mock": "/test_files/delete_kibana_index.yml",
+		"create_mock": "/testfiles/create_kibana_index.yml",
+		"action_mock": "/testfiles/delete_kibana_index.yml",
 		"index_name":  ".kibana",
 	})
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":   "TestDeleteIndexByRegexPattern",
-		"create_mock": "/test_files/create_pattern_index.yml",
-		"action_mock": "/test_files/delete_regex_pattern_index.yml",
+		"create_mock": "/testfiles/create_pattern_index.yml",
+		"action_mock": "/testfiles/delete_regex_pattern_index.yml",
 		"index_name":  "alejandro-carstens-1992.06.02",
 	})
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":   "TestDeleteIndexByPrefixPattern",
-		"create_mock": "/test_files/create_pattern_index.yml",
-		"action_mock": "/test_files/delete_prefix_pattern_index.yml",
+		"create_mock": "/testfiles/create_pattern_index.yml",
+		"action_mock": "/testfiles/delete_prefix_pattern_index.yml",
 		"index_name":  "alejandro-carstens-1992.06.02",
 	})
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":   "TestDeleteIndexBySuffixPattern",
-		"create_mock": "/test_files/create_pattern_index.yml",
-		"action_mock": "/test_files/delete_suffix_pattern_index.yml",
+		"create_mock": "/testfiles/create_pattern_index.yml",
+		"action_mock": "/testfiles/delete_suffix_pattern_index.yml",
 		"index_name":  "alejandro-carstens-1992.06.02",
 	})
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":   "TestDeleteIndexByTimestringPattern",
-		"create_mock": "/test_files/create_pattern_index.yml",
-		"action_mock": "/test_files/delete_timestring_pattern_index.yml",
+		"create_mock": "/testfiles/create_pattern_index.yml",
+		"action_mock": "/testfiles/delete_timestring_pattern_index.yml",
 		"index_name":  "alejandro-carstens-1992.06.02",
 	})
 
@@ -487,29 +487,29 @@ func filterIndicesByCountDataProvider() []map[string]string {
 
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":               "TestDeleteIndicesByCountSortedByTimestring",
-		"create_mocks":            "/test_files/create_index_by_name.yml,/test_files/create_index_by_name_1.yml,/test_files/create_index_by_name_2.yml",
-		"action_mock":             "/test_files/delete_indices_by_count_sorted_by_timestring.yml",
+		"create_mocks":            "/testfiles/create_index_by_name.yml,/testfiles/create_index_by_name_1.yml,/testfiles/create_index_by_name_2.yml",
+		"action_mock":             "/testfiles/delete_indices_by_count_sorted_by_timestring.yml",
 		"expected_index_count":    "1",
 		"expected_existing_index": "my_index-2019-01-01",
 	})
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":               "TestDeleteIndicesByCountNoSortingParam",
-		"create_mocks":            "/test_files/create_index_by_name.yml,/test_files/create_index_by_name_1.yml,/test_files/create_index_by_name_2.yml",
-		"action_mock":             "/test_files/delete_indices_by_count_no_sorting_param.yml",
+		"create_mocks":            "/testfiles/create_index_by_name.yml,/testfiles/create_index_by_name_1.yml,/testfiles/create_index_by_name_2.yml",
+		"action_mock":             "/testfiles/delete_indices_by_count_no_sorting_param.yml",
 		"expected_index_count":    "1",
 		"expected_existing_index": "my_index-2019-01-03",
 	})
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":               "TestDeleteIndicesByCountSortByPattern",
-		"create_mocks":            "/test_files/create_index_by_name.yml,/test_files/create_pattern_index.yml,/test_files/create_pattern_index_1.yml",
-		"action_mock":             "/test_files/delete_indices_by_count_sort_by_pattern.yml",
+		"create_mocks":            "/testfiles/create_index_by_name.yml,/testfiles/create_pattern_index.yml,/testfiles/create_pattern_index_1.yml",
+		"action_mock":             "/testfiles/delete_indices_by_count_sort_by_pattern.yml",
 		"expected_index_count":    "1",
 		"expected_existing_index": "my_index-2019-01-01",
 	})
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":               "TestDeleteIndicesByCountSortByCreationDate",
-		"create_mocks":            "/test_files/create_index_by_name.yml,/test_files/create_index_by_name_1.yml,/test_files/create_index_by_name_2.yml",
-		"action_mock":             "/test_files/delete_indices_by_count_sort_by_creation_date.yml",
+		"create_mocks":            "/testfiles/create_index_by_name.yml,/testfiles/create_index_by_name_1.yml,/testfiles/create_index_by_name_2.yml",
+		"action_mock":             "/testfiles/delete_indices_by_count_sort_by_creation_date.yml",
 		"expected_index_count":    "1",
 		"expected_existing_index": "my_index-2019-01-01",
 		"wait_time":               "3",
@@ -524,20 +524,20 @@ func filterIndicesBySpaceDataProvider() []map[string]string {
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":       "TestDeleteIndicesBySpaceSortedByTimestring",
 		"indices":         "my_index-2017-03-01,my_index-2017-03-02,my_index-2017-03-03",
-		"action_mock":     "/test_files/delete_indices_by_space_sorted_by_timestring.yml",
+		"action_mock":     "/testfiles/delete_indices_by_space_sorted_by_timestring.yml",
 		"disk_space":      "1",
 		"ordered_indices": "my_index-2017-03-03,my_index-2017-03-02,my_index-2017-03-01",
 	})
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":            "TestDeleteIndicesBySpaceSortedLessThan",
 		"indices":              "my_index-2017-03-07,my_index-2017-03-08,my_index-2017-03-09",
-		"action_mock":          "/test_files/delete_indices_by_space_less_than.yml",
+		"action_mock":          "/testfiles/delete_indices_by_space_less_than.yml",
 		"expected_index_count": "0",
 	})
 	dataProvider = append(dataProvider, map[string]string{
 		"test_name":       "TestDeleteIndicesBySpaceSortedAlphabetically",
 		"indices":         "my_index-2017-03-06,my_index-2017-03-04,my_index-2017-03-05",
-		"action_mock":     "/test_files/delete_indices_by_space_sorted_alphabetically.yml",
+		"action_mock":     "/testfiles/delete_indices_by_space_sorted_alphabetically.yml",
 		"disk_space":      "1",
 		"ordered_indices": "my_index-2017-03-04,my_index-2017-03-05,my_index-2017-03-06",
 	})

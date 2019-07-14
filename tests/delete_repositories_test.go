@@ -6,9 +6,9 @@ import (
 )
 
 func TestDeleteRepositories(t *testing.T) {
-	takeAction("/test_files/create_repository.yml", t)
+	takeAction("/testfiles/create_repository.yml", t)
 
 	time.Sleep(time.Duration(int64(3)) * time.Second)
 
-	takeAction("/test_files/delete_repositories.yml", t)
+	takeAction("/testfiles/delete_repositories.yml", t)
 }

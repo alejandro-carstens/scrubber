@@ -12,8 +12,8 @@ func TestListIndices(t *testing.T) {
 	var waitGroup sync.WaitGroup
 
 	createIndexFiles := []string{
-		"/test_files/create_index_by_name_1.yml",
-		"/test_files/create_index_by_name_2.yml",
+		"/testfiles/create_index_by_name_1.yml",
+		"/testfiles/create_index_by_name_2.yml",
 	}
 
 	waitGroup.Add(len(createIndexFiles))
@@ -24,7 +24,7 @@ func TestListIndices(t *testing.T) {
 
 	waitGroup.Wait()
 
-	action := takeAction("/test_files/list_indices.yml", t)
+	action := takeAction("/testfiles/list_indices.yml", t)
 
 	expectedIndices := []string{
 		"my_index-2019-01-03",
