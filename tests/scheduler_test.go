@@ -17,7 +17,7 @@ func TestSchedulerRunActionImmidiately(t *testing.T) {
 		t.Error(err)
 	}
 
-	filePath := currentPath + "/testdata/schedulerdata/create_actions"
+	filePath := currentPath + "/testdata/schedulerdata/createactions"
 	logger := logger.NewLogger("", true, true, true, true)
 
 	scheduler := console.NewScheduler(filePath, logger)
