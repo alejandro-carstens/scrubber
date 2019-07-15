@@ -12,9 +12,9 @@ func TestListSnapshots(t *testing.T) {
 	var waitGroup sync.WaitGroup
 
 	createIndexFiles := []string{
-		"/testfiles/create_index_by_name_1.yml",
-		"/testfiles/create_index_by_name_2.yml",
-		"/testfiles/create_index_by_name.yml",
+		"/testdata/create_index_by_name_1.yml",
+		"/testdata/create_index_by_name_2.yml",
+		"/testdata/create_index_by_name.yml",
 	}
 
 	waitGroup.Add(len(createIndexFiles))
@@ -25,18 +25,18 @@ func TestListSnapshots(t *testing.T) {
 
 	waitGroup.Wait()
 
-	takeAction("/testfiles/create_repository.yml", t)
+	takeAction("/testdata/create_repository.yml", t)
 
 	createSnapshotFiles := []string{
-		"/testfiles/count_test_snapshot_index_1.yml",
-		"/testfiles/count_test_snapshot_index.yml",
+		"/testdata/count_test_snapshot_index_1.yml",
+		"/testdata/count_test_snapshot_index.yml",
 	}
 
 	for _, createSnapshotFile := range createSnapshotFiles {
 		takeAction(createSnapshotFile, t)
 	}
 
-	action := takeAction("/testfiles/list_snapshots.yml", t)
+	action := takeAction("/testdata/list_snapshots.yml", t)
 
 	expectedSnapshots := []string{
 		"count_snapshot-2019.01.02",

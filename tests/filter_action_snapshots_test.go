@@ -123,28 +123,28 @@ func filterSnapshotsDataProvider() []map[string]string {
 
 	data = append(data, map[string]string{
 		"name":              "TestFilterByCreationDate",
-		"create_index":      "/testfiles/create_pattern_index.yml",
-		"create_repository": "/testfiles/create_repository.yml",
-		"create_snapshot":   "/testfiles/snapshot_index.yml",
-		"action":            "/testfiles/delete_snapshot_by_creation_date.yml",
+		"create_index":      "/testdata/create_pattern_index.yml",
+		"create_repository": "/testdata/create_repository.yml",
+		"create_snapshot":   "/testdata/snapshot_index.yml",
+		"action":            "/testdata/delete_snapshot_by_creation_date.yml",
 		"repository":        "my_backup_repository",
 		"index_name":        "alejandro-carstens-1992.06.02",
 	})
 	data = append(data, map[string]string{
 		"name":              "TestFilterByName",
-		"create_index":      "/testfiles/create_pattern_index.yml",
-		"create_repository": "/testfiles/create_repository.yml",
-		"create_snapshot":   "/testfiles/pattern_snapshot.yml",
-		"action":            "/testfiles/delete_snapshot_by_name.yml",
+		"create_index":      "/testdata/create_pattern_index.yml",
+		"create_repository": "/testdata/create_repository.yml",
+		"create_snapshot":   "/testdata/pattern_snapshot.yml",
+		"action":            "/testdata/delete_snapshot_by_name.yml",
 		"repository":        "my_backup_repository",
 		"index_name":        "alejandro-carstens-1992.06.02",
 	})
 	data = append(data, map[string]string{
 		"name":              "TestFilterByPattern",
-		"create_index":      "/testfiles/create_pattern_index.yml",
-		"create_repository": "/testfiles/create_repository.yml",
-		"create_snapshot":   "/testfiles/pattern_snapshot.yml",
-		"action":            "/testfiles/delete_snapshot_by_pattern.yml",
+		"create_index":      "/testdata/create_pattern_index.yml",
+		"create_repository": "/testdata/create_repository.yml",
+		"create_snapshot":   "/testdata/pattern_snapshot.yml",
+		"action":            "/testdata/delete_snapshot_by_pattern.yml",
 		"repository":        "my_backup_repository",
 		"index_name":        "alejandro-carstens-1992.06.02",
 	})
@@ -157,10 +157,10 @@ func filterSnapshotsByCountDataProvider() []map[string]string {
 
 	data = append(data, map[string]string{
 		"name":                    "TestFilterByCountSortByCreationDate",
-		"create_indices":          "/testfiles/create_index_by_name.yml,/testfiles/create_index_by_name_1.yml,/testfiles/create_index_by_name_2.yml",
-		"create_repository":       "/testfiles/create_repository.yml",
-		"create_snapshots":        "/testfiles/count_test_snapshot_index_1.yml,/testfiles/count_test_snapshot_index.yml",
-		"action":                  "/testfiles/delete_snapshot_by_count_sort_by_creation_date.yml",
+		"create_indices":          "/testdata/create_index_by_name.yml,/testdata/create_index_by_name_1.yml,/testdata/create_index_by_name_2.yml",
+		"create_repository":       "/testdata/create_repository.yml",
+		"create_snapshots":        "/testdata/count_test_snapshot_index_1.yml,/testdata/count_test_snapshot_index.yml",
+		"action":                  "/testdata/delete_snapshot_by_count_sort_by_creation_date.yml",
 		"repository":              "my_backup_repository",
 		"index_name":              "_all",
 		"wait":                    "true",
@@ -169,10 +169,10 @@ func filterSnapshotsByCountDataProvider() []map[string]string {
 	})
 	data = append(data, map[string]string{
 		"name":                    "TestFilterByCountSortByName",
-		"create_indices":          "/testfiles/create_index_by_name.yml,/testfiles/create_index_by_name_1.yml,/testfiles/create_index_by_name_2.yml",
-		"create_repository":       "/testfiles/create_repository.yml",
-		"create_snapshots":        "/testfiles/count_test_snapshot_index_1.yml,/testfiles/count_test_snapshot_index.yml",
-		"action":                  "/testfiles/delete_snapshot_by_count_sort_by_name.yml",
+		"create_indices":          "/testdata/create_index_by_name.yml,/testdata/create_index_by_name_1.yml,/testdata/create_index_by_name_2.yml",
+		"create_repository":       "/testdata/create_repository.yml",
+		"create_snapshots":        "/testdata/count_test_snapshot_index_1.yml,/testdata/count_test_snapshot_index.yml",
+		"action":                  "/testdata/delete_snapshot_by_count_sort_by_name.yml",
 		"repository":              "my_backup_repository",
 		"index_name":              "_all",
 		"wait":                    "true",
@@ -181,10 +181,10 @@ func filterSnapshotsByCountDataProvider() []map[string]string {
 	})
 	data = append(data, map[string]string{
 		"name":                    "TestFilterByCountSortByPattern",
-		"create_indices":          "/testfiles/create_index_by_name.yml,/testfiles/create_index_by_name_1.yml,/testfiles/create_index_by_name_2.yml",
-		"create_repository":       "/testfiles/create_repository.yml",
-		"create_snapshots":        "/testfiles/count_test_snapshot_index_1.yml,/testfiles/count_test_snapshot_index.yml",
-		"action":                  "/testfiles/delete_snapshot_by_count_sort_by_pattern.yml",
+		"create_indices":          "/testdata/create_index_by_name.yml,/testdata/create_index_by_name_1.yml,/testdata/create_index_by_name_2.yml",
+		"create_repository":       "/testdata/create_repository.yml",
+		"create_snapshots":        "/testdata/count_test_snapshot_index_1.yml,/testdata/count_test_snapshot_index.yml",
+		"action":                  "/testdata/delete_snapshot_by_count_sort_by_pattern.yml",
 		"repository":              "my_backup_repository",
 		"index_name":              "_all",
 		"wait":                    "true",

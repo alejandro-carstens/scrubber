@@ -50,20 +50,20 @@ func restoreSnapshotDataProvider() []map[string]string {
 	data := []map[string]string{}
 
 	data = append(data, map[string]string{
-		"create_index":      "/testfiles/create_index_to_restore.yml",
-		"create_repository": "/testfiles/create_repository.yml",
-		"create_snapshot":   "/testfiles/snapshot_to_restore.yml",
-		"restore_snapshot":  "/testfiles/restore_snapshot_by_creation_date.yml",
+		"create_index":      "/testdata/create_index_to_restore.yml",
+		"create_repository": "/testdata/create_repository.yml",
+		"create_snapshot":   "/testdata/snapshot_to_restore.yml",
+		"restore_snapshot":  "/testdata/restore_snapshot_by_creation_date.yml",
 		"repository":        "my_backup_repository",
 		"snapshot":          "my_first_snapshot",
 		"restored_index":    "restored_index_1",
 		"index_name":        "index_1",
 	})
 	data = append(data, map[string]string{
-		"create_index":      "/testfiles/create_index_to_restore.yml",
-		"create_repository": "/testfiles/create_repository.yml",
-		"create_snapshot":   "/testfiles/snapshot_to_restore.yml",
-		"restore_snapshot":  "/testfiles/restore_snapshot_by_creation_date_no_wait.yml",
+		"create_index":      "/testdata/create_index_to_restore.yml",
+		"create_repository": "/testdata/create_repository.yml",
+		"create_snapshot":   "/testdata/snapshot_to_restore.yml",
+		"restore_snapshot":  "/testdata/restore_snapshot_by_creation_date_no_wait.yml",
 		"repository":        "my_backup_repository",
 		"snapshot":          "my_first_snapshot",
 		"restored_index":    "restored_index_1",

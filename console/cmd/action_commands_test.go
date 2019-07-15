@@ -219,7 +219,7 @@ func cmdParamsDataProvider() []map[string][]string {
 		},
 		"success_params": []string{
 			"run-action",
-			"--file_path=/../../tests/testfiles/disable_index_create.yml",
+			"--file_path=/../../tests/testdata/disable_index_create.yml",
 		},
 	})
 	data = append(data, map[string][]string{

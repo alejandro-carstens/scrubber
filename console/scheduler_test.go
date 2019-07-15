@@ -16,7 +16,7 @@ func TestSchedulerExtractFiles(t *testing.T) {
 		t.Error(err)
 	}
 
-	filePath := currentPath + "/../tests/testfiles/scheduler_extract_files_test"
+	filePath := currentPath + "/../tests/testdata/schedulerdata"
 	logger := logger.NewLogger("", true, true, true, true)
 
 	configs, err := NewScheduler(filePath, logger).extractConfigs()
@@ -49,7 +49,7 @@ func TestSchedulerSchedule(t *testing.T) {
 		t.Error(err)
 	}
 
-	filePath := currentPath + "/../tests/testfiles/scheduler_extract_files_test/delete_actions/aggregate"
+	filePath := currentPath + "/../tests/testdata/schedulerdata/deleteactions/aggregate"
 	logger := logger.NewLogger("", true, true, true, true)
 
 	scheduler := NewScheduler(filePath, logger)

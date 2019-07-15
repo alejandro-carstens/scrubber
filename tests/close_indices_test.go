@@ -9,13 +9,13 @@ import (
 )
 
 func TestCloseIndices(t *testing.T) {
-	if _, err := createTestIndex("/testfiles/create_index.yml"); err != nil {
+	if _, err := createTestIndex("/testdata/create_index.yml"); err != nil {
 		t.Error(err)
 	}
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
 
-	takeAction("/testfiles/close_indices_by_creation_date.yml", t)
+	takeAction("/testdata/close_indices_by_creation_date.yml", t)
 
 	builder, err := golastic.NewBuilder(nil, nil)
 

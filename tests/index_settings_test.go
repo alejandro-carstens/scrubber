@@ -10,13 +10,13 @@ import (
 )
 
 func TestIndexSettings(t *testing.T) {
-	if _, err := createTestIndex("/testfiles/create_pattern_index.yml"); err != nil {
+	if _, err := createTestIndex("/testdata/create_pattern_index.yml"); err != nil {
 		t.Error(err)
 	}
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
 
-	takeAction("/testfiles/update_settings.yml", t)
+	takeAction("/testdata/update_settings.yml", t)
 
 	builder, err := golastic.NewBuilder(nil, nil)
 
