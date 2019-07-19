@@ -3,6 +3,7 @@ package runners
 import (
 	"scrubber/actions/criterias"
 	"scrubber/actions/infos"
+	"strings"
 )
 
 type kibanaFilterRunner struct {
@@ -23,7 +24,7 @@ func (kfr *kibanaFilterRunner) RunFilter(channel chan *FilterResponse, criteria 
 		return
 	}
 
-	isKibana := kfr.info.Name() == ".kibana" || kfr.info.Name() == ".kibana-5" || kfr.info.Name() == ".kibana-6"
+	isKibana := strings.HasPrefix(kfr.info.Name(), ".kibana")
 
 	if isKibana {
 		kfr.report.AddReason("Index '%v' is a kibana index", kfr.info.Name())
