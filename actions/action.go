@@ -16,7 +16,7 @@ type action struct {
 	errorReportMap *errorReportMap
 }
 
-// Init initializes an action 
+// Init initializes an action
 func (a *action) Init(context contexts.Contextable, logger *logger.Logger) error {
 	builder, err := golastic.NewBuilder(nil, nil)
 
@@ -56,4 +56,8 @@ func (a *action) DisableAction() bool {
 // List returns the actionable list
 func (a *action) List() []string {
 	return []string{}
+}
+
+func (a *action) TearDownBuilder() {
+	a.builder = nil
 }

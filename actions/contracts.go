@@ -19,4 +19,6 @@ type Actionable interface {
 	DisableAction() bool
 
 	List() []string
+
+	TearDownBuilder()
 }

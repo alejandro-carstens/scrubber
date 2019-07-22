@@ -15,13 +15,13 @@ func Execute(context contexts.Contextable, logger *logger.Logger) {
 
 	if err != nil {
 		logger.Errorf("%v", err.Error())
-
 		return
 	}
 
+	defer action.TearDownBuilder()
+
 	if action.DisableAction() {
 		logger.Noticef("%v action disabled", context.Action())
-
 		return
 	}
 
