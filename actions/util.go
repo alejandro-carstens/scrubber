@@ -5,6 +5,7 @@ import (
 	"errors"
 	"scrubber/actions/contexts"
 	"scrubber/logger"
+	"strconv"
 
 	"github.com/Jeffail/gabs"
 )
@@ -91,6 +92,9 @@ func build(name string) (Actionable, error) {
 	case "restore":
 		action = new(restore)
 		break
+	case "rollover":
+		action = new(rollover)
+		break
 	case "list_indices":
 		action = new(listIndices)
 		break
@@ -144,4 +148,10 @@ func isSnapshotAction(action string) bool {
 	}
 
 	return false
+}
+
+func isDigit(digit string) bool {
+	_, err := strconv.Atoi(digit)
+
+	return err == nil
 }

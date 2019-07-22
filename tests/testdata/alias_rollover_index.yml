@@ -1,0 +1,15 @@
+action: alias
+description: Add/Remove selected indices to or from the specified alias
+options:
+  name: my_alias
+  type: add
+  extra_settings:
+    filter:
+      term:
+        bytes: 12
+    search_routing: 1,2,3
+    routing: "1"
+filters:
+  - filtertype: pattern
+    kind: prefix
+    value: my_index-

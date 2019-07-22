@@ -250,6 +250,25 @@ func cmdParamsDataProvider() []map[string][]string {
 			"--disable_action=true",
 		},
 	})
+	data = append(data, map[string][]string{
+		"error_params": []string{
+			"rollover",
+			"--max_date=1d",
+			"--max_docs=1000",
+			"--max_size=5gb",
+			"--new_index=my_new_index",
+			"--disable_action=true",
+		},
+		"success_params": []string{
+			"rollover",
+			"--name=alejandro",
+			"--max_date=1d",
+			"--max_docs=1000",
+			"--max_size=5gb",
+			"--new_index=my_new_index",
+			"--disable_action=true",
+		},
+	})
 
 	return data
 }

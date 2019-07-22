@@ -1,0 +1,8 @@
+action: rollover
+description: Rollover an index based on the specified conditions
+options:
+  name: my_alias
+  new_index: my_new_index
+  max_docs: 100
+  max_size: 5gb
+  max_age: 7d

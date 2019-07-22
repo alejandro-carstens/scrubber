@@ -32,6 +32,7 @@ func boot(logger *logger.Logger) *cobra.Command {
 	scrubber.AddCommand(new(listSnapshotsCmd).new(logger))
 	scrubber.AddCommand(new(schedulerCmd).new(logger))
 	scrubber.AddCommand(new(deleteRepositoriesCmd).new(logger))
+	scrubber.AddCommand(new(rolloverCmd).new(logger))
 
 	return scrubber
 }

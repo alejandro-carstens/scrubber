@@ -7,6 +7,7 @@ import (
 	"scrubber/actions/contexts"
 	"scrubber/logger"
 	"scrubber/ymlparser"
+	"strconv"
 	"sync"
 	"testing"
 	"time"
@@ -112,4 +113,56 @@ func takeActionAsync(path string, t *testing.T, waitGroup *sync.WaitGroup) {
 	defer waitGroup.Done()
 
 	takeAction(path, t)
+}
+
+func seedIndexAsync(index string, count int, builder *golastic.ElasticsearchBuilder, waitGroup *sync.WaitGroup, useConstantTime bool) {
+	defer waitGroup.Done()
+
+	inserts := []golastic.ElasticModelable{}
+
+	for i := 0; i < count; i++ {
+		insert := golastic.NewGolasticModel()
+
+		value := map[string]interface{}{}
+
+		value["id"] = strconv.Itoa(i + 1 + 1000000000)
+		value["exception"] = "Exception exception exception exception exception exception exception exception exception"
+		value["request"] = "Request request request request request request request request request"
+		value["message"] = "Message message message message message message message message message"
+		value["bytes"] = int64(i)
+		value["number"] = float64(i)
+
+		if useConstantTime {
+			constantTime, err := time.Parse(time.RFC3339, "2017-11-12T11:45:26.371Z")
+
+			if err != nil {
+				panic(err)
+			}
+
+			value["created_at"] = constantTime
+		} else {
+			value["created_at"] = time.Now().Add(time.Duration(int64(-1*(i+1))) * time.Hour)
+		}
+
+		insert.SetData(value)
+		insert.SetIndex(index)
+
+		inserts = append(inserts, insert)
+
+		if count >= ELASTICSEARCH_BULK_INSERT_LIMIT && (i+1)%ELASTICSEARCH_BULK_INSERT_LIMIT == 0 {
+			if _, err := builder.Insert(inserts...); err != nil {
+				panic(err)
+			}
+
+			inserts = []golastic.ElasticModelable{}
+		}
+	}
+
+	if count < ELASTICSEARCH_BULK_INSERT_LIMIT {
+		if _, err := builder.Insert(inserts...); err != nil {
+			panic(err)
+		}
+	}
+
+	time.Sleep(time.Duration(int64(2)) * time.Second)
 }

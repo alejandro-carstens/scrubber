@@ -60,6 +60,8 @@ func build(action string) (Contextable, error) {
 	case "snapshot":
 		ctx = new(SnapshotContext)
 		break
+	case "rollover":
+		ctx = new(RolloverContext)
 	case "open_indices":
 		ctx = new(OpenIndicesContext)
 		break
