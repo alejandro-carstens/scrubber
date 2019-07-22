@@ -19,7 +19,9 @@ type action struct {
 // Init initializes an action
 func (a *action) Init(context contexts.Contextable, logger *logger.Logger, builder *golastic.ElasticsearchBuilder) error {
 	if builder == nil {
-		builder, err := golastic.NewBuilder(nil, nil)
+		var err error
+
+		builder, err = golastic.NewBuilder(nil, nil)
 
 		if err != nil {
 			return err

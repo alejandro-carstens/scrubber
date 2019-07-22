@@ -14,5 +14,5 @@ type baseActionCmd struct {
 }
 
 func (bac *baseActionCmd) Handle(cmd *cobra.Command, args []string) {
-	console.Execute(bac.context, bac.logger)
+	console.Execute(bac.context, bac.logger, nil)
 }
