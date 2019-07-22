@@ -15,9 +15,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const SEED_INDEX_COUNT int = 4
-const ELASTICSEARCH_BULK_INSERT_LIMIT int = 10000
-
 func TestFilterIndices(t *testing.T) {
 	for _, data := range filterIndicesDataProvider() {
 		log.Println("Running " + data["test_name"])

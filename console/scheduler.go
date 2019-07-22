@@ -56,7 +56,7 @@ func (s *Scheduler) Run() error {
 				return err
 			}
 
-			job.Do(Execute, context, s.logger)
+			job.Do(Execute, context, s.logger, s.builder)
 
 			startCron = true
 

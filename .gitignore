@@ -6,3 +6,4 @@ push.sh
 Dockerfile.scrubber
 build/
 credentials.json
+action.yml
