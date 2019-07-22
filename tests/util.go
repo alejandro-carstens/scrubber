@@ -62,7 +62,7 @@ func getAction(config *gabs.Container) (actions.Actionable, error) {
 		return nil, err
 	}
 
-	return actions.Create(context, logger.NewLogger("", true, true, true, true))
+	return actions.Create(context, logger.NewLogger("", true, true, true, true), nil)
 }
 
 func takeAction(path string, t *testing.T) actions.Actionable {
