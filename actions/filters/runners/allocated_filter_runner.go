@@ -9,18 +9,11 @@ import (
 
 type allocatedFilterRunner struct {
 	baseRunner
-	builder golastic.Queryable
 }
 
 // Init initializes the filter runner
-func (afr *allocatedFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
-	if err := afr.BaseInit(info...); err != nil {
-		return nil, err
-	}
-
-	builder, err := golastic.NewBuilder(golastic.NewGolasticModel(), nil)
-
-	if err != nil {
+func (afr *allocatedFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
+	if err := afr.BaseInit(builder, info...); err != nil {
 		return nil, err
 	}
 

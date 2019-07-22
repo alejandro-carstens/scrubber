@@ -5,6 +5,8 @@ import (
 	"scrubber/actions/criterias"
 	"scrubber/actions/infos"
 	"strings"
+
+	"github.com/alejandro-carstens/golastic"
 )
 
 type patternFilterRunner struct {
@@ -12,8 +14,8 @@ type patternFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (pfr *patternFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
-	err := pfr.BaseInit(info...)
+func (pfr *patternFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
+	err := pfr.BaseInit(builder, info...)
 
 	return pfr, err
 }

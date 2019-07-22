@@ -219,15 +219,14 @@ func (uafr *useAgeFilterRunner) executeFieldStats(channel chan *fieldStatsRespon
 
 	model := golastic.NewGolasticModel()
 	model.SetIndex(index)
-	builder, err := golastic.NewBuilder(model, nil)
 
-	if err != nil {
+	if _, err := uafr.builder.SetModel(model); err != nil {
 		response.err = err
 		channel <- response
 		return
 	}
 
-	result, err := builder.MinMax(criteria.GetField(), true)
+	result, err := uafr.builder.MinMax(criteria.GetField(), true)
 
 	if err != nil {
 		response.err = err

@@ -4,6 +4,8 @@ import (
 	"scrubber/actions/criterias"
 	"scrubber/actions/infos"
 	"strings"
+
+	"github.com/alejandro-carstens/golastic"
 )
 
 type kibanaFilterRunner struct {
@@ -11,8 +13,8 @@ type kibanaFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (kfr *kibanaFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
-	err := kfr.BaseInit(info...)
+func (kfr *kibanaFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
+	err := kfr.BaseInit(builder, info...)
 
 	return kfr, err
 }

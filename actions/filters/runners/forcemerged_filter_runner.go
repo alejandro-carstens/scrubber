@@ -13,8 +13,8 @@ type forcemergedFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (ffr *forcemergedFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
-	if err := ffr.BaseInit(info...); err != nil {
+func (ffr *forcemergedFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
+	if err := ffr.BaseInit(builder, info...); err != nil {
 		return nil, err
 	}
 

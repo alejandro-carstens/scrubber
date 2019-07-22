@@ -21,8 +21,8 @@ type spaceFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (sfr *spaceFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
-	if err := sfr.BaseInit(info...); err != nil {
+func (sfr *spaceFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
+	if err := sfr.BaseInit(builder, info...); err != nil {
 		return nil, err
 	}
 
@@ -68,11 +68,7 @@ func (sfr *spaceFilterRunner) RunFilter(channel chan *FilterResponse, criteria c
 
 	sfr.report.AddResults(sortedList...)
 
-	channel <- sfr.response.
-		setError(err).
-		setPassed(true).
-		setReport(sfr.report).
-		setList(sortedList)
+	channel <- sfr.response.setError(err).setPassed(true).setReport(sfr.report).setList(sortedList)
 }
 
 func (sfr *spaceFilterRunner) executeIndexStats(indicesStatsResponse chan *IndexStatsResponse) {
@@ -83,15 +79,7 @@ func (sfr *spaceFilterRunner) executeIndexStats(indicesStatsResponse chan *Index
 		indices = append(indices, index)
 	}
 
-	builder, err := golastic.NewBuilder(nil, nil)
-
-	if err != nil {
-		response.err = err
-		indicesStatsResponse <- response
-		return
-	}
-
-	mapContainer, err := builder.IndexStats(indices...)
+	mapContainer, err := sfr.builder.IndexStats(indices...)
 
 	if err != nil {
 		response.err = err

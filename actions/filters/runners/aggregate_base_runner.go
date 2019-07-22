@@ -5,16 +5,19 @@ import (
 	"scrubber/actions/criterias"
 	"scrubber/actions/filters/runners/reports"
 	"scrubber/actions/infos"
+
+	"github.com/alejandro-carstens/golastic"
 )
 
 type aggregateBaseRunner struct {
 	info     map[string]infos.Informable
 	report   *reports.AggregateReport
 	response *FilterResponse
+	builder  *golastic.ElasticsearchBuilder
 }
 
 // BaseInit initializes the base properties for a filter runner
-func (abr *aggregateBaseRunner) BaseInit(info ...infos.Informable) error {
+func (abr *aggregateBaseRunner) BaseInit(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) error {
 	if len(info) == 0 {
 		return errors.New("info cannot be empty")
 	}
@@ -22,6 +25,7 @@ func (abr *aggregateBaseRunner) BaseInit(info ...infos.Informable) error {
 	abr.report = reports.NewAggregateReport()
 	abr.response = new(FilterResponse)
 	abr.info = map[string]infos.Informable{}
+	abr.builder = builder
 
 	for i, element := range info {
 		if len(element.Name()) == 0 {

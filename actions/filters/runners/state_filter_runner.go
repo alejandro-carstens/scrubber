@@ -3,6 +3,8 @@ package runners
 import (
 	"scrubber/actions/criterias"
 	"scrubber/actions/infos"
+
+	"github.com/alejandro-carstens/golastic"
 )
 
 type stateFilterRunner struct {
@@ -10,8 +12,8 @@ type stateFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (sfr *stateFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
-	err := sfr.BaseInit(info...)
+func (sfr *stateFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
+	err := sfr.BaseInit(builder, info...)
 
 	return sfr, err
 }

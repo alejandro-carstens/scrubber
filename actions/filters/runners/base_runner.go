@@ -5,16 +5,19 @@ import (
 	"scrubber/actions/criterias"
 	"scrubber/actions/filters/runners/reports"
 	"scrubber/actions/infos"
+
+	"github.com/alejandro-carstens/golastic"
 )
 
 type baseRunner struct {
 	info     infos.Informable
 	report   *reports.Report
 	response *FilterResponse
+	builder  *golastic.ElasticsearchBuilder
 }
 
 // BaseInit initializes the base properties for a filter runner
-func (br *baseRunner) BaseInit(info ...infos.Informable) error {
+func (br *baseRunner) BaseInit(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) error {
 	if len(info) != 1 {
 		return errors.New("This is not an aggregate filter runner and as such only accepts one index per run")
 	}
@@ -35,6 +38,7 @@ func (br *baseRunner) BaseInit(info ...infos.Informable) error {
 
 	br.report = report
 	br.response = new(FilterResponse)
+	br.builder = builder
 
 	return nil
 }

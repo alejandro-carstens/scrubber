@@ -9,25 +9,13 @@ import (
 
 type aliasFilterRunner struct {
 	baseRunner
-	builder golastic.Queryable
 }
 
 // Init initializes the filter runner
-func (afr *aliasFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
-	if err := afr.BaseInit(info...); err != nil {
+func (afr *aliasFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
+	if err := afr.BaseInit(builder, info...); err != nil {
 		return nil, err
 	}
-
-	model := golastic.NewGolasticModel()
-	model.SetIndex(afr.info.Name())
-
-	builder, err := golastic.NewBuilder(model, nil)
-
-	if err != nil {
-		return nil, err
-	}
-
-	afr.builder = builder
 
 	return afr, nil
 }

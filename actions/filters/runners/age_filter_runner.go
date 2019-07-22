@@ -15,32 +15,22 @@ import (
 
 type ageFilterRunner struct {
 	baseRunner
-	builder golastic.Queryable
 }
 
 // Init initializes the filter runner
-func (afr *ageFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
-	if err := afr.BaseInit(info...); err != nil {
+func (afr *ageFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
+	if err := afr.BaseInit(builder, info...); err != nil {
 		return nil, err
 	}
-
-	var builder *golastic.ElasticsearchBuilder
-	var err error
 
 	if !afr.info.IsSnapshotInfo() {
 		model := golastic.NewGolasticModel()
 		model.SetIndex(afr.info.Name())
 
-		builder, err = golastic.NewBuilder(model, nil)
-	} else {
-		builder, err = golastic.NewBuilder(nil, nil)
+		if _, err := afr.builder.SetModel(model); err != nil {
+			return nil, err
+		}
 	}
-
-	if err != nil {
-		return nil, err
-	}
-
-	afr.builder = builder
 
 	return afr, nil
 }

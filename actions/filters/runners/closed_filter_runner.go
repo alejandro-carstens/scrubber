@@ -4,6 +4,8 @@ import (
 	"errors"
 	"scrubber/actions/criterias"
 	"scrubber/actions/infos"
+
+	"github.com/alejandro-carstens/golastic"
 )
 
 const CLOSED_STATUS string = "close"
@@ -14,8 +16,8 @@ type closedFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (cfr *closedFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
-	if err := cfr.BaseInit(info...); err != nil {
+func (cfr *closedFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
+	if err := cfr.BaseInit(builder, info...); err != nil {
 		return nil, err
 	}
 

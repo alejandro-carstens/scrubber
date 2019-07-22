@@ -4,6 +4,8 @@ import (
 	"errors"
 	"scrubber/actions/infos"
 	"time"
+
+	"github.com/alejandro-carstens/golastic"
 )
 
 const SECONDS_PER_DAY float64 = 86400
@@ -34,7 +36,7 @@ func (ts timeSlice) Len() int {
 }
 
 // NewRunner return a filter runner
-func NewRunner(criteria string, info ...infos.Informable) (Runnerable, error) {
+func NewRunner(criteria string, builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
 	var runner Runnerable
 
 	switch criteria {
@@ -74,7 +76,7 @@ func NewRunner(criteria string, info ...infos.Informable) (Runnerable, error) {
 		return nil, errors.New("Invalid criteria")
 	}
 
-	return runner.Init(info...)
+	return runner.Init(builder, info...)
 }
 
 func elapsed(from, to time.Time) (years, months, days, hours, minutes, seconds int) {

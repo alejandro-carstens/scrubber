@@ -5,6 +5,8 @@ import (
 	"scrubber/actions/criterias"
 	"scrubber/actions/infos"
 	"sort"
+
+	"github.com/alejandro-carstens/golastic"
 )
 
 type countFilterRunner struct {
@@ -12,8 +14,8 @@ type countFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (cfr *countFilterRunner) Init(info ...infos.Informable) (Runnerable, error) {
-	if err := cfr.BaseInit(info...); err != nil {
+func (cfr *countFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
+	if err := cfr.BaseInit(builder, info...); err != nil {
 		return nil, err
 	}
 
