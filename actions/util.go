@@ -8,16 +8,17 @@ import (
 	"strconv"
 
 	"github.com/Jeffail/gabs"
+	"github.com/alejandro-carstens/golastic"
 )
 
-func Create(context contexts.Contextable, logger *logger.Logger) (Actionable, error) {
+func Create(context contexts.Contextable, logger *logger.Logger, builder *golastic.ElasticsearchBuilder) (Actionable, error) {
 	action, err := build(context.Action())
 
 	if err != nil {
 		return nil, err
 	}
 
-	if err := action.Init(context, logger); err != nil {
+	if err := action.Init(context, logger, builder); err != nil {
 		return nil, err
 	}
 

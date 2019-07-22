@@ -1,17 +1,24 @@
 package console
 
 import (
+	"golastic"
 	"scrubber/actions"
 	"scrubber/actions/contexts"
 	"scrubber/logger"
 )
 
 func NewScheduler(basePath string, logger *logger.Logger) *Scheduler {
-	return &Scheduler{basePath: basePath, logger: logger}
+	builder, _ := golastic.NewBuilder(nil, nil)
+	
+	return &Scheduler{
+		basePath: basePath, 
+		logger: logger,
+		builder: builder
+	}
 }
 
-func Execute(context contexts.Contextable, logger *logger.Logger) {
-	action, err := actions.Create(context, logger)
+func Execute(context contexts.Contextable, logger *logger.Logger, builder *golastic.ElasticsearchBuilder) {
+	action, err := actions.Create(context, logger, builder)
 
 	if err != nil {
 		logger.Errorf("%v", err.Error())

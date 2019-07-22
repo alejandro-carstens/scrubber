@@ -2,6 +2,7 @@ package console
 
 import (
 	"errors"
+	"golastic"
 	"os"
 	"path/filepath"
 	"scrubber/actions/contexts"
@@ -25,6 +26,7 @@ type configMap struct {
 type Scheduler struct {
 	basePath string
 	logger   *logger.Logger
+	builder  *golastic.ElasticsearchBuilder
 }
 
 func (s *Scheduler) Run() error {
@@ -144,7 +146,7 @@ func (s *Scheduler) runAsyncActions(contexts []contexts.Contextable) {
 		pool.JobQueue <- func() {
 			defer pool.JobDone()
 
-			Execute(action, s.logger)
+			Execute(action, s.logger, s.builder)
 		}
 	}
 
@@ -154,7 +156,7 @@ func (s *Scheduler) runAsyncActions(contexts []contexts.Contextable) {
 
 func (s *Scheduler) runActions(contexts []contexts.Contextable) {
 	for _, context := range contexts {
-		Execute(context, s.logger)
+		Execute(context, s.logger, s.builder)
 	}
 }
 
