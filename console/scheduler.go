@@ -2,7 +2,6 @@ package console
 
 import (
 	"errors"
-	"golastic"
 	"os"
 	"path/filepath"
 	"scrubber/actions/contexts"
@@ -11,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/Jeffail/gabs"
+	"github.com/alejandro-carstens/golastic"
 	"github.com/ivpusic/grpool"
 	"github.com/jasonlvhit/gocron"
 )
