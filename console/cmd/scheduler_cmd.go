@@ -6,6 +6,7 @@ import (
 	"scrubber/console"
 	"scrubber/logger"
 
+	"github.com/alejandro-carstens/golastic"
 	"github.com/spf13/cobra"
 )
 
@@ -46,7 +47,13 @@ func (sc *schedulerCmd) Validate(cmd *cobra.Command, args []string) error {
 }
 
 func (sc *schedulerCmd) Handle(cmd *cobra.Command, args []string) {
-	if err := console.NewScheduler(sc.path, sc.logger).Run(); err != nil {
+	builder, err := golastic.NewBuilder(nil, nil)
+
+	if err != nil {
+		sc.logger.Errorf(err.Error())
+	}
+
+	if err := console.NewScheduler(sc.path, sc.logger, builder).Run(); err != nil {
 		sc.logger.Errorf(err.Error())
 	}
 }

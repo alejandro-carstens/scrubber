@@ -88,6 +88,10 @@ func (r *rollover) verifyRollableIndex() error {
 		return errors.New("no results found for alias: " + r.options.Name)
 	}
 
+	if len(r.options.NewIndex) > 0 {
+		return nil
+	}
+
 	last2chars := indices[0][len(indices[0])-2:]
 
 	if string(last2chars[0]) == "-" && isDigit(string(last2chars[1])) {

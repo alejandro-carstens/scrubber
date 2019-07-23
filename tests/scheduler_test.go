@@ -20,7 +20,7 @@ func TestSchedulerRunActionImmidiately(t *testing.T) {
 	filePath := currentPath + "/testdata/schedulerdata/createactions"
 	logger := logger.NewLogger("", true, true, true, true)
 
-	scheduler := console.NewScheduler(filePath, logger)
+	scheduler := console.NewScheduler(filePath, logger, nil)
 
 	if err := scheduler.Run(); err != nil {
 		t.Error(err)
