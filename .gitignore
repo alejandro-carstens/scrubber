@@ -3,7 +3,6 @@ TODO.txt
 vendor/
 Dockerfile.build
 push.sh
-Dockerfile.scrubber
 build/
 credentials.json
 action.yml

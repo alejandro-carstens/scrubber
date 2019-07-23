@@ -1,0 +1,17 @@
+FROM golang:alpine AS builder
+
+RUN apk update && apk add --no-cache git
+
+WORKDIR $GOPATH/src/scrubber
+
+COPY . .
+
+RUN export GO111MODULE=on && go get && GOOS=linux && GOARCH=amd64 && go build -o /go/bin/scrubber
+
+FROM bash:latest
+
+COPY --from=builder /go/bin/scrubber /usr/local/bin
+
+RUN export PATH=$PATH:/usr/local/bin/scrubber
+
+CMD ["scrubber", "scheduler"]
