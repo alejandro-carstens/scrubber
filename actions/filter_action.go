@@ -29,9 +29,9 @@ func (fa *filterAction) ApplyFilters() error {
 	var err error
 
 	if fa.context.Options().IsSnapshot() {
-		actionableList, err = fa.builder.ListSnapshots(fa.context.Options().String("repository"))
+		actionableList, err = fa.indexer.ListSnapshots(fa.context.Options().String("repository"))
 	} else {
-		actionableList, err = fa.builder.ListAllIndices()
+		actionableList, err = fa.indexer.ListAllIndices()
 	}
 
 	if err != nil {
@@ -95,7 +95,7 @@ func (fa *filterAction) runFilter(element string) (bool, error) {
 
 	fa.info[element] = info
 
-	runner, err := filters.NewFilterRunner(info, fa.context.Builder(), fa.builder, fa.context.Options().IsSnapshot())
+	runner, err := filters.NewFilterRunner(info, fa.context.Builder(), fa.connection)
 
 	if err != nil {
 		return false, err
@@ -115,7 +115,7 @@ func (fa *filterAction) runAggregateFilters(list []string) ([]string, error) {
 		info = append(info, fa.info[name])
 	}
 
-	runner, err := filters.NewAggregateFilterRunner(info, fa.context.Builder(), fa.builder)
+	runner, err := filters.NewAggregateFilterRunner(info, fa.context.Builder(), fa.connection)
 
 	if err != nil {
 		return nil, err
@@ -166,7 +166,7 @@ func (fa *filterAction) exec(fn runAction) {
 }
 
 func (fa *filterAction) fetchSnapshot(snapshot string) (infos.Informable, error) {
-	response, err := fa.builder.GetSnapshots(fa.context.Options().String("repository"), snapshot)
+	response, err := fa.indexer.GetSnapshots(fa.context.Options().String("repository"), snapshot)
 
 	if err != nil {
 		return nil, err
@@ -182,7 +182,7 @@ func (fa *filterAction) fetchSnapshot(snapshot string) (infos.Informable, error)
 }
 
 func (fa *filterAction) fetchIndexCat(index string) (infos.Informable, error) {
-	response, err := fa.builder.IndexCat(index)
+	response, err := fa.indexer.IndexCat(index)
 
 	if err != nil {
 		return nil, err

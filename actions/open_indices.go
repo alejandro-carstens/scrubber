@@ -15,14 +15,14 @@ type openIndices struct {
 func (oi *openIndices) ApplyOptions() Actionable {
 	oi.options = oi.context.Options().(*options.OpenIndicesOptions)
 
-	oi.builder.SetOptions(&golastic.IndexOptions{Timeout: oi.options.TimeoutInSeconds()})
+	oi.indexer.SetOptions(&golastic.IndexOptions{Timeout: oi.options.TimeoutInSeconds()})
 
 	return oi
 }
 
 func (oi *openIndices) Perform() Actionable {
 	oi.exec(func(index string) error {
-		response, err := oi.builder.Open(index)
+		response, err := oi.indexer.Open(index)
 
 		if err != nil {
 			return err

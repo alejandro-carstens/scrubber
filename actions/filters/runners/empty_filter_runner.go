@@ -12,8 +12,8 @@ type emptyFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (efr *emptyFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
-	err := efr.BaseInit(builder, info...)
+func (efr *emptyFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	err := efr.BaseInit(connection, info...)
 
 	return efr, err
 }

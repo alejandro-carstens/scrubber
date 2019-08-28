@@ -15,14 +15,14 @@ type closeIndices struct {
 func (ci *closeIndices) ApplyOptions() Actionable {
 	ci.options = ci.context.Options().(*options.CloseIndicesOptions)
 
-	ci.builder.SetOptions(&golastic.IndexOptions{Timeout: ci.options.TimeoutInSeconds()})
+	ci.indexer.SetOptions(&golastic.IndexOptions{Timeout: ci.options.TimeoutInSeconds()})
 
 	return ci
 }
 
 func (ci *closeIndices) Perform() Actionable {
 	ci.exec(func(index string) error {
-		response, err := ci.builder.Close(index)
+		response, err := ci.indexer.Close(index)
 
 		if err != nil {
 			return err

@@ -13,8 +13,8 @@ type kibanaFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (kfr *kibanaFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
-	err := kfr.BaseInit(builder, info...)
+func (kfr *kibanaFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	err := kfr.BaseInit(connection, info...)
 
 	return kfr, err
 }

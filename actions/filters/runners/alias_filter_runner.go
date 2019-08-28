@@ -12,39 +12,46 @@ type aliasFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (afr *aliasFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
-	if err := afr.BaseInit(builder, info...); err != nil {
-		return nil, err
-	}
+func (afr *aliasFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	err := afr.BaseInit(connection, info...)
 
-	return afr, nil
+	return afr, err
 }
 
 // RunFilter filters out elements from the actionable list
 func (afr *aliasFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
 	if err := afr.validateCriteria(criteria); err != nil {
 		channel <- afr.response.setError(err)
+
 		return
 	}
 
 	alias := criteria.(*criterias.Alias)
 
-	aliasesResponse, err := afr.builder.AliasesCat()
+	container, err := afr.connection.Indexer(nil).AliasesCat()
 
 	if err != nil {
 		channel <- afr.response.setError(err)
+
+		return
+	}
+
+	aliasesResponse, err := container.Children()
+
+	if err != nil {
+		channel <- afr.response.setError(err)
+
 		return
 	}
 
 	passed := false
 
 	for _, aliasResponse := range aliasesResponse {
-		if afr.info.Name() == aliasResponse.Index && afr.inSlice(aliasResponse.Alias, alias.Aliases) {
-			afr.report.AddReason(
-				"Alias '%v' matched for index '%v'",
-				aliasResponse.Alias,
-				afr.info.Name(),
-			)
+		indexName, _ := aliasResponse.S("index").Data().(string)
+		aliasName, _ := aliasResponse.S("alias").Data().(string)
+
+		if afr.info.Name() == indexName && afr.inSlice(aliasName, alias.Aliases) {
+			afr.report.AddReason("Alias '%v' matched for index '%v'", aliasName, afr.info.Name())
 
 			passed = true
 			break

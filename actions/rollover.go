@@ -17,9 +17,7 @@ type rollover struct {
 func (r *rollover) ApplyOptions() Actionable {
 	r.options = r.context.Options().(*options.RolloverOptions)
 
-	r.builder.SetOptions(&golastic.IndexOptions{
-		Timeout: r.options.TimeoutInSeconds(),
-	})
+	r.indexer.SetOptions(&golastic.IndexOptions{Timeout: r.options.TimeoutInSeconds()})
 
 	return r
 }
@@ -37,7 +35,7 @@ func (r *rollover) Perform() Actionable {
 		newIndex = r.generateNewIndexName()
 	}
 
-	response, err := r.builder.Rollover(
+	response, err := r.indexer.Rollover(
 		r.options.Name,
 		newIndex,
 		r.options.MaxAge,
@@ -66,17 +64,22 @@ func (r *rollover) ApplyFilters() error {
 }
 
 func (r *rollover) verifyRollableIndex() error {
-	aliases, err := r.builder.AliasesCat()
+	response, err := r.indexer.AliasesCat()
 
 	if err != nil {
 		return err
 	}
 
+	aliases, err := response.Children()
+
 	indices := []string{}
 
 	for _, alias := range aliases {
-		if alias.Alias == r.options.Name {
-			indices = append(indices, alias.Index)
+		aliasName := alias.S("alias").Data().(string)
+		indexName := alias.S("index").Data().(string)
+
+		if aliasName == r.options.Name {
+			indices = append(indices, indexName)
 		}
 
 		if len(indices) > 1 {

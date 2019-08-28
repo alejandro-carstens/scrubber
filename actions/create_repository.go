@@ -36,7 +36,7 @@ func (cr *createRepository) ApplyOptions() Actionable {
 		cr.options.MaxSnapshotBytesPerSecond = DEFAULT_MAX_SNAPSHOT_BYTES_PER_SECOND
 	}
 
-	cr.builder.SetOptions(&golastic.IndexOptions{Timeout: cr.options.TimeoutInSeconds()})
+	cr.indexer.SetOptions(&golastic.IndexOptions{Timeout: cr.options.TimeoutInSeconds()})
 
 	return cr
 }
@@ -58,7 +58,7 @@ func (cr *createRepository) Perform() Actionable {
 		settings["bucket"] = cr.options.Bucket
 	}
 
-	response, err := cr.builder.CreateRepository(cr.options.Repository, cr.options.RepoType, cr.options.Verify, settings)
+	response, err := cr.indexer.CreateRepository(cr.options.Repository, cr.options.RepoType, cr.options.Verify, settings)
 
 	if err != nil {
 		cr.errorReportMap.push(cr.name, "_all", err)

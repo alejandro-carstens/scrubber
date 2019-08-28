@@ -11,14 +11,17 @@ import (
 	"github.com/alejandro-carstens/golastic"
 )
 
-func Create(context contexts.Contextable, logger *logger.Logger, builder *golastic.ElasticsearchBuilder) (Actionable, error) {
+const SNAPSHOT_ACTION_TYPE string = "snapshot"
+const INDEX_ACTION_TYPE string = "index"
+
+func Create(context contexts.Contextable, logger *logger.Logger, connection *golastic.Connection) (Actionable, error) {
 	action, err := build(context.Action())
 
 	if err != nil {
 		return nil, err
 	}
 
-	if err := action.Init(context, logger, builder); err != nil {
+	if err := action.Init(context, logger, connection); err != nil {
 		return nil, err
 	}
 
@@ -43,9 +46,9 @@ func newErrorReport(action string, name string, err error) *errorReport {
 	errorReport.action = action
 
 	if isSnapshotAction(action) {
-		errorReport.actionType = "snapshot"
+		errorReport.actionType = SNAPSHOT_ACTION_TYPE
 	} else {
-		errorReport.actionType = "index"
+		errorReport.actionType = INDEX_ACTION_TYPE
 	}
 
 	return errorReport

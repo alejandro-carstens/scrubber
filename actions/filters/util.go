@@ -8,17 +8,17 @@ import (
 	"github.com/alejandro-carstens/golastic"
 )
 
-func NewFilterRunner(info infos.Informable, builder *criterias.Builder, elasticsearchBuilder *golastic.ElasticsearchBuilder, isSnapshotAction bool) (*FilterRunner, error) {
+func NewFilterRunner(info infos.Informable, builder *criterias.Builder, connection *golastic.Connection) (*FilterRunner, error) {
 	filterRunner := new(FilterRunner)
 
 	filterRunner.info = info
 
-	err := filterRunner.Init(builder, elasticsearchBuilder)
+	err := filterRunner.Init(builder, connection)
 
 	return filterRunner, err
 }
 
-func NewAggregateFilterRunner(info []infos.Informable, builder *criterias.Builder, elasticsearchBuilder *golastic.ElasticsearchBuilder) (*AggregateFilterRunner, error) {
+func NewAggregateFilterRunner(info []infos.Informable, builder *criterias.Builder, connection *golastic.Connection) (*AggregateFilterRunner, error) {
 	aggregateFilterRunner := new(AggregateFilterRunner)
 
 	if len(info) == 0 {
@@ -28,7 +28,7 @@ func NewAggregateFilterRunner(info []infos.Informable, builder *criterias.Builde
 	aggregateFilterRunner.info = info
 	aggregateFilterRunner.countMap = map[string]int{}
 
-	err := aggregateFilterRunner.Init(builder, elasticsearchBuilder)
+	err := aggregateFilterRunner.Init(builder, connection)
 
 	return aggregateFilterRunner, err
 }

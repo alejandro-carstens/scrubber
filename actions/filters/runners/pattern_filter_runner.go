@@ -14,8 +14,8 @@ type patternFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (pfr *patternFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
-	err := pfr.BaseInit(builder, info...)
+func (pfr *patternFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	err := pfr.BaseInit(connection, info...)
 
 	return pfr, err
 }

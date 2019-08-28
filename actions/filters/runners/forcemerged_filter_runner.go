@@ -9,12 +9,11 @@ import (
 
 type forcemergedFilterRunner struct {
 	baseRunner
-	builder golastic.Queryable
 }
 
 // Init initializes the filter runner
-func (ffr *forcemergedFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
-	if err := ffr.BaseInit(builder, info...); err != nil {
+func (ffr *forcemergedFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	if err := ffr.BaseInit(connection, info...); err != nil {
 		return nil, err
 	}
 

@@ -10,14 +10,14 @@ import (
 )
 
 type baseRunner struct {
-	info     infos.Informable
-	report   *reports.Report
-	response *FilterResponse
-	builder  *golastic.ElasticsearchBuilder
+	info       infos.Informable
+	report     *reports.Report
+	response   *FilterResponse
+	connection *golastic.Connection
 }
 
 // BaseInit initializes the base properties for a filter runner
-func (br *baseRunner) BaseInit(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) error {
+func (br *baseRunner) BaseInit(connection *golastic.Connection, info ...infos.Informable) error {
 	if len(info) != 1 {
 		return errors.New("This is not an aggregate filter runner and as such only accepts one index per run")
 	}
@@ -38,7 +38,7 @@ func (br *baseRunner) BaseInit(builder *golastic.ElasticsearchBuilder, info ...i
 
 	br.report = report
 	br.response = new(FilterResponse)
-	br.builder = builder
+	br.connection = connection
 
 	return nil
 }

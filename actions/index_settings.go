@@ -15,7 +15,7 @@ type indexSettings struct {
 func (is *indexSettings) ApplyOptions() Actionable {
 	is.options = is.context.Options().(*options.IndexSettingsOptions)
 
-	is.builder.SetOptions(&golastic.IndexOptions{Timeout: is.options.TimeoutInSeconds()})
+	is.indexer.SetOptions(&golastic.IndexOptions{Timeout: is.options.TimeoutInSeconds()})
 
 	return is
 }
@@ -28,7 +28,7 @@ func (is *indexSettings) Perform() Actionable {
 			return err
 		}
 
-		response, err := is.builder.PutSettings(settings, index)
+		response, err := is.indexer.PutSettings(settings, index)
 
 		if err != nil {
 			return err

@@ -16,8 +16,8 @@ type closedFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (cfr *closedFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
-	if err := cfr.BaseInit(builder, info...); err != nil {
+func (cfr *closedFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	if err := cfr.BaseInit(connection, info...); err != nil {
 		return nil, err
 	}
 
@@ -28,6 +28,7 @@ func (cfr *closedFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info
 func (cfr *closedFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
 	if err := cfr.validateCriteria(criteria); err != nil {
 		channel <- cfr.response.setError(err)
+
 		return
 	}
 
@@ -39,11 +40,13 @@ func (cfr *closedFilterRunner) RunFilter(channel chan *FilterResponse, criteria 
 
 	if len(status) == 0 {
 		cfr.response.setError(errors.New("Could not determine if the index is closed"))
+
 		passed = false
 	}
 
 	if status == CLOSED_STATUS {
 		cfr.report.AddReason("Index '%v' is closed", cfr.info.Name())
+
 		passed = true
 	}
 

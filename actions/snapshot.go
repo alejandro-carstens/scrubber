@@ -43,7 +43,7 @@ func (s *snapshot) ApplyOptions() Actionable {
 		}
 	}
 
-	s.builder.SetOptions(&golastic.IndexOptions{
+	s.indexer.SetOptions(&golastic.IndexOptions{
 		Timeout:            s.options.TimeoutInSeconds(),
 		WaitForCompletion:  s.options.WaitForCompletion,
 		Partial:            s.options.Partial,
@@ -73,7 +73,7 @@ func (s *snapshot) Perform() Actionable {
 		return s
 	}
 
-	response, err := s.builder.Snapshot(s.options.Repository, s.options.Name, s.list...)
+	response, err := s.indexer.Snapshot(s.options.Repository, s.options.Name, s.list...)
 
 	if err != nil {
 		return s.logError(err)
@@ -91,7 +91,7 @@ func (s *snapshot) Perform() Actionable {
 }
 
 func (s *snapshot) runAndWaitForCompletion() error {
-	response, err := s.builder.Snapshot(s.options.Repository, s.options.Name, s.list...)
+	response, err := s.indexer.Snapshot(s.options.Repository, s.options.Name, s.list...)
 
 	if err != nil {
 		return err
@@ -112,7 +112,7 @@ func (s *snapshot) checkActionStatus() error {
 			return errors.New("max_wait reached")
 		}
 
-		response, err := s.builder.GetSnapshots(s.options.Repository, s.options.Name)
+		response, err := s.indexer.GetSnapshots(s.options.Repository, s.options.Name)
 
 		if err != nil {
 			return err

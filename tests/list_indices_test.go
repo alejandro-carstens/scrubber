@@ -4,7 +4,6 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/alejandro-carstens/golastic"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -33,13 +32,7 @@ func TestListIndices(t *testing.T) {
 
 	assert.ElementsMatch(t, expectedIndices, action.List())
 
-	builder, err := golastic.NewBuilder(nil, nil)
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	if err := builder.DeleteIndex("_all"); err != nil {
+	if err := connection().Indexer(nil).DeleteIndex("_all"); err != nil {
 		t.Error(err)
 	}
 }

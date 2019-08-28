@@ -4,7 +4,6 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/alejandro-carstens/golastic"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -45,17 +44,13 @@ func TestListSnapshots(t *testing.T) {
 
 	assert.ElementsMatch(t, expectedSnapshots, action.List())
 
-	builder, err := golastic.NewBuilder(nil, nil)
+	connection := connection()
 
-	if err != nil {
+	if _, err := connection.Indexer(nil).DeleteSnapshot("my_backup_repository", "count_snapshot-2019.01.01"); err != nil {
 		t.Error(err)
 	}
 
-	if _, err := builder.DeleteSnapshot("my_backup_repository", "count_snapshot-2019.01.01"); err != nil {
-		t.Error(err)
-	}
-
-	if err := snapshotCleanup("my_backup_repository", "count_snapshot-2019.01.02", "_all", builder); err != nil {
+	if err := snapshotCleanup("my_backup_repository", "count_snapshot-2019.01.02", "_all", connection); err != nil {
 		t.Error(err)
 	}
 }

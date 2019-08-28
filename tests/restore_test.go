@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alejandro-carstens/golastic"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -22,13 +21,9 @@ func TestRestoreSnapshot(t *testing.T) {
 
 		time.Sleep(time.Duration(int64(2)) * time.Second)
 
-		builder, err := golastic.NewBuilder(nil, nil)
+		connection := connection()
 
-		if err != nil {
-			t.Error(err)
-		}
-
-		list, err := builder.ListSnapshots(data["repository"])
+		list, err := connection.Indexer(nil).ListSnapshots(data["repository"])
 
 		if err != nil {
 			t.Error(err)
@@ -36,11 +31,11 @@ func TestRestoreSnapshot(t *testing.T) {
 
 		assert.Equal(t, 1, len(list))
 
-		if err := builder.DeleteIndex(data["index_name"]); err != nil {
+		if err := connection.Indexer(nil).DeleteIndex(data["index_name"]); err != nil {
 			t.Error(err)
 		}
 
-		if err := snapshotCleanup(data["repository"], data["snapshot"], data["restored_index"], builder); err != nil {
+		if err := snapshotCleanup(data["repository"], data["snapshot"], data["restored_index"], connection); err != nil {
 			t.Error(err)
 		}
 	}

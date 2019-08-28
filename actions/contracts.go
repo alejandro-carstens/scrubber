@@ -8,7 +8,7 @@ import (
 )
 
 type Actionable interface {
-	Init(context contexts.Contextable, logger *logger.Logger, builder *golastic.ElasticsearchBuilder) error
+	Init(context contexts.Contextable, logger *logger.Logger, builder *golastic.Connection) error
 
 	Perform() Actionable
 
@@ -22,5 +22,5 @@ type Actionable interface {
 
 	List() []string
 
-	TearDownBuilder()
+	Disconnect()
 }

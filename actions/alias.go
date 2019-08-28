@@ -16,8 +16,7 @@ type alias struct {
 
 func (a *alias) ApplyOptions() Actionable {
 	a.options = a.context.Options().(*options.AliasOptions)
-
-	a.builder.SetOptions(&golastic.IndexOptions{Timeout: a.options.TimeoutInSeconds()})
+	a.indexer.SetOptions(&golastic.IndexOptions{Timeout: a.options.TimeoutInSeconds()})
 
 	return a
 }
@@ -36,10 +35,10 @@ func (a *alias) Perform() Actionable {
 
 func (a *alias) add(index string) error {
 	if a.options.ExtraSettings == nil {
-		return a.checkResponse(a.builder.AddAlias(index, a.options.Name))
+		return a.checkResponse(a.indexer.AddAlias(index, a.options.Name))
 	}
 
-	aliasAddAction := a.builder.AliasAddAction(a.options.Name).Index(index)
+	aliasAddAction := a.indexer.AliasAddAction(a.options.Name).Index(index)
 
 	if len(a.options.ExtraSettings.Routing) > 0 {
 		aliasAddAction.Routing(a.options.ExtraSettings.Routing)
@@ -56,14 +55,14 @@ func (a *alias) add(index string) error {
 			return err
 		}
 
-		aliasAddAction.Filter(a.builder.RawQuery(filter))
+		aliasAddAction.Filter(a.connection.Builder(index).RawQuery(filter))
 	}
 
-	return a.checkResponse(a.builder.AddAliasByAction(aliasAddAction))
+	return a.checkResponse(a.indexer.AddAliasByAction(aliasAddAction))
 }
 
 func (a *alias) remove(index string) error {
-	return a.checkResponse(a.builder.RemoveIndexFromAlias(index, a.options.Name))
+	return a.checkResponse(a.indexer.RemoveIndexFromAlias(index, a.options.Name))
 }
 
 func (a *alias) checkResponse(response *gabs.Container, err error) error {

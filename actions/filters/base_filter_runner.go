@@ -9,31 +9,18 @@ import (
 )
 
 type baseFilterRunner struct {
-	builder              *criterias.Builder
-	elasticsearchBuilder *golastic.ElasticsearchBuilder
-	reports              []reports.Reportable
+	builder    *criterias.Builder
+	connection *golastic.Connection
+	reports    []reports.Reportable
 }
 
-func (bfr *baseFilterRunner) Init(builder *criterias.Builder, elasticsearchBuilder *golastic.ElasticsearchBuilder) error {
+func (bfr *baseFilterRunner) Init(builder *criterias.Builder, connection *golastic.Connection) error {
 	if builder == nil {
 		return errors.New("Builder can't be nil")
 	}
 
 	bfr.builder = builder
-
-	if elasticsearchBuilder == nil {
-		elasticsearchBuilder, err := golastic.NewBuilder(nil, nil)
-
-		if err != nil {
-			return err
-		}
-
-		bfr.elasticsearchBuilder = elasticsearchBuilder
-
-		return nil
-	}
-
-	bfr.elasticsearchBuilder = elasticsearchBuilder
+	bfr.connection = connection
 	bfr.reports = []reports.Reportable{}
 
 	return nil

@@ -8,11 +8,11 @@ import (
 	"github.com/alejandro-carstens/golastic"
 )
 
-func NewScheduler(basePath string, logger *logger.Logger, builder *golastic.ElasticsearchBuilder) *Scheduler {
+func NewScheduler(basePath string, logger *logger.Logger, builder *golastic.Connection) *Scheduler {
 	return &Scheduler{basePath: basePath, logger: logger, builder: builder}
 }
 
-func Execute(context contexts.Contextable, logger *logger.Logger, builder *golastic.ElasticsearchBuilder) {
+func Execute(context contexts.Contextable, logger *logger.Logger, builder *golastic.Connection) {
 	action, err := actions.Create(context, logger, builder)
 
 	if err != nil {
@@ -20,7 +20,7 @@ func Execute(context contexts.Contextable, logger *logger.Logger, builder *golas
 		return
 	}
 
-	defer action.TearDownBuilder()
+	defer action.Disconnect()
 
 	if action.DisableAction() {
 		logger.Noticef("%v action disabled", context.Action())

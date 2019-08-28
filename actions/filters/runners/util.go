@@ -36,7 +36,7 @@ func (ts timeSlice) Len() int {
 }
 
 // NewRunner return a filter runner
-func NewRunner(criteria string, builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
+func NewRunner(criteria string, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
 	var runner Runnerable
 
 	switch criteria {
@@ -76,7 +76,7 @@ func NewRunner(criteria string, builder *golastic.ElasticsearchBuilder, info ...
 		return nil, errors.New("Invalid criteria")
 	}
 
-	return runner.Init(builder, info...)
+	return runner.Init(connection, info...)
 }
 
 func elapsed(from, to time.Time) (years, months, days, hours, minutes, seconds int) {

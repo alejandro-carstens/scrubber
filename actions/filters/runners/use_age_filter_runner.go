@@ -8,7 +8,6 @@ import (
 	"sort"
 	"time"
 
-	"github.com/alejandro-carstens/golastic"
 	"github.com/araddon/dateparse"
 )
 
@@ -217,16 +216,7 @@ func (uafr *useAgeFilterRunner) parseDatesFromName(regPattern string, strictMode
 func (uafr *useAgeFilterRunner) executeFieldStats(channel chan *fieldStatsResponse, index string, criteria criterias.Sortable) {
 	response := new(fieldStatsResponse)
 
-	model := golastic.NewGolasticModel()
-	model.SetIndex(index)
-
-	if _, err := uafr.builder.SetModel(model); err != nil {
-		response.err = err
-		channel <- response
-		return
-	}
-
-	result, err := uafr.builder.MinMax(criteria.GetField(), true)
+	result, err := uafr.connection.Builder(index).MinMax(criteria.GetField(), true)
 
 	if err != nil {
 		response.err = err

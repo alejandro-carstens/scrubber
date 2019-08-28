@@ -14,7 +14,7 @@ type listIndices struct {
 func (li *listIndices) ApplyOptions() Actionable {
 	li.options = li.context.Options().(*options.ListIndicesOptions)
 
-	li.builder.SetOptions(&golastic.IndexOptions{Timeout: li.options.TimeoutInSeconds()})
+	li.indexer.SetOptions(&golastic.IndexOptions{Timeout: li.options.TimeoutInSeconds()})
 
 	return li
 }

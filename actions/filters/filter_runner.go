@@ -15,7 +15,7 @@ func (fr *FilterRunner) ApplyFilters() (bool, error) {
 	channel := make(chan *runners.FilterResponse, len(fr.builder.Criteria()))
 
 	for _, criteria := range fr.builder.Criteria() {
-		runner, err := runners.NewRunner(criteria.Name(), fr.elasticsearchBuilder, fr.info)
+		runner, err := runners.NewRunner(criteria.Name(), fr.connection, fr.info)
 
 		if err != nil {
 			return false, err

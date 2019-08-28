@@ -12,8 +12,8 @@ type stateFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (sfr *stateFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
-	err := sfr.BaseInit(builder, info...)
+func (sfr *stateFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	err := sfr.BaseInit(connection, info...)
 
 	return sfr, err
 }

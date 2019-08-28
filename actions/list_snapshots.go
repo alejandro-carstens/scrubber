@@ -14,7 +14,7 @@ type listSnapshots struct {
 func (ls *listSnapshots) ApplyOptions() Actionable {
 	ls.options = ls.context.Options().(*options.ListSnapshotsOptions)
 
-	ls.builder.SetOptions(&golastic.IndexOptions{Timeout: ls.options.TimeoutInSeconds()})
+	ls.indexer.SetOptions(&golastic.IndexOptions{Timeout: ls.options.TimeoutInSeconds()})
 
 	return ls
 }

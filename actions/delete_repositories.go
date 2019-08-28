@@ -16,13 +16,13 @@ type deleteRepositories struct {
 func (dr *deleteRepositories) ApplyOptions() Actionable {
 	dr.options = dr.context.Options().(*options.DeleteRepositoriesOptions)
 
-	dr.builder.SetOptions(&golastic.IndexOptions{Timeout: dr.options.TimeoutInSeconds()})
+	dr.indexer.SetOptions(&golastic.IndexOptions{Timeout: dr.options.TimeoutInSeconds()})
 
 	return dr
 }
 
 func (dr *deleteRepositories) Perform() Actionable {
-	response, err := dr.builder.DeleteRepositories(strings.Split(dr.options.Repositories, ",")...)
+	response, err := dr.indexer.DeleteRepositories(strings.Split(dr.options.Repositories, ",")...)
 
 	if err != nil {
 		dr.errorReportMap.push(dr.name, dr.options.Repositories, err)

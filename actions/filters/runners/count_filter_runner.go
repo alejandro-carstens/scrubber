@@ -14,8 +14,8 @@ type countFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (cfr *countFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
-	if err := cfr.BaseInit(builder, info...); err != nil {
+func (cfr *countFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	if err := cfr.BaseInit(connection, info...); err != nil {
 		return nil, err
 	}
 
@@ -55,11 +55,7 @@ func (cfr *countFilterRunner) RunFilter(channel chan *FilterResponse, criteria c
 
 	cfr.report.AddResults(sortedList...)
 
-	channel <- cfr.response.
-		setError(err).
-		setPassed(true).
-		setReport(cfr.report).
-		setList(sortedList)
+	channel <- cfr.response.setError(err).setPassed(true).setReport(cfr.report).setList(sortedList)
 }
 
 func (cfr *countFilterRunner) sortByPattern(count *criterias.Count) ([]string, error) {

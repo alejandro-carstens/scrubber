@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alejandro-carstens/golastic"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,13 +16,9 @@ func TestCloseIndices(t *testing.T) {
 
 	takeAction("/testdata/close_indices_by_creation_date.yml", t)
 
-	builder, err := golastic.NewBuilder(nil, nil)
+	connection := connection()
 
-	if err != nil {
-		t.Error(err)
-	}
-
-	response, err := builder.IndexCat("my_index")
+	response, err := connection.Indexer(nil).IndexCat("my_index")
 
 	if err != nil {
 		t.Error(err)
@@ -39,7 +34,7 @@ func TestCloseIndices(t *testing.T) {
 
 	assert.Equal(t, "close", indexCat.S("status").Data().(string))
 
-	if err := builder.DeleteIndex("my_index"); err != nil {
+	if err := connection.Indexer(nil).DeleteIndex("my_index"); err != nil {
 		t.Error(err)
 	}
 }

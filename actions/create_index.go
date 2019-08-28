@@ -15,13 +15,13 @@ type createIndex struct {
 func (ci *createIndex) ApplyOptions() Actionable {
 	ci.options = ci.context.Options().(*options.CreateIndexOptions)
 
-	ci.builder.SetOptions(&golastic.IndexOptions{Timeout: ci.options.TimeoutInSeconds()})
+	ci.indexer.SetOptions(&golastic.IndexOptions{Timeout: ci.options.TimeoutInSeconds()})
 
 	return ci
 }
 
 func (ci *createIndex) Perform() Actionable {
-	exists, err := ci.builder.Exists(ci.options.Name)
+	exists, err := ci.indexer.Exists(ci.options.Name)
 
 	if err != nil {
 		ci.errorReportMap.push(ci.options.Name, ci.name, err)
@@ -43,7 +43,7 @@ func (ci *createIndex) Perform() Actionable {
 		return ci
 	}
 
-	if err := ci.builder.CreateIndex(ci.options.Name, schema); err != nil {
+	if err := ci.indexer.CreateIndex(ci.options.Name, schema); err != nil {
 		ci.errorReportMap.push(ci.options.Name, ci.name, err)
 	}
 

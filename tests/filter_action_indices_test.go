@@ -39,13 +39,7 @@ func TestFilterIndices(t *testing.T) {
 
 		takeAction(data["action_mock"], t)
 
-		builder, err := golastic.NewBuilder(nil, nil)
-
-		if err != nil {
-			t.Error(err)
-		}
-
-		exists, err := builder.Exists(data["index_name"])
+		exists, err := connection().Indexer(nil).Exists(data["index_name"])
 
 		if err != nil {
 			t.Error(err)
@@ -58,23 +52,19 @@ func TestFilterIndices(t *testing.T) {
 }
 
 func TestFilterInidicesByFieldStats(t *testing.T) {
-	builder, err := golastic.NewBuilder(nil, nil)
-
-	if err != nil {
-		t.Error(err)
-	}
+	connection := connection()
 
 	var waitGroup sync.WaitGroup
 
 	waitGroup.Add(1)
 
-	go seedIndexAsync("my_index", 10, builder, &waitGroup, false)
+	go seedIndexAsync("my_index", 10, connection, &waitGroup, false)
 
 	waitGroup.Wait()
 
 	takeAction("/testdata/delete_indices_by_field_stats.yml", t)
 
-	exists, err := builder.Exists("my_index")
+	exists, err := connection.Indexer(nil).Exists("my_index")
 
 	if err != nil {
 		t.Error(err)
@@ -90,13 +80,9 @@ func TestFilterClosedIndex(t *testing.T) {
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
 
-	builder, err := golastic.NewBuilder(nil, nil)
+	connection := connection()
 
-	if err != nil {
-		t.Error(err)
-	}
-
-	if _, err := builder.Close("my_index"); err != nil {
+	if _, err := connection.Indexer(nil).Close("my_index"); err != nil {
 		t.Error(err)
 	}
 
@@ -104,7 +90,7 @@ func TestFilterClosedIndex(t *testing.T) {
 
 	takeAction("/testdata/delete_closed_index.yml", t)
 
-	exists, err := builder.Exists("my_index")
+	exists, err := connection.Indexer(nil).Exists("my_index")
 
 	if err != nil {
 		t.Error(err)
@@ -122,13 +108,7 @@ func TestNoFilters(t *testing.T) {
 
 	takeAction("/testdata/delete_indices_no_filters.yml", t)
 
-	builder, err := golastic.NewBuilder(nil, nil)
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	exists, err := builder.Exists("my_index")
+	exists, err := connection().Indexer(nil).Exists("my_index")
 
 	if err != nil {
 		t.Error(err)
@@ -144,13 +124,9 @@ func TestFilterIndicesByAlias(t *testing.T) {
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
 
-	builder, err := golastic.NewBuilder(nil, nil)
+	connection := connection()
 
-	if err != nil {
-		t.Error(err)
-	}
-
-	if _, err := builder.AddAlias("my_index", "my_alias"); err != nil {
+	if _, err := connection.Indexer(nil).AddAlias("my_index", "my_alias"); err != nil {
 		t.Error(err)
 	}
 
@@ -158,7 +134,7 @@ func TestFilterIndicesByAlias(t *testing.T) {
 
 	takeAction("/testdata/delete_indices_by_alias.yml", t)
 
-	exists, err := builder.Exists("my_index")
+	exists, err := connection.Indexer(nil).Exists("my_index")
 
 	if err != nil {
 		t.Error(err)
@@ -205,13 +181,9 @@ func TestFilterIndicesByCount(t *testing.T) {
 
 		waitGroup.Wait()
 
-		builder, err := golastic.NewBuilder(nil, nil)
+		connection := connection()
 
-		if err != nil {
-			t.Error(err)
-		}
-
-		list, err := builder.ListIndices()
+		list, err := connection.Indexer(nil).ListIndices()
 
 		if err != nil {
 			t.Error(err)
@@ -223,7 +195,7 @@ func TestFilterIndicesByCount(t *testing.T) {
 
 		takeAction(data["action_mock"], t)
 
-		resultList, err := builder.ListIndices()
+		resultList, err := connection.Indexer(nil).ListIndices()
 
 		if err != nil {
 			t.Error(err)
@@ -234,7 +206,7 @@ func TestFilterIndicesByCount(t *testing.T) {
 		expectedExistingIndex, valid := data["expected_existing_index"]
 
 		if valid {
-			exists, err := builder.Exists(expectedExistingIndex)
+			exists, err := connection.Indexer(nil).Exists(expectedExistingIndex)
 
 			if err != nil {
 				t.Error(err)
@@ -242,7 +214,7 @@ func TestFilterIndicesByCount(t *testing.T) {
 
 			assert.True(t, exists)
 
-			if err := builder.DeleteIndex(expectedExistingIndex); err != nil {
+			if err := connection.Indexer(nil).DeleteIndex(expectedExistingIndex); err != nil {
 				t.Error(err)
 			}
 		}
@@ -252,11 +224,7 @@ func TestFilterIndicesByCount(t *testing.T) {
 }
 
 func TestFilterIndicesByCountSortedByFieldStats(t *testing.T) {
-	builder, err := golastic.NewBuilder(nil, nil)
-
-	if err != nil {
-		t.Error(err)
-	}
+	connection := connection()
 
 	var waitGroup sync.WaitGroup
 
@@ -265,14 +233,14 @@ func TestFilterIndicesByCountSortedByFieldStats(t *testing.T) {
 	for i := 1; i <= 3; i++ {
 		index := fmt.Sprint("my_index_" + fmt.Sprint(i))
 
-		go seedIndexAsync(index, 100*i, builder, &waitGroup, false)
+		go seedIndexAsync(index, 100*i, connection, &waitGroup, false)
 	}
 
 	waitGroup.Wait()
 
 	takeAction("/testdata/delete_indices_by_count_sorted_by_field_stats.yml", t)
 
-	resultList, err := builder.ListIndices()
+	resultList, err := connection.Indexer(nil).ListIndices()
 
 	if err != nil {
 		t.Error(err)
@@ -280,7 +248,7 @@ func TestFilterIndicesByCountSortedByFieldStats(t *testing.T) {
 
 	assert.Equal(t, "1", fmt.Sprint(len(resultList)))
 
-	exists, err := builder.Exists("my_index_3")
+	exists, err := connection.Indexer(nil).Exists("my_index_3")
 
 	if err != nil {
 		t.Error(err)
@@ -288,7 +256,7 @@ func TestFilterIndicesByCountSortedByFieldStats(t *testing.T) {
 
 	assert.True(t, exists)
 
-	if err := builder.DeleteIndex("my_index_3"); err != nil {
+	if err := connection.Indexer(nil).DeleteIndex("my_index_3"); err != nil {
 		t.Error(err)
 	}
 }
@@ -297,11 +265,7 @@ func TestFilterIndicesBySpace(t *testing.T) {
 	for _, data := range filterIndicesBySpaceDataProvider() {
 		log.Println("Running " + data["test_name"])
 
-		builder, err := golastic.NewBuilder(nil, nil)
-
-		if err != nil {
-			t.Error(err)
-		}
+		connection := connection()
 
 		indices, valid := data["indices"]
 
@@ -319,7 +283,7 @@ func TestFilterIndicesBySpace(t *testing.T) {
 				i = SEED_INDEX_COUNT
 			}
 
-			go seedIndexAsync(index, 10000*(i+1), builder, &waitGroup, true)
+			go seedIndexAsync(index, 10000*(i+1), connection, &waitGroup, true)
 		}
 
 		waitGroup.Wait()
@@ -342,7 +306,7 @@ func TestFilterIndicesBySpace(t *testing.T) {
 			t.Error(err)
 		}
 
-		stats, err := builder.IndexStats(indexSlice...)
+		stats, err := connection.Indexer(nil).IndexStats(indexSlice...)
 
 		if err != nil {
 			t.Error(err)
@@ -353,7 +317,7 @@ func TestFilterIndicesBySpace(t *testing.T) {
 		expectedIndexCount, valid := data["expected_index_count"]
 
 		if valid {
-			resultList, err := builder.ListIndices()
+			resultList, err := connection.Indexer(nil).ListIndices()
 
 			if err != nil {
 				t.Error(err)
@@ -361,7 +325,7 @@ func TestFilterIndicesBySpace(t *testing.T) {
 
 			assert.Equal(t, expectedIndexCount, fmt.Sprint(len(resultList)))
 		} else {
-			assertSpaceFilteredIndices(t, data, stats, builder)
+			assertSpaceFilteredIndices(t, data, stats, connection)
 		}
 
 		log.Println("Done running " + data["test_name"])
@@ -375,15 +339,11 @@ func TestFilterIndicesByAllocation(t *testing.T) {
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
 
-	builder, err := golastic.NewBuilder(nil, nil)
-
-	if err != nil {
-		t.Error(err)
-	}
+	connection := connection()
 
 	body := `{"index.routing.allocation.require.shards": 1}`
 
-	if _, err := builder.PutSettings(body, "my_index"); err != nil {
+	if _, err := connection.Indexer(nil).PutSettings(body, "my_index"); err != nil {
 		t.Error(err)
 	}
 
@@ -391,7 +351,7 @@ func TestFilterIndicesByAllocation(t *testing.T) {
 
 	takeAction("/testdata/delete_indices_by_allocation.yml", t)
 
-	exists, err := builder.Exists("my_index")
+	exists, err := connection.Indexer(nil).Exists("my_index")
 
 	if err != nil {
 		t.Error(err)
@@ -407,15 +367,9 @@ func TestFilterIndicesByForcemerged(t *testing.T) {
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
 
-	builder, err := golastic.NewBuilder(nil, nil)
-
-	if err != nil {
-		t.Error(err)
-	}
-
 	takeAction("/testdata/delete_indices_by_forcemerged.yml", t)
 
-	exists, err := builder.Exists("my_index")
+	exists, err := connection().Indexer(nil).Exists("my_index")
 
 	if err != nil {
 		t.Error(err)
@@ -542,7 +496,7 @@ func filterIndicesBySpaceDataProvider() []map[string]string {
 	return dataProvider
 }
 
-func assertSpaceFilteredIndices(t *testing.T, data map[string]string, stats map[string]*gabs.Container, builder golastic.Queryable) {
+func assertSpaceFilteredIndices(t *testing.T, data map[string]string, stats map[string]*gabs.Container, connection *golastic.Connection) {
 	expectedExistingIndices := []string{}
 
 	orderedIndices := strings.Split(data["ordered_indices"], ",")
@@ -568,7 +522,7 @@ func assertSpaceFilteredIndices(t *testing.T, data map[string]string, stats map[
 		}
 	}
 
-	resultList, err := builder.ListIndices()
+	resultList, err := connection.Indexer(nil).ListIndices()
 
 	if err != nil {
 		t.Error(err)
@@ -577,7 +531,7 @@ func assertSpaceFilteredIndices(t *testing.T, data map[string]string, stats map[
 	assert.Equal(t, len(expectedExistingIndices), len(resultList))
 
 	for _, expectedExistingIndex := range expectedExistingIndices {
-		exists, err := builder.Exists(expectedExistingIndex)
+		exists, err := connection.Indexer(nil).Exists(expectedExistingIndex)
 
 		if err != nil {
 			t.Error(err)
@@ -585,7 +539,7 @@ func assertSpaceFilteredIndices(t *testing.T, data map[string]string, stats map[
 
 		assert.True(t, exists)
 
-		if err := builder.DeleteIndex(expectedExistingIndex); err != nil {
+		if err := connection.Indexer(nil).DeleteIndex(expectedExistingIndex); err != nil {
 			t.Error(err)
 		}
 	}

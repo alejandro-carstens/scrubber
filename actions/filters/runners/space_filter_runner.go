@@ -21,12 +21,10 @@ type spaceFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (sfr *spaceFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
-	if err := sfr.BaseInit(builder, info...); err != nil {
-		return nil, err
-	}
+func (sfr *spaceFilterRunner) Init(builder *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	err := sfr.BaseInit(builder, info...)
 
-	return sfr, nil
+	return sfr, err
 }
 
 // RunFilter filters out elements from the actionable list
@@ -79,7 +77,7 @@ func (sfr *spaceFilterRunner) executeIndexStats(indicesStatsResponse chan *Index
 		indices = append(indices, index)
 	}
 
-	mapContainer, err := sfr.builder.IndexStats(indices...)
+	mapContainer, err := sfr.connection.Indexer(nil).IndexStats(indices...)
 
 	if err != nil {
 		response.err = err

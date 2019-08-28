@@ -5,7 +5,7 @@ type snapshotAction struct {
 }
 
 func (sa *snapshotAction) checkForSnapshotsInProgress(repository string) (bool, error) {
-	response, err := sa.builder.GetSnapshots(repository, "")
+	response, err := sa.indexer.GetSnapshots(repository, "")
 
 	if err != nil {
 		return false, err

@@ -18,21 +18,10 @@ type ageFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (afr *ageFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
-	if err := afr.BaseInit(builder, info...); err != nil {
-		return nil, err
-	}
+func (afr *ageFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	err := afr.BaseInit(connection, info...)
 
-	if !afr.info.IsSnapshotInfo() {
-		model := golastic.NewGolasticModel()
-		model.SetIndex(afr.info.Name())
-
-		if _, err := afr.builder.SetModel(model); err != nil {
-			return nil, err
-		}
-	}
-
-	return afr, nil
+	return afr, err
 }
 
 // RunFilter filters out elements from the actionable list
@@ -132,7 +121,7 @@ func (afr *ageFilterRunner) processByFieldStats(age *criterias.Age) (bool, error
 		return false, errors.New("Cannot process age filter by fields_stats for snapshot action")
 	}
 
-	result, err := afr.builder.MinMax(age.Field, true)
+	result, err := afr.connection.Builder(afr.info.Name()).MinMax(age.Field, true)
 
 	if err != nil {
 		return false, err

@@ -10,14 +10,14 @@ import (
 )
 
 type aggregateBaseRunner struct {
-	info     map[string]infos.Informable
-	report   *reports.AggregateReport
-	response *FilterResponse
-	builder  *golastic.ElasticsearchBuilder
+	info       map[string]infos.Informable
+	report     *reports.AggregateReport
+	response   *FilterResponse
+	connection *golastic.Connection
 }
 
 // BaseInit initializes the base properties for a filter runner
-func (abr *aggregateBaseRunner) BaseInit(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) error {
+func (abr *aggregateBaseRunner) BaseInit(connection *golastic.Connection, info ...infos.Informable) error {
 	if len(info) == 0 {
 		return errors.New("info cannot be empty")
 	}
@@ -25,7 +25,7 @@ func (abr *aggregateBaseRunner) BaseInit(builder *golastic.ElasticsearchBuilder,
 	abr.report = reports.NewAggregateReport()
 	abr.response = new(FilterResponse)
 	abr.info = map[string]infos.Informable{}
-	abr.builder = builder
+	abr.connection = connection
 
 	for i, element := range info {
 		if len(element.Name()) == 0 {

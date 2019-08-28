@@ -65,7 +65,7 @@ func getAction(config *gabs.Container) (actions.Actionable, error) {
 		return nil, err
 	}
 
-	return actions.Create(context, logger.NewLogger("", true, true, true, true), nil)
+	return actions.Create(context, logger.NewLogger("", true, true, true, true), connection())
 }
 
 func takeAction(path string, t *testing.T) actions.Actionable {
@@ -88,28 +88,26 @@ func takeAction(path string, t *testing.T) actions.Actionable {
 	return action
 }
 
-func snapshotCleanup(repository, snapshot, index string, builder *golastic.ElasticsearchBuilder) error {
-	var err error
+func snapshotCleanup(repository, snapshot, index string, c *golastic.Connection) error {
+	var conn *golastic.Connection
 
-	if builder == nil {
-		builder, err = golastic.NewBuilder(nil, nil)
-
-		if err != nil {
-			return err
-		}
+	if c == nil {
+		conn = connection()
+	} else {
+		conn = c
 	}
 
 	if len(snapshot) > 0 {
-		if _, err := builder.DeleteSnapshot(repository, snapshot); err != nil {
+		if _, err := conn.Indexer(nil).DeleteSnapshot(repository, snapshot); err != nil {
 			return err
 		}
 	}
 
-	if _, err := builder.DeleteRepositories(repository); err != nil {
+	if _, err := conn.Indexer(nil).DeleteRepositories(repository); err != nil {
 		return err
 	}
 
-	return builder.DeleteIndex(index)
+	return conn.Indexer(nil).DeleteIndex(index)
 }
 
 func takeActionAsync(path string, t *testing.T, waitGroup *sync.WaitGroup) {
@@ -118,14 +116,27 @@ func takeActionAsync(path string, t *testing.T, waitGroup *sync.WaitGroup) {
 	takeAction(path, t)
 }
 
-func seedIndexAsync(index string, count int, builder *golastic.ElasticsearchBuilder, waitGroup *sync.WaitGroup, useConstantTime bool) {
+func connection() *golastic.Connection {
+	connection := golastic.NewConnection(&golastic.ConnectionContext{
+		Urls:                []string{os.Getenv("ELASTICSEARCH_URI")},
+		Password:            os.Getenv("ELASTICSEARCH_PASSWORD"),
+		Username:            os.Getenv("ELASTICSEARCH_USERNAME"),
+		HealthCheckInterval: 30,
+	})
+
+	if err := connection.Connect(); err != nil {
+		panic(err)
+	}
+
+	return connection
+}
+
+func seedIndexAsync(index string, count int, connection *golastic.Connection, waitGroup *sync.WaitGroup, useConstantTime bool) {
 	defer waitGroup.Done()
 
-	inserts := []golastic.ElasticModelable{}
+	inserts := []interface{}{}
 
 	for i := 0; i < count; i++ {
-		insert := golastic.NewGolasticModel()
-
 		value := map[string]interface{}{}
 
 		value["id"] = strconv.Itoa(i + 1 + 1000000000)
@@ -147,22 +158,19 @@ func seedIndexAsync(index string, count int, builder *golastic.ElasticsearchBuil
 			value["created_at"] = time.Now().Add(time.Duration(int64(-1*(i+1))) * time.Hour)
 		}
 
-		insert.SetData(value)
-		insert.SetIndex(index)
-
-		inserts = append(inserts, insert)
+		inserts = append(inserts, value)
 
 		if count >= ELASTICSEARCH_BULK_INSERT_LIMIT && (i+1)%ELASTICSEARCH_BULK_INSERT_LIMIT == 0 {
-			if _, err := builder.Insert(inserts...); err != nil {
+			if _, err := connection.Builder(index).Insert(inserts...); err != nil {
 				panic(err)
 			}
 
-			inserts = []golastic.ElasticModelable{}
+			inserts = []interface{}{}
 		}
 	}
 
 	if count < ELASTICSEARCH_BULK_INSERT_LIMIT {
-		if _, err := builder.Insert(inserts...); err != nil {
+		if _, err := connection.Builder(index).Insert(inserts...); err != nil {
 			panic(err)
 		}
 	}

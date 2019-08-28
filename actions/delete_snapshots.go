@@ -16,7 +16,7 @@ type deleteSnapshots struct {
 func (ds *deleteSnapshots) ApplyOptions() Actionable {
 	ds.options = ds.context.Options().(*options.DeleteSnapshotsOptions)
 
-	ds.builder.SetOptions(&golastic.IndexOptions{Timeout: ds.options.TimeoutInSeconds()})
+	ds.indexer.SetOptions(&golastic.IndexOptions{Timeout: ds.options.TimeoutInSeconds()})
 
 	return ds
 }
@@ -26,7 +26,7 @@ func (ds *deleteSnapshots) Perform() Actionable {
 		count := 0
 
 		for {
-			response, err := ds.builder.DeleteSnapshot(ds.options.Repository, snapshot)
+			response, err := ds.indexer.DeleteSnapshot(ds.options.Repository, snapshot)
 
 			if err != nil && count < ds.options.RetryCount {
 				time.Sleep(time.Duration(int64(ds.options.RetryInterval)) * time.Second)

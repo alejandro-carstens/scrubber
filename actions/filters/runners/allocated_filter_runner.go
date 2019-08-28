@@ -12,12 +12,10 @@ type allocatedFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (afr *allocatedFilterRunner) Init(builder *golastic.ElasticsearchBuilder, info ...infos.Informable) (Runnerable, error) {
-	if err := afr.BaseInit(builder, info...); err != nil {
+func (afr *allocatedFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	if err := afr.BaseInit(connection, info...); err != nil {
 		return nil, err
 	}
-
-	afr.builder = builder
 
 	return afr, nil
 }
@@ -31,7 +29,7 @@ func (afr *allocatedFilterRunner) RunFilter(channel chan *FilterResponse, criter
 
 	allocated := criteria.(*criterias.Allocated)
 
-	settingsResponse, err := afr.builder.Settings(afr.info.Name())
+	settingsResponse, err := afr.connection.Indexer(nil).Settings(afr.info.Name())
 
 	if err != nil {
 		channel <- afr.response.setError(err)

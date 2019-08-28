@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alejandro-carstens/golastic"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,13 +17,9 @@ func TestIndexSettings(t *testing.T) {
 
 	takeAction("/testdata/update_settings.yml", t)
 
-	builder, err := golastic.NewBuilder(nil, nil)
+	connection := connection()
 
-	if err != nil {
-		t.Error(err)
-	}
-
-	settings, err := builder.Settings("alejandro-carstens-1992.06.02")
+	settings, err := connection.Indexer(nil).Settings("alejandro-carstens-1992.06.02")
 
 	if err != nil {
 		t.Error(err)
@@ -40,7 +35,7 @@ func TestIndexSettings(t *testing.T) {
 	assert.Equal(t, "7s", indexSettings.S("index", "refresh_interval").Data().(string))
 	assert.Equal(t, "2", indexSettings.S("index", "number_of_replicas").Data().(string))
 
-	if err := builder.DeleteIndex("alejandro-carstens-1992.06.02"); err != nil {
+	if err := connection.Indexer(nil).DeleteIndex("alejandro-carstens-1992.06.02"); err != nil {
 		t.Error(err)
 	}
 }

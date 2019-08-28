@@ -1,10 +1,10 @@
 package tests
 
 import (
+	"log"
 	"testing"
 	"time"
 
-	"github.com/alejandro-carstens/golastic"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,36 +17,46 @@ func TestAlias(t *testing.T) {
 
 	takeAction("/testdata/add_alias.yml", t)
 
-	builder, err := golastic.NewBuilder(nil, nil)
+	connection := connection()
+
+	response, err := connection.Indexer(nil).AliasesCat()
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	response, err := builder.AliasesCat()
+	aliases, err := response.Children()
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	assert.Equal(t, 1, len(response))
-	assert.Equal(t, "alejandro-carstens-1992.06.02", response[0].Index)
-	assert.Equal(t, "*", response[0].Filter)
-	assert.Equal(t, "great_alias", response[0].Alias)
-	assert.Equal(t, "1", response[0].RoutingIndex)
-	assert.Equal(t, "1,2,3", response[0].RoutingSearch)
+	log.Println(aliases[0].String())
+
+	assert.Equal(t, 1, len(aliases))
+	assert.Equal(t, "alejandro-carstens-1992.06.02", aliases[0].S("index").Data().(string))
+	assert.Equal(t, "*", aliases[0].S("filter").Data().(string))
+	assert.Equal(t, "great_alias", aliases[0].S("alias").Data().(string))
+	assert.Equal(t, "1", aliases[0].S("routing.index").Data().(string))
+	assert.Equal(t, "1,2,3", aliases[0].S("routing.search").Data().(string))
 
 	takeAction("/testdata/remove_alias.yml", t)
 
-	response, err = builder.AliasesCat()
+	response, err = connection.Indexer(nil).AliasesCat()
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	assert.Equal(t, 0, len(response))
+	aliases, err = response.Children()
 
-	if err := builder.DeleteIndex("alejandro-carstens-1992.06.02"); err != nil {
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.Equal(t, 0, len(aliases))
+
+	if err := connection.Indexer(nil).DeleteIndex("alejandro-carstens-1992.06.02"); err != nil {
 		t.Error(err)
 	}
 }

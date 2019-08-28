@@ -26,7 +26,7 @@ type configMap struct {
 type Scheduler struct {
 	basePath string
 	logger   *logger.Logger
-	builder  *golastic.ElasticsearchBuilder
+	builder  *golastic.Connection
 }
 
 func (s *Scheduler) Run() error {

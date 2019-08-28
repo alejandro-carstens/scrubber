@@ -3,8 +3,8 @@ package actions
 import (
 	"errors"
 	"regexp"
-	"scrubber/actions/options"
 	"scrubber/actions/infos"
+	"scrubber/actions/options"
 	"strings"
 	"time"
 
@@ -33,7 +33,7 @@ func (r *restore) ApplyOptions() Actionable {
 		}
 	}
 
-	r.builder.SetOptions(&golastic.IndexOptions{
+	r.indexer.SetOptions(&golastic.IndexOptions{
 		Timeout:            r.options.TimeoutInSeconds(),
 		WaitForCompletion:  r.options.WaitForCompletion,
 		Partial:            r.options.Partial,
@@ -78,7 +78,7 @@ func (r *restore) Perform() Actionable {
 		return r
 	}
 
-	response, err := r.builder.SnapshotRestore(r.options.Repository, snapshot)
+	response, err := r.indexer.SnapshotRestore(r.options.Repository, snapshot)
 
 	if err != nil {
 		r.errorReportMap.push(r.name, snapshot, err)
@@ -100,7 +100,7 @@ func (r *restore) Perform() Actionable {
 }
 
 func (r *restore) runAndWaitForCompletion(snapshot string) error {
-	response, err := r.builder.SnapshotRestore(r.options.Repository, snapshot)
+	response, err := r.indexer.SnapshotRestore(r.options.Repository, snapshot)
 
 	if err != nil {
 		return err
@@ -162,7 +162,7 @@ func (r *restore) checkRestoreStatus(snapshot string) error {
 }
 
 func (r *restore) checkRecoveryStatus(indices ...string) (bool, error) {
-	recovery, err := r.builder.Recovery(indices...)
+	recovery, err := r.indexer.Recovery(indices...)
 
 	if err != nil {
 		return false, err
