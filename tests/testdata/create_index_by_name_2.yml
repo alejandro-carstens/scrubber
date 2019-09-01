@@ -2,23 +2,23 @@ action: create_index
 description: Creates the specified index with the specified settings
 options:
   name: my_index-2019-01-02
-extra_settings:
-  settings:
-    number_of_shards: 2
-    number_of_replicas: 3
-mappings:
-  properties:
-    exception:
-      type: text
-      index: false
-    request:
-      type: keyword
-    message:
-      type: text
-      index: true
-    bytes:
-      type: integer
-    created_at:
-      type: date
-    number:
-      type: float
+  extra_settings:
+    settings:
+      number_of_shards: 2
+      number_of_replicas: 3
+    mappings:
+      properties:
+        exception:
+          type: text
+          index: false
+        request:
+          type: keyword
+        message:
+          type: text
+          index: true
+        bytes:
+          type: integer
+        created_at:
+          type: date
+        number:
+          type: float
