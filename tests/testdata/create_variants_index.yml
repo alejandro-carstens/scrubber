@@ -1,0 +1,29 @@
+action: create_index
+description: Creates the specified index with the specified settings
+options:
+  name: variants-1992.06.02
+  extra_settings:
+    settings:
+      number_of_shards: 2
+      number_of_replicas: 3
+    mappings:
+      properties:
+        id:
+          type: keyword
+          index: true
+        created_at:
+          type: date
+        price: 
+          type: integer
+          index: true
+        attributes:
+          type: nested
+          properties: 
+            size: 
+              type: integer
+              index: true
+            color:
+              type: keyword
+              index: true
+            sku:
+              type: text

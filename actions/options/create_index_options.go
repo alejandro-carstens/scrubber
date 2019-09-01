@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/spf13/pflag"
-
 	"github.com/Jeffail/gabs"
+	"github.com/spf13/pflag"
 )
 
 type CreateIndexOptions struct {

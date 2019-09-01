@@ -108,6 +108,9 @@ func build(name string) (Actionable, error) {
 	case "delete_repositories":
 		action = new(deleteRepositories)
 		break
+	case "watch":
+		action = new(watch)
+		break
 	default:
 		return nil, errors.New("Invalid action type")
 	}
@@ -158,4 +161,14 @@ func isDigit(digit string) bool {
 	_, err := strconv.Atoi(digit)
 
 	return err == nil
+}
+
+func inStringSlice(needle string, haystack []string) bool {
+	for _, value := range haystack {
+		if value == needle {
+			return true
+		}
+	}
+
+	return false
 }

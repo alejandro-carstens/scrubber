@@ -4,12 +4,13 @@ go 1.12
 
 require (
 	github.com/Jeffail/gabs v1.4.0
-	github.com/alejandro-carstens/golastic v0.0.0-20190825055622-f3a9ea27d444
+	github.com/alejandro-carstens/golastic v0.0.0-20190901195657-0dad786f859e
 	github.com/araddon/dateparse v0.0.0-20190622164848-0fb0a474d195
 	github.com/icza/dyno v0.0.0-20180601094105-0c96289f9585
 	github.com/ivpusic/grpool v1.0.0
 	github.com/jasonlvhit/gocron v0.0.0-20190603000501-f1cf2bd73e84
 	github.com/kr/pretty v0.1.0 // indirect
+	github.com/rs/xid v1.2.1
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.3
 	github.com/stretchr/testify v1.4.0
