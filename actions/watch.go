@@ -2,8 +2,8 @@ package actions
 
 import (
 	"errors"
-	"fmt"
 	"scrubber/actions/options"
+	"time"
 
 	"github.com/alejandro-carstens/golastic"
 )
@@ -35,14 +35,12 @@ func (w *watch) Perform() Actionable {
 				return err
 			}
 
-			path := fmt.Sprintf(
-				"%v.mapping._doc.%v.mapping.%v.type", index, w.options.DateField, w.options.DateField,
-			)
+			path := []string{index, "mappings", w.options.DateField, "mapping", w.options.DateField, "type"}
 
-			mappingType, valid := mappings.Path(path).Data().(string)
+			mappingType, valid := mappings.S(path...).Data().(string)
 
 			if !valid || mappingType != "date" {
-				return errors.New("invalid date field specified")
+				return errors.New("invalid date_field specified")
 			}
 		}
 
@@ -123,6 +121,12 @@ func (w *watch) buildQuery(index string) *golastic.Builder {
 		}
 	}
 
+	if len(w.options.DateField) > 0 {
+		duration := -1 * intervalToSeconds(w.options.Interval, w.options.IntervalUnit)
+
+		builder.Where(w.options.DateField, ">=", time.Now().Add(time.Duration(duration)*time.Second))
+	}
+
 	return builder
 }
 
@@ -164,13 +168,13 @@ func (w *watch) execute(builder *golastic.Builder) error {
 
 func (w *watch) processCountThreshold(count int64, threshold *options.Threshold) error {
 	if float64(count) < threshold.Min {
-		w.reporter.Logger().Noticef("min threshold exceeded")
+		w.reporter.Logger().Noticef("min threshold of %v exceeded, encountered %v", threshold.Min, count)
 
 		return nil
 	}
 
 	if float64(count) > threshold.Max {
-		w.reporter.Logger().Noticef("max threshold exceeded")
+		w.reporter.Logger().Noticef("max threshold of %v exceeded, encountered %v", threshold.Max, count)
 
 		return nil
 	}
@@ -179,16 +183,16 @@ func (w *watch) processCountThreshold(count int64, threshold *options.Threshold)
 }
 
 func (w *watch) processAverageCountThreshold(count int64, threshold *options.Threshold) error {
-	averageCount := float64(count) / float64(w.options.Interval)
+	averageCount := float64(count) / float64(intervalToSeconds(w.options.Interval, w.options.IntervalUnit))
 
 	if averageCount < threshold.Min {
-		w.reporter.Logger().Noticef("min threshold exceeded")
+		w.reporter.Logger().Noticef("min threshold of %v exceeded, encountered %v", threshold.Min, averageCount)
 
 		return nil
 	}
 
 	if averageCount > threshold.Max {
-		w.reporter.Logger().Noticef("max threshold exceeded")
+		w.reporter.Logger().Noticef("max threshold of %v exceeded, encountered %v", threshold.Max, averageCount)
 
 		return nil
 	}

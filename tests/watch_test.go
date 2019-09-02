@@ -25,7 +25,29 @@ func TestWatchCountAction(t *testing.T) {
 
 	takeAction("/testdata/watch_count.yml", t)
 
-	if err := connection.Indexer(nil).DeleteIndex("variants-1992.06.02"); err != nil {
+	if err := connection.Indexer(nil).DeleteIndex("_all"); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestWatchAverageCountAction(t *testing.T) {
+	if _, err := createTestIndex("/testdata/create_variants_index.yml"); err != nil {
+		t.Error(err)
+	}
+
+	time.Sleep(time.Duration(int64(2)) * time.Second)
+
+	connection := connection()
+
+	if _, err := connection.Builder("variants-1992.06.02").Insert(makeVariants(1000)...); err != nil {
+		t.Error(err)
+	}
+
+	time.Sleep(time.Duration(int64(1)) * time.Second)
+
+	takeAction("/testdata/watch_average_count.yml", t)
+
+	if err := connection.Indexer(nil).DeleteIndex("_all"); err != nil {
 		t.Error(err)
 	}
 }
@@ -52,6 +74,8 @@ func makeVariants(count int) []interface{} {
 
 	for i := 0; i < count; i++ {
 		for index := range colors {
+			initialTime = initialTime.Add(time.Duration(-1) * time.Minute)
+
 			variant := &Variant{
 				Id:    xid.New().String(),
 				Price: prices[index] - i,
@@ -60,7 +84,7 @@ func makeVariants(count int) []interface{} {
 			variant.Attributes.Color = colors[index]
 			variant.Attributes.Size = sizes[index]
 			variant.Attributes.Sku = fmt.Sprintf("%v-%v-%v", colors[index], sizes[index], i)
-			variant.CreatedAt = initialTime.Add(time.Duration(1) * time.Hour)
+			variant.CreatedAt = initialTime
 
 			variants = append(variants, variant)
 		}

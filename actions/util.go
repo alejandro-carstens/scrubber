@@ -13,6 +13,9 @@ import (
 
 const SNAPSHOT_ACTION_TYPE string = "snapshot"
 const INDEX_ACTION_TYPE string = "index"
+const SECONDS_IN_A_DAY int64 = 86400
+const SECONDS_IN_A_MONTH int64 = 2628000
+const SECONDS_IN_A_YEAR int64 = 31540000
 
 func Create(context contexts.Contextable, logger *logger.Logger, connection *golastic.Connection) (Actionable, error) {
 	action, err := build(context.Action())
@@ -171,4 +174,21 @@ func inStringSlice(needle string, haystack []string) bool {
 	}
 
 	return false
+}
+
+func intervalToSeconds(interval int64, unit string) int64 {
+	switch unit {
+	case "minutes":
+		return interval * 60
+	case "hours":
+		return interval * 3600
+	case "days":
+		return interval * SECONDS_IN_A_DAY
+	case "months":
+		return interval * SECONDS_IN_A_MONTH
+	case "years":
+		return interval * SECONDS_IN_A_YEAR
+	}
+
+	return interval
 }
