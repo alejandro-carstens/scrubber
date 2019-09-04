@@ -5,9 +5,10 @@ options:
   timeout_override: 300
   interval: 10
   interval_unit: hours
-  date_field: created_at
+  stats_field: price
   thresholds:
-    - type: average_count
+    - type: stats
+      metric: avg
       min: 10
       max: 100
   criteria:
@@ -24,7 +25,7 @@ options:
       values: [Red-31]
     - clause: where
       key: price
-      operator: ">"
+      operator: "<"
       value: 150
   alert_channel: log
 filters:

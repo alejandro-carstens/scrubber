@@ -1,21 +1,38 @@
 package actions
 
 import (
+	"encoding/json"
 	"errors"
 	"scrubber/actions/options"
 	"time"
 
+	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
 )
 
-type watch struct {
-	filterAction
-	options *options.WatchOptions
-}
+var availableNumericTypes []string = []string{"long", "integer", "short", "byte", "double", "float", "half_float", "scaled_float"}
 
 type count struct {
 	count int64
 	isSet bool
+}
+
+type stats struct {
+	isSet                  bool
+	Min                    float64 `json:"min"`
+	Max                    float64 `json:"max"`
+	Avg                    float64 `json:"avg"`
+	Sum                    float64 `json:"sum"`
+	SumOfSquares           float64 `json:"sum_of_squares"`
+	Variance               float64 `json:"variance"`
+	StdDeviation           float64 `json:"std_deviation"`
+	UpperStdDeviationBound float64 `json:"upper_std_deviation_bound"`
+	LowerStdDeviationBound float64 `json:"lower_std_deviation_bound"`
+}
+
+type watch struct {
+	filterAction
+	options *options.WatchOptions
 }
 
 func (w *watch) ApplyOptions() Actionable {
@@ -28,13 +45,18 @@ func (w *watch) ApplyOptions() Actionable {
 
 func (w *watch) Perform() Actionable {
 	w.exec(func(index string) error {
-		if len(w.options.DateField) > 0 {
-			mappings, err := w.indexer.FieldMappings(index)
+		var err error
+		var mappings *gabs.Container
+
+		if len(w.options.DateField)+len(w.options.StatsField) > 1 {
+			mappings, err = w.indexer.FieldMappings(index)
 
 			if err != nil {
 				return err
 			}
+		}
 
+		if len(w.options.DateField) > 0 {
 			path := []string{index, "mappings", w.options.DateField, "mapping", w.options.DateField, "type"}
 
 			mappingType, valid := mappings.S(path...).Data().(string)
@@ -44,9 +66,17 @@ func (w *watch) Perform() Actionable {
 			}
 		}
 
-		builder := w.buildQuery(index)
+		if len(w.options.StatsField) > 0 {
+			path := []string{index, "mappings", w.options.StatsField, "mapping", w.options.StatsField, "type"}
 
-		if err := w.execute(builder); err != nil {
+			mappingType, valid := mappings.S(path...).Data().(string)
+
+			if !valid || !inStringSlice(mappingType, availableNumericTypes) {
+				return errors.New("invalid stats_field specified")
+			}
+		}
+
+		if err := w.execute(index); err != nil {
 			return err
 		}
 
@@ -54,6 +84,58 @@ func (w *watch) Perform() Actionable {
 	})
 
 	return w
+}
+
+func (w *watch) execute(index string) error {
+	count := &count{}
+	stats := &stats{}
+
+	builder := w.buildQuery(index)
+
+	for _, threshold := range w.options.Thresholds {
+		if inStringSlice(threshold.Type, []string{"count", "average_count"}) && !count.isSet {
+			value, err := builder.Count()
+
+			if err != nil {
+				return err
+			}
+
+			count.count = value
+			count.isSet = true
+		} else if threshold.Type == "stats" && !stats.isSet {
+			response, err := builder.AggregateRaw()
+
+			if err != nil {
+				return err
+			}
+
+			if err := json.Unmarshal(response.S(w.options.StatsField).Bytes(), stats); err != nil {
+				return err
+			}
+
+			stats.isSet = true
+		}
+
+		var err error
+
+		switch threshold.Type {
+		case "count":
+			err = w.processCountThreshold(count.count, threshold)
+			break
+		case "average_count":
+			err = w.processAverageCountThreshold(count.count, threshold)
+			break
+		case "stats":
+			err = w.processStats(stats, threshold)
+			break
+		}
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (w *watch) buildQuery(index string) *golastic.Builder {
@@ -124,75 +206,67 @@ func (w *watch) buildQuery(index string) *golastic.Builder {
 	if len(w.options.DateField) > 0 {
 		duration := -1 * intervalToSeconds(w.options.Interval, w.options.IntervalUnit)
 
-		builder.Where(w.options.DateField, ">=", time.Now().Add(time.Duration(duration)*time.Second))
+		builder.Filter(w.options.DateField, ">=", time.Now().Add(time.Duration(duration)*time.Second))
+	}
+
+	if len(w.options.StatsField) > 0 {
+		builder.Stats(w.options.StatsField)
 	}
 
 	return builder
 }
 
-func (w *watch) execute(builder *golastic.Builder) error {
-	count := &count{}
-
-	for _, threshold := range w.options.Thresholds {
-		if threshold.Type == "count" || threshold.Type == "average_count" {
-			if !count.isSet {
-				value, err := builder.Count()
-
-				if err != nil {
-					return err
-				}
-
-				count.count = value
-				count.isSet = true
-			}
-		}
-
-		var err error
-
-		switch threshold.Type {
-		case "count":
-			err = w.processCountThreshold(count.count, threshold)
-			break
-		case "average_count":
-			err = w.processAverageCountThreshold(count.count, threshold)
-			break
-		}
-
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (w *watch) processCountThreshold(count int64, threshold *options.Threshold) error {
-	if float64(count) < threshold.Min {
-		w.reporter.Logger().Noticef("min threshold of %v exceeded, encountered %v", threshold.Min, count)
-
-		return nil
-	}
-
-	if float64(count) > threshold.Max {
-		w.reporter.Logger().Noticef("max threshold of %v exceeded, encountered %v", threshold.Max, count)
-
-		return nil
-	}
-
-	return nil
+	return w.compare(float64(count), threshold)
 }
 
 func (w *watch) processAverageCountThreshold(count int64, threshold *options.Threshold) error {
 	averageCount := float64(count) / float64(intervalToSeconds(w.options.Interval, w.options.IntervalUnit))
 
-	if averageCount < threshold.Min {
-		w.reporter.Logger().Noticef("min threshold of %v exceeded, encountered %v", threshold.Min, averageCount)
+	return w.compare(averageCount, threshold)
+}
+
+func (w *watch) processStats(stats *stats, threshold *options.Threshold) error {
+	switch threshold.Metric {
+	case "min":
+		return w.compare(stats.Min, threshold)
+	case "max":
+		return w.compare(stats.Max, threshold)
+	case "avg":
+		return w.compare(stats.Avg, threshold)
+	case "sum":
+		return w.compare(stats.Sum, threshold)
+	case "sum_of_squares":
+		return w.compare(stats.SumOfSquares, threshold)
+	case "variance":
+		return w.compare(stats.Variance, threshold)
+	case "std_deviation":
+		return w.compare(stats.StdDeviation, threshold)
+	case "upper_std_deviation_bound":
+		return w.compare(stats.UpperStdDeviationBound, threshold)
+	case "lower_std_deviation_bound":
+		return w.compare(stats.LowerStdDeviationBound, threshold)
+	}
+
+	return nil
+}
+
+func (w *watch) compare(metric float64, threshold *options.Threshold) error {
+	min := *threshold.Min
+	max := *threshold.Max
+
+	w.reporter.Logger().Noticef("metric: %v, min: %v, max: %v", metric, min, max)
+
+	if threshold.Min != nil && metric < min {
+		// Todo: use the notifier here
+		w.reporter.Logger().Noticef("min threshold of %v exceeded, encountered %v", min, metric)
 
 		return nil
 	}
 
-	if averageCount > threshold.Max {
-		w.reporter.Logger().Noticef("max threshold of %v exceeded, encountered %v", threshold.Max, averageCount)
+	if threshold.Max != nil && metric > max {
+		// Todo: use the notifier here
+		w.reporter.Logger().Noticef("max threshold of %v exceeded, encountered %v", max, metric)
 
 		return nil
 	}

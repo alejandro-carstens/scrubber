@@ -1,10 +1,26 @@
 package options
 
 var availableThresholdTypes []string = []string{"count", "average_count", "stats"}
+
 var availableAlertChannels []string = []string{"slack", "email", "sms", "pager_duty"}
+
 var availableIntervalUnits []string = []string{"seconds", "minutes", "hours", "days", "months", "years"}
+
 var availableOperators []string = []string{"=", "<>", ">", "<", "<=", ">="}
+
+var availableMetrics []string = []string{
+	"min",
+	"max",
+	"avg",
+	"sum_of_squares",
+	"variance",
+	"std_deviation",
+	"upper_std_deviation_bound",
+	"lower_std_deviation_bound",
+}
+
 var nonMatchingClauses []string = []string{"limit", "order_by", "order_by_nested"}
+
 var availableInClauses []string = []string{
 	"where_in",
 	"where_not_in",
@@ -17,6 +33,7 @@ var availableInClauses []string = []string{
 	"match_not_in",
 	"match_not_in_nested",
 }
+
 var availableClauses []string = append([]string{
 	"where",
 	"where_nested",

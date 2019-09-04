@@ -8,20 +8,6 @@ import (
 	"github.com/spf13/pflag"
 )
 
-type Threshold struct {
-	Type                   string  `json:"type"`
-	StatsField             string  `json:"stats_field"`
-	Min                    float64 `json:"min"`
-	Max                    float64 `json:"max"`
-	Avg                    float64 `json:"avg"`
-	Sum                    float64 `json:"sum"`
-	SumOfSquares           float64 `json:"sum_of_squares"`
-	Variance               float64 `json:"variance"`
-	StdDeviation           float64 `json:"std_deviation"`
-	UpperStdDeviationBound float64 `json:"upper_std_deviation_bound"`
-	LowerStdDeviationBound float64 `json:"lower_std_deviation_bound"`
-}
-
 type queryCriteria struct {
 	Clause   string        `json:"clause"`
 	Key      string        `json:"key"`
@@ -32,11 +18,19 @@ type queryCriteria struct {
 	Order    bool          `json:"order"`
 }
 
+type Threshold struct {
+	Type   string   `json:"type"`
+	Metric string   `json:"metric"`
+	Min    *float64 `json:"min"`
+	Max    *float64 `json:"max"`
+}
+
 type WatchOptions struct {
 	defaultOptions
 	Interval        int64            `json:"interval"`
 	IntervalUnit    string           `json:"interval_unit"`
 	DateField       string           `json:"date_field"`
+	StatsField      string           `json:"stats_field"`
 	Criteria        []*queryCriteria `json:"criteria"`
 	Thresholds      []*Threshold     `json:"thresholds"`
 	AlertChannels   []string         `json:"alert_channels"`
@@ -65,7 +59,7 @@ func (wo *WatchOptions) Validate() error {
 	}
 
 	if !inStringSlice(wo.IntervalUnit, availableIntervalUnits) {
-		return errors.New("ivalida interval unit")
+		return errors.New("ivalid interval unit")
 	}
 
 	return nil
@@ -107,12 +101,20 @@ func (wo *WatchOptions) validateCriteria() error {
 
 func (wo *WatchOptions) validateThresholds() error {
 	for _, threshold := range wo.Thresholds {
+		if threshold.Max == nil && threshold.Min == nil {
+			return errors.New("a min limit or a max limit need to be specified")
+		}
+
 		if !inStringSlice(threshold.Type, availableThresholdTypes) {
 			return errors.New("invalid threshold type specified")
 		}
 
-		if threshold.Type == "stats" && len(threshold.StatsField) == 0 {
-			return errors.New("stats_field is required when specifying average_value, min_value & max_value as threshold_type")
+		if threshold.Type == "stats" && len(wo.StatsField) == 0 {
+			return errors.New("stats_field is required when specifying a stats threshold type")
+		}
+
+		if threshold.Type == "stats" && !inStringSlice(threshold.Metric, availableMetrics) {
+			return errors.New("specified metric is not compatible with the stats threshold type")
 		}
 
 		if threshold.Type == "average_count" && len(wo.DateField) == 0 {
