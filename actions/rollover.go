@@ -72,6 +72,10 @@ func (r *rollover) verifyRollableIndex() error {
 
 	aliases, err := response.Children()
 
+	if err != nil {
+		return err
+	}
+
 	indices := []string{}
 
 	for _, alias := range aliases {
