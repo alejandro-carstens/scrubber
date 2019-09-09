@@ -4,17 +4,28 @@ import (
 	"encoding/json"
 	"errors"
 	"scrubber/actions/options"
+	"scrubber/notifications"
+	"scrubber/notifications/messages"
 	"time"
 
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
 )
 
-var availableNumericTypes []string = []string{"long", "integer", "short", "byte", "double", "float", "half_float", "scaled_float"}
+var availableNumericTypes []string = []string{
+	"long",
+	"integer",
+	"short",
+	"byte",
+	"double",
+	"float",
+	"half_float",
+	"scaled_float",
+}
 
 type count struct {
-	count int64
 	isSet bool
+	Count float64 `json:"count"`
 }
 
 type stats struct {
@@ -100,7 +111,7 @@ func (w *watch) execute(index string) error {
 				return err
 			}
 
-			count.count = value
+			count.Count = float64(value)
 			count.isSet = true
 		} else if threshold.Type == "stats" && !stats.isSet {
 			response, err := builder.AggregateRaw()
@@ -120,10 +131,10 @@ func (w *watch) execute(index string) error {
 
 		switch threshold.Type {
 		case "count":
-			err = w.processCountThreshold(count.count, threshold)
+			err = w.processCountThreshold(count, threshold)
 			break
 		case "average_count":
-			err = w.processAverageCountThreshold(count.count, threshold)
+			err = w.processAverageCountThreshold(count, threshold)
 			break
 		case "stats":
 			err = w.processStats(stats, threshold)
@@ -216,59 +227,69 @@ func (w *watch) buildQuery(index string) *golastic.Builder {
 	return builder
 }
 
-func (w *watch) processCountThreshold(count int64, threshold *options.Threshold) error {
-	return w.compare(float64(count), threshold)
+func (w *watch) processCountThreshold(count *count, threshold *options.Threshold) error {
+	return w.compare(float64(count.Count), threshold, count)
 }
 
-func (w *watch) processAverageCountThreshold(count int64, threshold *options.Threshold) error {
-	averageCount := float64(count) / float64(intervalToSeconds(w.options.Interval, w.options.IntervalUnit))
+func (w *watch) processAverageCountThreshold(count *count, threshold *options.Threshold) error {
+	count.Count = float64(count.Count) / float64(intervalToSeconds(w.options.Interval, w.options.IntervalUnit))
 
-	return w.compare(averageCount, threshold)
+	return w.compare(count.Count, threshold, count)
 }
 
 func (w *watch) processStats(stats *stats, threshold *options.Threshold) error {
 	switch threshold.Metric {
 	case "min":
-		return w.compare(stats.Min, threshold)
+		return w.compare(stats.Min, threshold, stats)
 	case "max":
-		return w.compare(stats.Max, threshold)
+		return w.compare(stats.Max, threshold, stats)
 	case "avg":
-		return w.compare(stats.Avg, threshold)
+		return w.compare(stats.Avg, threshold, stats)
 	case "sum":
-		return w.compare(stats.Sum, threshold)
+		return w.compare(stats.Sum, threshold, stats)
 	case "sum_of_squares":
-		return w.compare(stats.SumOfSquares, threshold)
+		return w.compare(stats.SumOfSquares, threshold, stats)
 	case "variance":
-		return w.compare(stats.Variance, threshold)
+		return w.compare(stats.Variance, threshold, stats)
 	case "std_deviation":
-		return w.compare(stats.StdDeviation, threshold)
+		return w.compare(stats.StdDeviation, threshold, stats)
 	case "upper_std_deviation_bound":
-		return w.compare(stats.UpperStdDeviationBound, threshold)
+		return w.compare(stats.UpperStdDeviationBound, threshold, stats)
 	case "lower_std_deviation_bound":
-		return w.compare(stats.LowerStdDeviationBound, threshold)
+		return w.compare(stats.LowerStdDeviationBound, threshold, stats)
 	}
 
 	return nil
 }
 
-func (w *watch) compare(metric float64, threshold *options.Threshold) error {
+func (w *watch) compare(metric float64, threshold *options.Threshold, context interface{}) error {
 	min := *threshold.Min
 	max := *threshold.Max
 
 	w.reporter.Logger().Noticef("metric: %v, min: %v, max: %v", metric, min, max)
 
 	if threshold.Min != nil && metric < min {
-		// Todo: use the notifier here
-		w.reporter.Logger().Noticef("min threshold of %v exceeded, encountered %v", min, metric)
-
-		return nil
+		return w.alert(threshold.Alerts, context)
 	}
 
 	if threshold.Max != nil && metric > max {
-		// Todo: use the notifier here
-		w.reporter.Logger().Noticef("max threshold of %v exceeded, encountered %v", max, metric)
+		return w.alert(threshold.Alerts, context)
+	}
 
-		return nil
+	return nil
+}
+
+func (w *watch) alert(alerts []*options.Alert, context interface{}) error {
+	for _, alert := range alerts {
+		message, err := messages.NewMessage(alert.Payload(), context)
+
+		if err != nil {
+			return err
+		}
+
+		if err := notifications.Notify(message); err != nil {
+			return err
+		}
 	}
 
 	return nil

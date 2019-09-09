@@ -8,6 +8,18 @@ import (
 	"github.com/spf13/pflag"
 )
 
+type slackAlert struct {
+	Webhook       string   `json:"webhook"`
+	Color         string   `json:"color"`
+	Fallback      string   `json:"fallback"`
+	AuthorName    string   `json:"author_name"`
+	AuthorSubname string   `json:"author_subname"`
+	AuthorIcon    string   `json:"author_icon"`
+	Footer        string   `json:"footer"`
+	FooterIcon    string   `json:"footer_icon"`
+	To            []string `json:"to"`
+}
+
 type queryCriteria struct {
 	Clause   string        `json:"clause"`
 	Key      string        `json:"key"`
@@ -23,6 +35,17 @@ type Threshold struct {
 	Metric string   `json:"metric"`
 	Min    *float64 `json:"min"`
 	Max    *float64 `json:"max"`
+	Alerts []*Alert `json:"alerts"`
+}
+
+type Alert struct {
+	slackAlert
+	NotificationChannel string `json:"notification_channel"`
+	Text                string `json:"text"`
+}
+
+func (a *Alert) Payload() *gabs.Container {
+	return toContainer(a)
 }
 
 type WatchOptions struct {
@@ -119,6 +142,16 @@ func (wo *WatchOptions) validateThresholds() error {
 
 		if threshold.Type == "average_count" && len(wo.DateField) == 0 {
 			return errors.New("date_field is required for the average_count threshold")
+		}
+
+		for _, alert := range threshold.Alerts {
+			if len(alert.NotificationChannel) == 0 {
+				return errors.New("an alert requires a notification_channel")
+			}
+
+			if len(alert.Text) == 0 {
+				return errors.New("an alert requires some text")
+			}
 		}
 	}
 
