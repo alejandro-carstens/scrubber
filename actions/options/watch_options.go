@@ -20,14 +20,30 @@ type slackAlert struct {
 	To            []string `json:"to"`
 }
 
-type queryCriteria struct {
-	Clause   string        `json:"clause"`
-	Key      string        `json:"key"`
-	Operator string        `json:"operator"`
-	Value    interface{}   `json:"value"`
-	Values   []interface{} `json:"values"`
-	Limit    int           `json:"limit"`
-	Order    bool          `json:"order"`
+type Alert struct {
+	slackAlert
+	NotificationChannel string `json:"notification_channel"`
+	Text                string `json:"text"`
+}
+
+func (a *Alert) validate() error {
+	if len(a.NotificationChannel) == 0 {
+		return errors.New("an alert requires a notification_channel")
+	}
+
+	if len(a.Text) == 0 {
+		return errors.New("an alert requires some text")
+	}
+
+	if a.NotificationChannel == "slack" && len(a.Webhook) == 0 {
+		return errors.New("a webhook is required when specifying the slack channel")
+	}
+
+	return nil
+}
+
+func (a *Alert) Payload() *gabs.Container {
+	return toContainer(a)
 }
 
 type Threshold struct {
@@ -38,14 +54,72 @@ type Threshold struct {
 	Alerts []*Alert `json:"alerts"`
 }
 
-type Alert struct {
-	slackAlert
-	NotificationChannel string `json:"notification_channel"`
-	Text                string `json:"text"`
+func (t *Threshold) validate(dateField, statsField string) error {
+	if t.Max == nil && t.Min == nil {
+		return errors.New("a min limit or a max limit need to be specified")
+	}
+
+	if !inStringSlice(t.Type, availableThresholdTypes) {
+		return errors.New("invalid threshold type specified")
+	}
+
+	if t.Type == "stats" && !inStringSlice(t.Metric, availableMetrics) {
+		return errors.New("specified metric is not compatible with the stats threshold type")
+	}
+
+	if t.Type == "average_count" && len(dateField) == 0 {
+		return errors.New("date_field is required for the average_count threshold")
+	}
+
+	if t.Type == "stats" && len(statsField) == 0 {
+		return errors.New("stats_field is required when specifying a stats threshold type")
+	}
+
+	for _, alert := range t.Alerts {
+		if err := alert.validate(); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
-func (a *Alert) Payload() *gabs.Container {
-	return toContainer(a)
+type queryCriteria struct {
+	Clause   string        `json:"clause"`
+	Key      string        `json:"key"`
+	Operator string        `json:"operator"`
+	Value    interface{}   `json:"value"`
+	Values   []interface{} `json:"values"`
+	Limit    int           `json:"limit"`
+	Order    bool          `json:"order"`
+}
+
+func (qc *queryCriteria) validate() error {
+	if len(qc.Key) == 0 {
+		return errors.New("key on query criteria cannot be empty")
+	}
+
+	if !inStringSlice(qc.Clause, availableClauses) {
+		return errors.New("invalida clause specified")
+	}
+
+	if len(qc.Operator) > 0 && !inStringSlice(qc.Operator, availableOperators) {
+		return errors.New("invalid operator specified")
+	}
+
+	if inStringSlice(qc.Clause, availableInClauses) && len(qc.Values) == 0 {
+		return errors.New("values param is required when using 'In' cluases")
+	}
+
+	if !inStringSlice(qc.Clause, append(availableInClauses, nonMatchingClauses...)) && qc.Value == nil {
+		return errors.New("value is a required param")
+	}
+
+	if qc.Clause == "limit" && qc.Limit <= 0 {
+		return errors.New("limit param needs to be greater than 0")
+	}
+
+	return nil
 }
 
 type WatchOptions struct {
@@ -67,12 +141,16 @@ func (wo *WatchOptions) FillFromContainer(container *gabs.Container) error {
 }
 
 func (wo *WatchOptions) Validate() error {
-	if err := wo.validateCriteria(); err != nil {
-		return err
+	for _, criteria := range wo.Criteria {
+		if err := criteria.validate(); err != nil {
+			return err
+		}
 	}
 
-	if err := wo.validateThresholds(); err != nil {
-		return err
+	for _, threshold := range wo.Thresholds {
+		if err := threshold.validate(wo.DateField, wo.StatsField); err != nil {
+			return err
+		}
 	}
 
 	for _, alertChannel := range wo.AlertChannels {
@@ -89,71 +167,5 @@ func (wo *WatchOptions) Validate() error {
 }
 
 func (so *WatchOptions) BindFlags(flags *pflag.FlagSet) error {
-	return nil
-}
-
-func (wo *WatchOptions) validateCriteria() error {
-	for _, criteria := range wo.Criteria {
-		if len(criteria.Key) == 0 {
-			return errors.New("key on query criteria cannot be empty")
-		}
-
-		if !inStringSlice(criteria.Clause, availableClauses) {
-			return errors.New("invalida clause specified")
-		}
-
-		if len(criteria.Operator) > 0 && !inStringSlice(criteria.Operator, availableOperators) {
-			return errors.New("invalid operator specified")
-		}
-
-		if inStringSlice(criteria.Clause, availableInClauses) && len(criteria.Values) == 0 {
-			return errors.New("values param is required when using 'In' cluases")
-		}
-
-		if !inStringSlice(criteria.Clause, append(availableInClauses, nonMatchingClauses...)) && criteria.Value == nil {
-			return errors.New("value is a required param")
-		}
-
-		if criteria.Clause == "limit" && criteria.Limit <= 0 {
-			return errors.New("limit param needs to be greater than 0")
-		}
-	}
-
-	return nil
-}
-
-func (wo *WatchOptions) validateThresholds() error {
-	for _, threshold := range wo.Thresholds {
-		if threshold.Max == nil && threshold.Min == nil {
-			return errors.New("a min limit or a max limit need to be specified")
-		}
-
-		if !inStringSlice(threshold.Type, availableThresholdTypes) {
-			return errors.New("invalid threshold type specified")
-		}
-
-		if threshold.Type == "stats" && len(wo.StatsField) == 0 {
-			return errors.New("stats_field is required when specifying a stats threshold type")
-		}
-
-		if threshold.Type == "stats" && !inStringSlice(threshold.Metric, availableMetrics) {
-			return errors.New("specified metric is not compatible with the stats threshold type")
-		}
-
-		if threshold.Type == "average_count" && len(wo.DateField) == 0 {
-			return errors.New("date_field is required for the average_count threshold")
-		}
-
-		for _, alert := range threshold.Alerts {
-			if len(alert.NotificationChannel) == 0 {
-				return errors.New("an alert requires a notification_channel")
-			}
-
-			if len(alert.Text) == 0 {
-				return errors.New("an alert requires some text")
-			}
-		}
-	}
-
 	return nil
 }

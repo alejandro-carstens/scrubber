@@ -17,6 +17,17 @@ const SECONDS_IN_A_DAY int64 = 86400
 const SECONDS_IN_A_MONTH int64 = 2628000
 const SECONDS_IN_A_YEAR int64 = 31540000
 
+var availableNumericTypes []string = []string{
+	"long",
+	"integer",
+	"short",
+	"byte",
+	"double",
+	"float",
+	"half_float",
+	"scaled_float",
+}
+
 func Create(context contexts.Contextable, logger *logger.Logger, connection *golastic.Connection) (Actionable, error) {
 	action, err := build(context.Action())
 

@@ -12,12 +12,14 @@ import (
 	"github.com/nlopes/slack"
 )
 
+// Slack represents a Slack notification channel
 type Slack struct {
 	configuration *configurations.Slack
 	message       *messages.Slack
 	retryCount    int
 }
 
+// Configure is responsible for configuring the notification channel
 func (s *Slack) Configure(configuration configurations.Configurable) error {
 	config, valid := configuration.(*configurations.Slack)
 
@@ -30,6 +32,7 @@ func (s *Slack) Configure(configuration configurations.Configurable) error {
 	return nil
 }
 
+// Send is redsponsible for sending the notification over the selected channel
 func (s *Slack) Send(message messages.Sendable) error {
 	msg, valid := message.(*messages.Slack)
 
@@ -62,6 +65,7 @@ func (s *Slack) Send(message messages.Sendable) error {
 	})
 }
 
+// Retry is responsible for trying to complete the notification in case errors occur
 func (s *Slack) Retry() error {
 	if s.message == nil {
 		return errors.New("message not set, please verify the webhook configuration")

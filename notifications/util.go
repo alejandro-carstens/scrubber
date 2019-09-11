@@ -5,6 +5,7 @@ import (
 	"scrubber/notifications/messages"
 )
 
+// Notify sends a notification over a Notifiable channel
 func Notify(message messages.Sendable) error {
 	var channel Notifiable
 

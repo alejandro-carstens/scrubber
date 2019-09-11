@@ -2,6 +2,7 @@ package configurations
 
 import "errors"
 
+// Config returns a Configuration for a given channel
 func Config(notificationType string) (Configurable, error) {
 	var config Configurable
 

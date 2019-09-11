@@ -12,17 +12,6 @@ import (
 	"github.com/alejandro-carstens/golastic"
 )
 
-var availableNumericTypes []string = []string{
-	"long",
-	"integer",
-	"short",
-	"byte",
-	"double",
-	"float",
-	"half_float",
-	"scaled_float",
-}
-
 type count struct {
 	isSet bool
 	Count float64 `json:"count"`

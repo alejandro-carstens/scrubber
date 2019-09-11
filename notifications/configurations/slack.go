@@ -7,11 +7,15 @@ import (
 	"strings"
 )
 
+// Slack represents the configuration required for sending a
+// message over a Slack webhook
 type Slack struct {
 	Webhooks   map[string]string
 	RetryCount int
 }
 
+// FillFromEnvs is responsible for setting the configuration
+// for the channel from the respective env variables
 func (s *Slack) FillFromEnvs() Configurable {
 	webhooks := map[string]string{}
 
@@ -34,6 +38,7 @@ func (s *Slack) FillFromEnvs() Configurable {
 	return s
 }
 
+// Validate validates the configuration for a given channel
 func (s *Slack) Validate() (Configurable, error) {
 	if len(s.Webhooks) == 0 {
 		return nil, errors.New("You must specify at least one account")
