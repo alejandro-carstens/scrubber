@@ -5,6 +5,7 @@ import (
 	"errors"
 	"scrubber/actions/contexts"
 	"scrubber/logger"
+	"scrubber/notifications/queue"
 	"strconv"
 
 	"github.com/Jeffail/gabs"
@@ -28,14 +29,14 @@ var availableNumericTypes []string = []string{
 	"scaled_float",
 }
 
-func Create(context contexts.Contextable, logger *logger.Logger, connection *golastic.Connection) (Actionable, error) {
+func Create(context contexts.Contextable, logger *logger.Logger, connection *golastic.Connection, enqueuer *queue.Enqueuer) (Actionable, error) {
 	action, err := build(context.Action())
 
 	if err != nil {
 		return nil, err
 	}
 
-	if err := action.Init(context, logger, connection); err != nil {
+	if err := action.Init(context, logger, connection, enqueuer); err != nil {
 		return nil, err
 	}
 

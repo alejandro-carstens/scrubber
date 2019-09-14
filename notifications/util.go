@@ -1,33 +1,18 @@
 package notifications
 
 import (
-	"scrubber/notifications/configurations"
+	"scrubber/logger"
+	"scrubber/notifications/channels"
 	"scrubber/notifications/messages"
+	"scrubber/notifications/queue"
 )
+
+// NewEnqueuer instantiates an enqueuer
+func NewEnqueuer(capacity int, logger *logger.Logger) (*queue.Enqueuer, error) {
+	return new(queue.Enqueuer).Init(capacity, logger)
+}
 
 // Notify sends a notification over a Notifiable channel
 func Notify(message messages.Sendable) error {
-	var channel Notifiable
-
-	switch message.Type() {
-	case "slack":
-		channel = &Slack{}
-		break
-	}
-
-	config, err := configurations.Config(message.Type())
-
-	if err != nil {
-		return err
-	}
-
-	if err := channel.Configure(config); err != nil {
-		return err
-	}
-
-	if err := channel.Send(message); err != nil {
-		return channel.Retry()
-	}
-
-	return nil
+	return channels.Notify(message)
 }

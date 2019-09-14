@@ -4,6 +4,7 @@ import (
 	"os"
 	"scrubber/actions/contexts"
 	"scrubber/logger"
+	"scrubber/notifications/queue"
 	"strconv"
 
 	"github.com/alejandro-carstens/golastic"
@@ -14,6 +15,7 @@ const DEFAULT_HEALTH_CHECK_INTERVAL int64 = 30
 type action struct {
 	retryCount     int
 	name           string
+	enqueuer       *queue.Enqueuer
 	context        contexts.Contextable
 	reporter       *reporter
 	errorReportMap *errorReportMap
@@ -22,7 +24,7 @@ type action struct {
 }
 
 // Init initializes an action
-func (a *action) Init(context contexts.Contextable, logger *logger.Logger, connection *golastic.Connection) error {
+func (a *action) Init(context contexts.Contextable, logger *logger.Logger, connection *golastic.Connection, enqueuer *queue.Enqueuer) error {
 	if connection == nil {
 		var healthCheckInterval int64 = DEFAULT_HEALTH_CHECK_INTERVAL
 
@@ -56,6 +58,7 @@ func (a *action) Init(context contexts.Contextable, logger *logger.Logger, conne
 	a.name = context.Action()
 	a.errorReportMap = newErrorReportMap()
 	a.reporter = newReporter(logger)
+	a.enqueuer = enqueuer
 
 	return nil
 }
@@ -89,4 +92,12 @@ func (a *action) List() []string {
 func (a *action) Disconnect() {
 	a.connection = nil
 	a.indexer = nil
+
+	a.Release()
+}
+
+func (a *action) Release() {
+	if a.enqueuer != nil {
+		a.enqueuer.Release()
+	}
 }

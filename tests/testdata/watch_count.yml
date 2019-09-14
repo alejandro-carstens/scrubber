@@ -9,6 +9,13 @@ options:
     - type: count
       min: 10
       max: 100
+      # alerts:
+      #   - notification_channel: slack
+      #     webhook: team
+      #     text: Expected value between 10 and 100, got {{ .Count }} (this is a test so please ignore)
+      #     to: ["@alejandro"]
+      #     from: scrubber-alert-test
+      #     color: red  
   criteria:
     - clause: where_nested
       key: attributes.color

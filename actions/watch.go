@@ -270,13 +270,21 @@ func (w *watch) compare(metric float64, threshold *options.Threshold, context in
 
 func (w *watch) alert(alerts []*options.Alert, context interface{}) error {
 	for _, alert := range alerts {
+		var err error
+
 		message, err := messages.NewMessage(alert.Payload(), context)
 
 		if err != nil {
 			return err
 		}
 
-		if err := notifications.Notify(message); err != nil {
+		if w.enqueuer != nil {
+			err = w.enqueuer.Push(message)
+		} else {
+			err = notifications.Notify(message)
+		}
+
+		if err != nil {
 			return err
 		}
 	}

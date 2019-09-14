@@ -5,6 +5,7 @@ import (
 	"os"
 	"scrubber/console"
 	"scrubber/logger"
+	"scrubber/notifications"
 	"strconv"
 
 	"github.com/alejandro-carstens/golastic"
@@ -12,6 +13,7 @@ import (
 )
 
 const DEFAULT_HEALTH_CHECK_INTERVAL int64 = 30
+const DEFAULT_NOTIFICATIONS_QUEUE_CAPACITY int = 10000
 
 type schedulerCmd struct {
 	logger *logger.Logger
@@ -79,7 +81,27 @@ func (sc *schedulerCmd) Handle(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	if err := console.NewScheduler(sc.path, sc.logger, connection).Run(); err != nil {
+	var capacity int = DEFAULT_NOTIFICATIONS_QUEUE_CAPACITY
+
+	if len(os.Getenv("NOTIFICATIONS_QUEUE_CAPACITY")) > 0 {
+		value, err := strconv.Atoi(os.Getenv("NOTIFICATIONS_QUEUE_CAPACITY"))
+
+		if err != nil {
+			sc.logger.Debugf(err.Error())
+
+			capacity = int(value)
+		}
+	}
+
+	enqueuer, err := notifications.NewEnqueuer(capacity, sc.logger)
+
+	if err != nil {
+		sc.logger.Errorf(err.Error())
+
+		return
+	}
+
+	if err := console.NewScheduler(sc.path, sc.logger, connection, enqueuer).Run(); err != nil {
 		sc.logger.Errorf(err.Error())
 	}
 }
