@@ -5,7 +5,7 @@ import (
 	"scrubber/notifications/channels"
 	"scrubber/notifications/messages"
 
-	"github.com/panjf2000/ants"
+	"github.com/panjf2000/ants/v2"
 )
 
 // Enqueuer represents the notifications
