@@ -1,5 +1,9 @@
 [![Build Status](https://travis-ci.org/alejandro-carstens/scrubber.svg?branch=master)](https://travis-ci.org/alejandro-carstens/scrubber) [![Go Report Card](https://goreportcard.com/badge/github.com/alejandro-carstens/scrubber)](https://goreportcard.com/report/github.com/alejandro-carstens/scrubber)
 
+<p align="center">
+  <img src="https://github.com/alejandro-carstens/scrubber/blob/master/img.png" width="175" height="175">
+</p>
+
 # Scrubber
 
 A simple policy driven elasticsearch indices manager that "just works".
