@@ -7,7 +7,6 @@ import (
 	"scrubber/actions/contexts"
 	"scrubber/logger"
 	"scrubber/notifications"
-	"scrubber/notifications/queue"
 	"scrubber/ymlparser"
 	"strconv"
 	"sync"
@@ -69,7 +68,7 @@ func getAction(config *gabs.Container) (actions.Actionable, error) {
 
 	logger := logger.NewLogger("", true, true, true, true)
 
-	return actions.Create(context, logger, connection(), enqueuer(logger))
+	return actions.Create(context, logger, connection(), queue(logger))
 }
 
 func takeAction(path string, t *testing.T) actions.Actionable {
@@ -135,14 +134,14 @@ func connection() *golastic.Connection {
 	return connection
 }
 
-func enqueuer(logger *logger.Logger) *queue.Enqueuer {
-	enqueuer, err := notifications.NewEnqueuer(10, logger)
+func queue(logger *logger.Logger) *notifications.Queue {
+	queue, err := notifications.NewQueue(10, logger)
 
 	if err != nil {
 		panic(err)
 	}
 
-	return enqueuer
+	return queue
 }
 
 func seedIndexAsync(index string, count int, connection *golastic.Connection, waitGroup *sync.WaitGroup, useConstantTime bool) {

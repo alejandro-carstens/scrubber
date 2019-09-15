@@ -93,7 +93,7 @@ func (sc *schedulerCmd) Handle(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	enqueuer, err := notifications.NewEnqueuer(capacity, sc.logger)
+	queue, err := notifications.NewQueue(capacity, sc.logger)
 
 	if err != nil {
 		sc.logger.Errorf(err.Error())
@@ -101,7 +101,7 @@ func (sc *schedulerCmd) Handle(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	if err := console.NewScheduler(sc.path, sc.logger, connection, enqueuer).Run(); err != nil {
+	if err := console.NewScheduler(sc.path, sc.logger, connection, queue).Run(); err != nil {
 		sc.logger.Errorf(err.Error())
 	}
 }

@@ -278,8 +278,8 @@ func (w *watch) alert(alerts []*options.Alert, context interface{}) error {
 			return err
 		}
 
-		if w.enqueuer != nil {
-			err = w.enqueuer.Push(message)
+		if w.queue != nil {
+			err = w.queue.Push(message)
 		} else {
 			err = notifications.Notify(message)
 		}

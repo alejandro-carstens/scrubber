@@ -1,4 +1,4 @@
-package queue
+package notifications
 
 import (
 	"scrubber/logger"
@@ -8,26 +8,26 @@ import (
 	"github.com/panjf2000/ants/v2"
 )
 
-// Enqueuer represents the notifications
+// Queue represents the notifications
 // pusher and handler
-type Enqueuer struct {
+type Queue struct {
 	pool   *ants.PoolWithFunc
 	logger *logger.Logger
 }
 
-// Init initializes the Enqueuer
-func (e *Enqueuer) Init(capacity int, logger *logger.Logger) (*Enqueuer, error) {
+// Init initializes the Queue
+func (q *Queue) Init(capacity int, logger *logger.Logger) (*Queue, error) {
 	pool, err := ants.NewPoolWithFunc(capacity, func(message interface{}) {
 		msg, valid := message.(messages.Sendable)
 
 		if !valid {
-			e.logger.Errorf("message not of type messages.Sendable")
+			q.logger.Errorf("message not of type messages.Sendable")
 
 			return
 		}
 
 		if err := channels.Notify(msg); err != nil {
-			e.logger.Errorf(err.Error())
+			q.logger.Errorf(err.Error())
 		}
 	})
 
@@ -35,18 +35,18 @@ func (e *Enqueuer) Init(capacity int, logger *logger.Logger) (*Enqueuer, error) 
 		return nil, err
 	}
 
-	e.pool = pool
-	e.logger = logger
+	q.pool = pool
+	q.logger = logger
 
-	return e, nil
+	return q, nil
 }
 
 // Push pushes a notification to the queue
-func (e *Enqueuer) Push(message messages.Sendable) error {
-	return e.pool.Invoke(message)
+func (q *Queue) Push(message messages.Sendable) error {
+	return q.pool.Invoke(message)
 }
 
 // Release clears the go routine pool
-func (e *Enqueuer) Release() {
-	e.pool.Release()
+func (q *Queue) Release() {
+	q.pool.Release()
 }

@@ -4,17 +4,17 @@ import (
 	"scrubber/actions"
 	"scrubber/actions/contexts"
 	"scrubber/logger"
-	"scrubber/notifications/queue"
+	"scrubber/notifications"
 
 	"github.com/alejandro-carstens/golastic"
 )
 
-func NewScheduler(basePath string, logger *logger.Logger, builder *golastic.Connection, enqueuer *queue.Enqueuer) *Scheduler {
-	return &Scheduler{basePath: basePath, logger: logger, builder: builder, enqueuer: enqueuer}
+func NewScheduler(basePath string, logger *logger.Logger, builder *golastic.Connection, queue *notifications.Queue) *Scheduler {
+	return &Scheduler{basePath: basePath, logger: logger, builder: builder, queue: queue}
 }
 
-func Execute(context contexts.Contextable, logger *logger.Logger, builder *golastic.Connection, enqueuer *queue.Enqueuer) {
-	action, err := actions.Create(context, logger, builder, enqueuer)
+func Execute(context contexts.Contextable, logger *logger.Logger, builder *golastic.Connection, queue *notifications.Queue) {
+	action, err := actions.Create(context, logger, builder, queue)
 
 	if err != nil {
 		logger.Errorf(err.Error())

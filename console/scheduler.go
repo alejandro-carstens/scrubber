@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"scrubber/actions/contexts"
 	"scrubber/logger"
-	"scrubber/notifications/queue"
+	"scrubber/notifications"
 	"scrubber/ymlparser"
 	"strings"
 
@@ -28,7 +28,7 @@ type Scheduler struct {
 	basePath string
 	logger   *logger.Logger
 	builder  *golastic.Connection
-	enqueuer *queue.Enqueuer
+	queue    *notifications.Queue
 }
 
 func (s *Scheduler) Run() error {
@@ -148,7 +148,7 @@ func (s *Scheduler) runAsyncActions(contexts []contexts.Contextable) {
 		pool.JobQueue <- func() {
 			defer pool.JobDone()
 
-			Execute(action, s.logger, s.builder, s.enqueuer)
+			Execute(action, s.logger, s.builder, s.queue)
 		}
 	}
 
@@ -158,7 +158,7 @@ func (s *Scheduler) runAsyncActions(contexts []contexts.Contextable) {
 
 func (s *Scheduler) runActions(contexts []contexts.Contextable) {
 	for _, context := range contexts {
-		Execute(context, s.logger, s.builder, s.enqueuer)
+		Execute(context, s.logger, s.builder, s.queue)
 	}
 }
 

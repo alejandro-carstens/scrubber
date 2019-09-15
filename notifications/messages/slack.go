@@ -5,16 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"html/template"
+	"strings"
 
 	"github.com/Jeffail/gabs"
 )
-
-// Slack is the representation of a Slack message
-type Slack struct {
-	Context    interface{}
-	Payload    *gabs.Container
-	Attachment *slackAttachment
-}
 
 type slackAttachment struct {
 	Color         string   `json:"color"`
@@ -27,6 +21,13 @@ type slackAttachment struct {
 	FooterIcon    string   `json:"footer_icon"`
 	WebhookName   string   `json:"webhook"`
 	To            []string `json:"to"`
+}
+
+// Slack is the representation of a Slack message
+type Slack struct {
+	Context    interface{}
+	Payload    *gabs.Container
+	Attachment *slackAttachment
 }
 
 // Type returns the message type
@@ -62,7 +63,13 @@ func (s *Slack) Format() error {
 		return err
 	}
 
-	attachment.Text = buffer.String()
+	text := strings.Join(attachment.To, ", ")
+
+	if len(text) > 0 {
+		text = text + " "
+	}
+
+	attachment.Text = text + buffer.String()
 
 	s.Attachment = attachment
 
