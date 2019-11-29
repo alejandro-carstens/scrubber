@@ -13,6 +13,9 @@ func Notify(message messages.Sendable) error {
 	case "slack":
 		channel = &Slack{}
 		break
+	case "pager_duty":
+		channel = &PagerDuty{}
+		break
 	}
 
 	config, err := configurations.Config(message.Type())

@@ -58,6 +58,12 @@ func (s *Slack) Send(message messages.Sendable) error {
 		Footer:        msg.Attachment.Footer,
 		FooterIcon:    msg.Attachment.FooterIcon,
 		Ts:            json.Number(strconv.FormatInt(time.Now().Unix(), 10)),
+		Fields: []slack.AttachmentField{
+			slack.AttachmentField{
+				Title: "Message Key",
+				Value: msg.DedupKey,
+			},
+		},
 	}
 
 	return slack.PostWebhook(webhook, &slack.WebhookMessage{

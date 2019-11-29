@@ -35,8 +35,8 @@ func TestWatchAction(t *testing.T) {
 func watchActionDataProvider() []string {
 	return []string{
 		"/testdata/watch_count.yml",
-		"/testdata/watch_average_count.yml",
-		"/testdata/watch_stats_count.yml",
+		// "/testdata/watch_average_count.yml",
+		// "/testdata/watch_stats_count.yml",
 	}
 }
 

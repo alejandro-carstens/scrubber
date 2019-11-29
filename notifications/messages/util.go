@@ -7,7 +7,7 @@ import (
 )
 
 // NewMessage returns a sendable message
-func NewMessage(payload *gabs.Container, context interface{}) (Sendable, error) {
+func NewMessage(payload *gabs.Container, context interface{}, dedupKey string) (Sendable, error) {
 	notificationChannel, valid := payload.S("notification_channel").Data().(string)
 
 	if !valid {
@@ -18,7 +18,10 @@ func NewMessage(payload *gabs.Container, context interface{}) (Sendable, error) 
 
 	switch notificationChannel {
 	case "slack":
-		message = &Slack{Payload: payload, Context: context}
+		message = &Slack{Payload: payload, Context: context, DedupKey: dedupKey}
+		break
+	case "pager_duty":
+		message = &PagerDuty{Payload: payload, Context: context, DedupKey: dedupKey}
 		break
 	default:
 		return nil, errors.New("invalid message type")

@@ -16,6 +16,13 @@ options:
       #     to: ["@alejandro"]
       #     from: scrubber-alert-test
       #     color: red
+      #   - notification_channel: pager_duty
+      #     text: Expected value between 10 and 100, got {{ .Count }} (this is a test so please ignore)
+      #     source: scrubber
+      #     severity: info
+      #     component: scrubber
+      #     group: scrubber
+      #     class: scrubber
   criteria:
     - clause: where_nested
       key: attributes.color

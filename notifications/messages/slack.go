@@ -28,6 +28,7 @@ type Slack struct {
 	Context    interface{}
 	Payload    *gabs.Container
 	Attachment *slackAttachment
+	DedupKey   string
 }
 
 // Type returns the message type

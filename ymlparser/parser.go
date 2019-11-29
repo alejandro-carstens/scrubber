@@ -10,6 +10,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Parse parses as yml file into a JSON gabs.Container
 func Parse(fileName string) (*gabs.Container, error) {
 	reader, err := os.Open(fileName)
 

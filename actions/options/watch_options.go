@@ -8,6 +8,14 @@ import (
 	"github.com/spf13/pflag"
 )
 
+type pagerDutyAlert struct {
+	Source    string `json:"source"`
+	Severity  string `json:"severity"`
+	Component string `json:"component"`
+	Group     string `json:"group"`
+	Class     string `json:"class"`
+}
+
 type slackAlert struct {
 	Webhook       string   `json:"webhook"`
 	Color         string   `json:"color"`
@@ -21,6 +29,7 @@ type slackAlert struct {
 }
 
 type Alert struct {
+	pagerDutyAlert
 	slackAlert
 	NotificationChannel string `json:"notification_channel"`
 	Text                string `json:"text"`
@@ -37,6 +46,16 @@ func (a *Alert) validate() error {
 
 	if a.NotificationChannel == "slack" && len(a.Webhook) == 0 {
 		return errors.New("a webhook is required when specifying the slack channel")
+	}
+
+	if a.NotificationChannel == "pager_duty" {
+		if len(a.Severity) == 0 || len(a.Source) == 0 || len(a.Component) == 0 {
+			return errors.New("severity, source, and component are required when specifying the pager_duty channel")
+		}
+
+		if !inStringSlice(a.Severity, []string{"critical", "warning", "error", "info"}) {
+			return errors.New("severity needs to be one of the following: critical, warning, error or info")
+		}
 	}
 
 	return nil

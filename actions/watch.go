@@ -1,8 +1,10 @@
 package actions
 
 import (
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"scrubber/actions/options"
 	"scrubber/notifications"
 	"scrubber/notifications/messages"
@@ -272,7 +274,11 @@ func (w *watch) alert(alerts []*options.Alert, context interface{}) error {
 	for _, alert := range alerts {
 		var err error
 
-		message, err := messages.NewMessage(alert.Payload(), context)
+		h := sha256.New()
+		h.Write([]byte(w.options.GetContainer().String() + alert.Payload().String()))
+		dedupKey := fmt.Sprintf("%x", h.Sum(nil))
+
+		message, err := messages.NewMessage(alert.Payload(), context, dedupKey)
 
 		if err != nil {
 			return err

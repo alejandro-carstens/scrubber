@@ -10,6 +10,9 @@ func Config(notificationType string) (Configurable, error) {
 	case "slack":
 		config = &Slack{}
 		break
+	case "pager_duty":
+		config = &PagerDuty{}
+		break
 	default:
 		return nil, errors.New("invalid configuration type")
 	}
