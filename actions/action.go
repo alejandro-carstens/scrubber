@@ -96,6 +96,7 @@ func (a *action) Disconnect() {
 	a.Release()
 }
 
+// Release releases the notification's queue
 func (a *action) Release() {
 	if a.queue != nil {
 		a.queue.Release()

@@ -7,12 +7,10 @@ require (
 	github.com/alejandro-carstens/golastic v0.0.0-20190902232311-2ea2da6283fd
 	github.com/araddon/dateparse v0.0.0-20190622164848-0fb0a474d195
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/gorilla/websocket v1.4.1 // indirect
 	github.com/icza/dyno v0.0.0-20180601094105-0c96289f9585
 	github.com/ivpusic/grpool v1.0.0
 	github.com/jasonlvhit/gocron v0.0.0-20190603000501-f1cf2bd73e84
 	github.com/kr/pretty v0.1.0 // indirect
-	github.com/nlopes/slack v0.6.0
 	github.com/panjf2000/ants/v2 v2.0.0-rc.4
 	github.com/rs/xid v1.2.1
 	github.com/spf13/cobra v0.0.5

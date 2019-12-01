@@ -1,16 +1,40 @@
 package channels
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"net/http"
 	"scrubber/notifications/configurations"
 	"scrubber/notifications/messages"
 	"strconv"
 	"time"
 
 	"github.com/cenkalti/backoff"
-	"github.com/nlopes/slack"
 )
+
+type webhookMessage struct {
+	Attachments []attachment `json:"attachments,omitempty"`
+}
+
+type attachment struct {
+	Color         string            `json:"color,omitempty"`
+	Fallback      string            `json:"fallback"`
+	AuthorName    string            `json:"author_name,omitempty"`
+	AuthorSubname string            `json:"author_subname,omitempty"`
+	AuthorIcon    string            `json:"author_icon,omitempty"`
+	Text          string            `json:"text"`
+	Fields        []attachmentField `json:"fields,omitempty"`
+	Footer        string            `json:"footer,omitempty"`
+	FooterIcon    string            `json:"footer_icon,omitempty"`
+	Ts            json.Number       `json:"ts,omitempty"`
+}
+
+type attachmentField struct {
+	Title string `json:"title"`
+	Value string `json:"value"`
+	Short bool   `json:"short"`
+}
 
 // Slack represents a Slack notification channel
 type Slack struct {
@@ -48,26 +72,26 @@ func (s *Slack) Send(message messages.Sendable) error {
 
 	s.message = msg
 
-	attachment := slack.Attachment{
-		Color:         msg.Attachment.Color,
-		Fallback:      msg.Attachment.Fallback,
-		AuthorName:    msg.Attachment.AuthorName,
-		AuthorSubname: msg.Attachment.AuthorSubname,
-		AuthorIcon:    msg.Attachment.AuthorIcon,
-		Text:          msg.Attachment.Text,
-		Footer:        msg.Attachment.Footer,
-		FooterIcon:    msg.Attachment.FooterIcon,
-		Ts:            json.Number(strconv.FormatInt(time.Now().Unix(), 10)),
-		Fields: []slack.AttachmentField{
-			slack.AttachmentField{
-				Title: "Message Key",
-				Value: msg.DedupKey,
+	return s.postWebhook(webhook, &webhookMessage{
+		Attachments: []attachment{
+			attachment{
+				Color:         msg.Attachment.Color,
+				Fallback:      msg.Attachment.Fallback,
+				AuthorName:    msg.Attachment.AuthorName,
+				AuthorSubname: msg.Attachment.AuthorSubname,
+				AuthorIcon:    msg.Attachment.AuthorIcon,
+				Text:          msg.Attachment.Text,
+				Footer:        msg.Attachment.Footer,
+				FooterIcon:    msg.Attachment.FooterIcon,
+				Ts:            json.Number(strconv.FormatInt(time.Now().Unix(), 10)),
+				Fields: []attachmentField{
+					attachmentField{
+						Title: "Message Key",
+						Value: msg.DedupKey,
+					},
+				},
 			},
 		},
-	}
-
-	return slack.PostWebhook(webhook, &slack.WebhookMessage{
-		Attachments: []slack.Attachment{attachment},
 	})
 }
 
@@ -92,4 +116,16 @@ func (s *Slack) Retry() error {
 
 		return nil
 	}, backoff.NewExponentialBackOff())
+}
+
+func (s *Slack) postWebhook(url string, msg *webhookMessage) error {
+	raw, err := json.Marshal(msg)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = http.DefaultClient.Post(url, "application/json", bytes.NewReader(raw))
+
+	return err
 }
