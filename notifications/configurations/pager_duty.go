@@ -18,9 +18,11 @@ type PagerDuty struct {
 func (pd *PagerDuty) FillFromEnvs() Configurable {
 	pd.RoutingKey = os.Getenv("PAGER_DUTY_ROUTING_KEY")
 
-	retryCount, _ := strconv.Atoi(os.Getenv("PAGER_DUTY_RETRY_COUNT"))
+	retryCount, err := strconv.Atoi(os.Getenv("PAGER_DUTY_RETRY_COUNT"))
 
-	pd.RetryCount = retryCount
+	if err == nil {
+		pd.RetryCount = retryCount
+	}
 
 	return pd
 }

@@ -31,9 +31,11 @@ func (s *Slack) FillFromEnvs() Configurable {
 
 	s.Webhooks = webhooks
 
-	retryCount, _ := strconv.Atoi(os.Getenv("SLACK_RETRY_COUNT"))
+	retryCount, err := strconv.Atoi(os.Getenv("SLACK_RETRY_COUNT"))
 
-	s.RetryCount = retryCount
+	if err == nil {
+		s.RetryCount = retryCount
+	}
 
 	return s
 }
