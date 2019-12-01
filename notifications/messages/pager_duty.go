@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"html/template"
-
-	"github.com/Jeffail/gabs"
 )
 
 type eventPayload struct {
@@ -26,10 +24,8 @@ type pagerDutyEvent struct {
 
 // Pager Duty is the representation of a Pager Duty message
 type PagerDuty struct {
-	Context  interface{}
-	Payload  *gabs.Container
-	Event    *pagerDutyEvent
-	DedupKey string
+	baseMessage
+	Event *pagerDutyEvent
 }
 
 // Type returns the message type

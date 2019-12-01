@@ -55,7 +55,7 @@ func (pd *PagerDuty) Send(message messages.Sendable) error {
 		return err
 	}
 
-	request.Header.Add("X-Routing-Key", pd.configuration.ApiKey)
+	request.Header.Add("X-Routing-Key", pd.configuration.RoutingKey)
 
 	_, err = http.DefaultClient.Do(request)
 

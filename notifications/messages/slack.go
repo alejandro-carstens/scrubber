@@ -6,8 +6,6 @@ import (
 	"errors"
 	"html/template"
 	"strings"
-
-	"github.com/Jeffail/gabs"
 )
 
 type slackAttachment struct {
@@ -25,10 +23,8 @@ type slackAttachment struct {
 
 // Slack is the representation of a Slack message
 type Slack struct {
-	Context    interface{}
-	Payload    *gabs.Container
+	baseMessage
 	Attachment *slackAttachment
-	DedupKey   string
 }
 
 // Type returns the message type

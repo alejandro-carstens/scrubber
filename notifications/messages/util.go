@@ -18,14 +18,16 @@ func NewMessage(payload *gabs.Container, context interface{}, dedupKey string) (
 
 	switch notificationChannel {
 	case "slack":
-		message = &Slack{Payload: payload, Context: context, DedupKey: dedupKey}
+		message = &Slack{}
 		break
 	case "pager_duty":
-		message = &PagerDuty{Payload: payload, Context: context, DedupKey: dedupKey}
+		message = &PagerDuty{}
 		break
 	default:
 		return nil, errors.New("invalid message type")
 	}
+
+	message.Init(context, dedupKey, payload)
 
 	if err := message.Format(); err != nil {
 		return nil, err
