@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-// Slack represents the configuration required for sending a
-// message over a Slack webhook
+// Slack represents the configuration required
+// for sending a message over a Slack webhook
 type Slack struct {
 	Webhooks   map[string]string
 	RetryCount int

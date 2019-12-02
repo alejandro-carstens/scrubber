@@ -28,9 +28,15 @@ type slackAlert struct {
 	To            []string `json:"to"`
 }
 
+type emailAlert struct {
+	From    string `json:"from"`
+	Subject string `json:"subject"`
+}
+
 type Alert struct {
 	pagerDutyAlert
 	slackAlert
+	emailAlert
 	NotificationChannel string `json:"notification_channel"`
 	Text                string `json:"text"`
 }
@@ -55,6 +61,12 @@ func (a *Alert) validate() error {
 
 		if !inStringSlice(a.Severity, []string{"critical", "warning", "error", "info"}) {
 			return errors.New("severity needs to be one of the following: critical, warning, error or info")
+		}
+	}
+
+	if a.NotificationChannel == "email" {
+		if len(a.From) == 0 || len(a.To) == 0 || len(a.Subject) == 0 {
+			return errors.New("from, to, subject are required when specifying the email channel")
 		}
 	}
 

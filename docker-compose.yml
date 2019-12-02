@@ -24,10 +24,16 @@ services:
     depends_on:
       - elasticsearch
     environment:
-      - "ELASTICSEARCH_URI=http://elasticsearch:9200"
+      - "ELASTICSEARCH_URI=${ELASTICSEARCH_URI}"
       - "ELASTIC_USERNAME=${ELASTIC_USERNAME}"
       - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
       - "GO111MODULE=on"
+      - "SLACK_WEBHOOKS=${SLACK_WEBHOOKS}"
+      - "PAGER_DUTY_ROUTING_KEY=${PAGER_DUTY_ROUTING_KEY}"
+      - "SMTP_PORT=${SMTP_PORT}"
+      - "SMTP_HOST=${SMTP_HOST}"
+      - "EMAIL_USERNAME=${EMAIL_USERNAME}"
+      - "EMAIL_PASSWORD=${EMAIL_PASSWORD}" 
     volumes:
       - .:/go/src/scrubber
     networks:
@@ -41,7 +47,7 @@ services:
       - ./tests/testdata/schedulerdata:/usr/share/testfiles:ro
     environment:
       - "ACTIONS_PATH=/usr/share/testfiles"
-      - "ELASTICSEARCH_URI=http://elasticsearch:9200"
+      - "ELASTICSEARCH_URI=${ELASTICSEARCH_URI}"
       - "ELASTIC_USERNAME=${ELASTIC_USERNAME}"
       - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
     depends_on:

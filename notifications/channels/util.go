@@ -16,6 +16,9 @@ func Notify(message messages.Sendable) error {
 	case "pager_duty":
 		channel = &PagerDuty{}
 		break
+	case "email":
+		channel = &Email{}
+		break
 	}
 
 	config, err := configurations.Config(message.Type())

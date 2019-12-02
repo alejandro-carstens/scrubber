@@ -10,19 +10,24 @@ options:
       min: 10
       max: 100
       # alerts:
-      #   - notification_channel: slack
-      #     webhook: team
-      #     text: Expected value between 10 and 100, got {{ .Count }} (this is a test so please ignore)
-      #     to: ["@alejandro"]
-      #     from: scrubber-alert-test
-      #     color: red
-      #   - notification_channel: pager_duty
-      #     text: Expected value between 10 and 100, got {{ .Count }} (this is a test so please ignore)
-      #     source: scrubber
-      #     severity: info
-      #     component: scrubber
-      #     group: scrubber
-      #     class: scrubber
+        # - notification_channel: email
+        #   from: no-reply@scrubber.com
+        #   to: ["acarste@okstate.edu", "alejandro@stitchlabs.com"]
+        #   text: Expected value between 10 and 100, got {{ .Count }} (this is a test so please ignore)
+        #   subject: Scrubber Alert!!!
+        # - notification_channel: slack
+        #   webhook: team
+        #   text: Expected value between 10 and 100, got {{ .Count }} (this is a test so please ignore)
+        #   to: ["@alejandro"]
+        #   from: scrubber-alert-test
+        #   color: red
+        # - notification_channel: pager_duty
+        #   text: Expected value between 10 and 100, got {{ .Count }} (this is a test so please ignore)
+        #   source: scrubber
+        #   severity: info
+        #   component: scrubber
+        #   group: scrubber
+        #   class: scrubber
   criteria:
     - clause: where_nested
       key: attributes.color

@@ -23,6 +23,9 @@ func NewMessage(payload *gabs.Container, context interface{}, dedupKey string) (
 	case "pager_duty":
 		message = &PagerDuty{}
 		break
+	case "email":
+		message = &Email{}
+		break
 	default:
 		return nil, errors.New("invalid message type")
 	}

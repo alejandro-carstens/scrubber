@@ -13,6 +13,9 @@ func Config(notificationType string) (Configurable, error) {
 	case "pager_duty":
 		config = &PagerDuty{}
 		break
+	case "email":
+		config = &Email{}
+		break
 	default:
 		return nil, errors.New("invalid configuration type")
 	}
