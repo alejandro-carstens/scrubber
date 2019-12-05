@@ -8,6 +8,7 @@ type baseMessage struct {
 	Payload  *gabs.Container
 }
 
+// Init initializes the base properties of a message
 func (bm *baseMessage) Init(context interface{}, dedupKey string, payload *gabs.Container) {
 	bm.Context = context
 	bm.DedupKey = dedupKey
