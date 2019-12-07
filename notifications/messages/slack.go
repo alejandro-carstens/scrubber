@@ -63,7 +63,7 @@ func (s *Slack) Format() error {
 	text := strings.Join(attachment.To, ", ")
 
 	if len(text) > 0 {
-		text = text + " "
+		text = text + ": "
 	}
 
 	attachment.Text = text + buffer.String()

@@ -8,32 +8,32 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type ContextTemplate struct {
+type contextTemplate struct {
 	Count int
 }
 
 func TestEmailMessage(t *testing.T) {
 	b, err := json.Marshal(map[string]interface{}{
-		"to":      []string{"Alejandro", "Scrubber", "Golang"},
-		"from":    "Alejandro",
-		"subject": "Scrubber Email Message Test",
-		"text":    "This is very cool {{ .Count }}",
+		"notification_channel": "email",
+		"to":                   []string{"Alejandro", "Scrubber", "Golang"},
+		"from":                 "Alejandro",
+		"subject":              "Scrubber Email Message Test",
+		"text":                 "This is very cool {{ .Count }}",
 	})
 
-	if err != nil {
-		t.Error(err)
-	}
+	assert.Nil(t, err)
 
 	container, err := gabs.ParseJSON(b)
 
-	if err != nil {
-		t.Error(err)
-	}
+	assert.Nil(t, err)
 
-	message := &Email{}
-	message.Init(&ContextTemplate{Count: 10}, "random_dedup_key", container)
+	msg, err := NewMessage(container, &contextTemplate{Count: 10}, "random_dedup_key")
 
-	assert.Nil(t, message.Format())
+	assert.Nil(t, err)
+
+	message, valid := msg.(*Email)
+
+	assert.True(t, valid)
 	assert.Equal(t, "Alejandro", message.From)
 	assert.Equal(t, []string{"Alejandro", "Scrubber", "Golang"}, message.To)
 	assert.Equal(t, "Scrubber Email Message Test", message.Subject)
@@ -43,28 +43,28 @@ func TestEmailMessage(t *testing.T) {
 
 func TestPagerDutyMessage(t *testing.T) {
 	b, err := json.Marshal(map[string]interface{}{
-		"source":    "scrubber",
-		"severity":  "info",
-		"component": "application",
-		"group":     "application",
-		"class":     "application",
-		"text":      "This is very cool {{ .Count }}",
+		"notification_channel": "pager_duty",
+		"source":               "scrubber",
+		"severity":             "info",
+		"component":            "application",
+		"group":                "application",
+		"class":                "application",
+		"text":                 "This is very cool {{ .Count }}",
 	})
 
-	if err != nil {
-		t.Error(err)
-	}
+	assert.Nil(t, err)
 
 	container, err := gabs.ParseJSON(b)
 
-	if err != nil {
-		t.Error(err)
-	}
+	assert.Nil(t, err)
 
-	message := &PagerDuty{}
-	message.Init(&ContextTemplate{Count: 10}, "random_dedup_key", container)
+	msg, err := NewMessage(container, &contextTemplate{Count: 10}, "random_dedup_key")
 
-	assert.Nil(t, message.Format())
+	assert.Nil(t, err)
+
+	message, valid := msg.(*PagerDuty)
+
+	assert.True(t, valid)
 	assert.Equal(t, "trigger", message.Event.EventAction)
 	assert.Equal(t, "random_dedup_key", message.Event.DedupKey)
 	assert.Equal(t, "scrubber", message.Event.Payload.Source)
@@ -77,30 +77,41 @@ func TestPagerDutyMessage(t *testing.T) {
 
 func TestSlackMessage(t *testing.T) {
 	b, err := json.Marshal(map[string]interface{}{
-		"webhook":        "https://slack.webhook.com/test",
-		"color":          "green",
-		"fallback":       "fallback_test",
-		"author_name":    "Alejandro",
-		"author_subname": "Alex",
-		"author_icon":    "not available",
-		"footer":         "test_footer",
-		"footer_icon":    "test_footer_icon",
-		"to":             []string{"Alejandro", "Carstens", "Cattori"},
-		"text":           "This is very cool {{ .Count }}",
+		"notification_channel": "slack",
+		"webhook":              "https://slack.webhook.com/test",
+		"color":                "green",
+		"fallback":             "fallback_test",
+		"author_name":          "Alejandro",
+		"author_subname":       "Alex",
+		"author_icon":          "not available",
+		"footer":               "test_footer",
+		"to":                   []string{"Alejandro", "Carstens", "Cattori"},
+		"footer_icon":          "test_footer_icon",
+		"text":                 "This is very cool {{ .Count }}",
 	})
 
-	if err != nil {
-		t.Error(err)
-	}
+	assert.Nil(t, err)
 
 	container, err := gabs.ParseJSON(b)
 
-	if err != nil {
-		t.Error(err)
-	}
+	assert.Nil(t, err)
 
-	message := &PagerDuty{}
-	message.Init(&ContextTemplate{Count: 10}, "random_dedup_key", container)
+	msg, err := NewMessage(container, &contextTemplate{Count: 10}, "random_dedup_key")
 
-	assert.Nil(t, message.Format())
+	assert.Nil(t, err)
+
+	message, valid := msg.(*Slack)
+
+	assert.True(t, valid)
+
+	assert.Equal(t, "green", message.Attachment.Color)
+	assert.Equal(t, "fallback_test", message.Attachment.Fallback)
+	assert.Equal(t, "Alejandro", message.Attachment.AuthorName)
+	assert.Equal(t, "Alex", message.Attachment.AuthorSubname)
+	assert.Equal(t, "not available", message.Attachment.AuthorIcon)
+	assert.Equal(t, "Alejandro, Carstens, Cattori: This is very cool 10", message.Attachment.Text)
+	assert.Equal(t, "test_footer", message.Attachment.Footer)
+	assert.Equal(t, "test_footer_icon", message.Attachment.FooterIcon)
+	assert.Equal(t, "https://slack.webhook.com/test", message.Attachment.WebhookName)
+	assert.Equal(t, []string{"Alejandro", "Carstens", "Cattori"}, message.Attachment.To)
 }
