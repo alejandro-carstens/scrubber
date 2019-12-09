@@ -125,7 +125,15 @@ func (s *Slack) postWebhook(url string, msg *webhookMessage) error {
 		return err
 	}
 
-	_, err = http.DefaultClient.Post(url, "application/json", bytes.NewReader(raw))
+	resp, err := http.DefaultClient.Post(url, "application/json", bytes.NewReader(raw))
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		return errors.New("Received a non 200 status code")
+	}
+
+	return nil
 }

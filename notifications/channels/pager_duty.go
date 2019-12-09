@@ -57,9 +57,17 @@ func (pd *PagerDuty) Send(message messages.Sendable) error {
 
 	request.Header.Add("X-Routing-Key", pd.configuration.RoutingKey)
 
-	_, err = http.DefaultClient.Do(request)
+	resp, err := http.DefaultClient.Do(request)
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		return errors.New("Received a non 200 status code")
+	}
+
+	return nil
 }
 
 // Retry is responsible for trying to complete the notification in case errors occur
