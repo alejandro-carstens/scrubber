@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 	"scrubber/notifications/configurations"
 	"scrubber/notifications/messages"
 
@@ -43,13 +44,15 @@ func (pd *PagerDuty) Send(message messages.Sendable) error {
 		return errors.New("invalid message type, not a pager_duty message")
 	}
 
+	pd.message = msg
+
 	raw, err := json.Marshal(msg.Event)
 
 	if err != nil {
 		return err
 	}
 
-	request, err := http.NewRequest("POST", PAGER_DUTY_BASE_URI, bytes.NewReader(raw))
+	request, err := http.NewRequest("POST", pd.getBaseUri(), bytes.NewReader(raw))
 
 	if err != nil {
 		return err
@@ -91,4 +94,12 @@ func (pd *PagerDuty) Retry() error {
 
 		return nil
 	}, backoff.NewExponentialBackOff())
+}
+
+func (pd *PagerDuty) getBaseUri() string {
+	if len(os.Getenv("PAGER_DUTY_BASE_URI")) == 0 {
+		return PAGER_DUTY_BASE_URI
+	}
+
+	return os.Getenv("PAGER_DUTY_BASE_URI")
 }
