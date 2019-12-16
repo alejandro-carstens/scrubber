@@ -11,52 +11,50 @@ import (
 
 type patternFilterRunner struct {
 	baseRunner
+	criteria *criterias.Pattern
 }
 
 // Init initializes the filter runner
-func (pfr *patternFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
-	err := pfr.BaseInit(connection, info...)
+func (pfr *patternFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	if err := pfr.BaseInit(criteria, connection, info...); err != nil {
+		return nil, err
+	}
 
-	return pfr, err
+	pfr.criteria = criteria.(*criterias.Pattern)
+
+	return pfr, nil
 }
 
 // RunFilter filters out elements from the actionable list
-func (pfr *patternFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
-	if err := pfr.validateCriteria(criteria); err != nil {
-		channel <- pfr.response.setError(err)
-		return
-	}
-
-	pattern := criteria.(*criterias.Pattern)
-
+func (pfr *patternFilterRunner) RunFilter(channel chan *FilterResponse) {
 	var passed bool
 	var err error
 
-	switch pattern.Kind {
+	switch pfr.criteria.Kind {
 	case "timestring":
-		passed, err = pfr.processTimestring(pattern.Value)
+		passed, err = pfr.processTimestring()
 		break
 	case "prefix":
-		passed, err = pfr.processPrefix(pattern.Value)
+		passed, err = pfr.processPrefix()
 		break
 	case "suffix":
-		passed, err = pfr.processSuffix(pattern.Value)
+		passed, err = pfr.processSuffix()
 		break
 	case "regex":
-		passed, err = pfr.processRegex(pattern.Value)
+		passed, err = pfr.processRegex()
 		break
 	}
 
 	channel <- pfr.response.
 		setError(err).
 		setReport(pfr.report).
-		setPassed(passed && pattern.Include())
+		setPassed(passed && pfr.criteria.Include())
 }
 
-func (pfr *patternFilterRunner) processTimestring(value string) (bool, error) {
+func (pfr *patternFilterRunner) processTimestring() (bool, error) {
 	var regPattern string
 
-	switch value {
+	switch pfr.criteria.Value {
 	case "Y.m.d":
 		regPattern = `\d{4}.\d{2}.\d{2}`
 		break
@@ -89,63 +87,63 @@ func (pfr *patternFilterRunner) processTimestring(value string) (bool, error) {
 		return false, nil
 	}
 
-	pfr.report.AddReason("Processing timestring pattern '%v'", value)
+	pfr.report.AddReason("Processing timestring pattern '%v'", pfr.criteria.Value)
 
 	if passed := len(reg.FindString(pfr.info.Name())) > 0; passed {
-		pfr.report.AddReason("Index '%v' matched pattern '%v'", pfr.info.Name(), value)
+		pfr.report.AddReason("Index '%v' matched pattern '%v'", pfr.info.Name(), pfr.criteria.Value)
 
 		return true, nil
 	}
 
-	pfr.report.AddReason("Index '%v' did not matched pattern '%v'", pfr.info.Name(), value)
+	pfr.report.AddReason("Index '%v' did not matched pattern '%v'", pfr.info.Name(), pfr.criteria.Value)
 
 	return false, nil
 }
 
-func (pfr *patternFilterRunner) processSuffix(value string) (bool, error) {
-	pfr.report.AddReason("Processing by suffix pattern '%v'", value)
+func (pfr *patternFilterRunner) processSuffix() (bool, error) {
+	pfr.report.AddReason("Processing by suffix pattern '%v'", pfr.criteria.Value)
 
-	if passed := strings.HasSuffix(pfr.info.Name(), value); passed {
-		pfr.report.AddReason("Index '%v' matched pattern '%v'", pfr.info.Name(), value)
+	if passed := strings.HasSuffix(pfr.info.Name(), pfr.criteria.Value); passed {
+		pfr.report.AddReason("Index '%v' matched pattern '%v'", pfr.info.Name(), pfr.criteria.Value)
 
 		return passed, nil
 	}
 
-	pfr.report.AddReason("Index '%v' did not matched pattern '%v'", pfr.info.Name(), value)
+	pfr.report.AddReason("Index '%v' did not matched pattern '%v'", pfr.info.Name(), pfr.criteria.Value)
 
 	return false, nil
 }
 
-func (pfr *patternFilterRunner) processPrefix(value string) (bool, error) {
-	pfr.report.AddReason("Processing by prefix pattern '%v'", value)
+func (pfr *patternFilterRunner) processPrefix() (bool, error) {
+	pfr.report.AddReason("Processing by prefix pattern '%v'", pfr.criteria.Value)
 
-	if passed := strings.HasPrefix(pfr.info.Name(), value); passed {
-		pfr.report.AddReason("Index '%v' matched pattern '%v'", pfr.info.Name(), value)
+	if passed := strings.HasPrefix(pfr.info.Name(), pfr.criteria.Value); passed {
+		pfr.report.AddReason("Index '%v' matched pattern '%v'", pfr.info.Name(), pfr.criteria.Value)
 
 		return passed, nil
 	}
 
-	pfr.report.AddReason("Index '%v' did not matched pattern '%v'", pfr.info.Name(), value)
+	pfr.report.AddReason("Index '%v' did not matched pattern '%v'", pfr.info.Name(), pfr.criteria.Value)
 
 	return false, nil
 }
 
-func (pfr *patternFilterRunner) processRegex(value string) (bool, error) {
-	passed, err := regexp.MatchString(value, pfr.info.Name())
+func (pfr *patternFilterRunner) processRegex() (bool, error) {
+	passed, err := regexp.MatchString(pfr.criteria.Value, pfr.info.Name())
 
 	if err != nil {
 		return false, err
 	}
 
-	pfr.report.AddReason("Processing by regex pattern '%v'", value)
+	pfr.report.AddReason("Processing by regex pattern '%v'", pfr.criteria.Value)
 
 	if passed {
-		pfr.report.AddReason("Index '%v' matched pattern '%v'", pfr.info.Name(), value)
+		pfr.report.AddReason("Index '%v' matched pattern '%v'", pfr.info.Name(), pfr.criteria.Value)
 
 		return passed, nil
 	}
 
-	pfr.report.AddReason("Index '%v' did not matched pattern '%v'", pfr.info.Name(), value)
+	pfr.report.AddReason("Index '%v' did not matched pattern '%v'", pfr.info.Name(), pfr.criteria.Value)
 
 	return false, nil
 }

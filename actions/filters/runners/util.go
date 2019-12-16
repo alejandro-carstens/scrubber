@@ -2,6 +2,7 @@ package runners
 
 import (
 	"errors"
+	"scrubber/actions/criterias"
 	"scrubber/actions/infos"
 	"time"
 
@@ -36,10 +37,10 @@ func (ts timeSlice) Len() int {
 }
 
 // NewRunner return a filter runner
-func NewRunner(criteria string, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+func NewRunner(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
 	var runner Runnerable
 
-	switch criteria {
+	switch criteria.Name() {
 	case "age":
 		runner = new(ageFilterRunner)
 		break
@@ -76,7 +77,7 @@ func NewRunner(criteria string, connection *golastic.Connection, info ...infos.I
 		return nil, errors.New("Invalid criteria")
 	}
 
-	return runner.Init(connection, info...)
+	return runner.Init(criteria, connection, info...)
 }
 
 func elapsed(from, to time.Time) (years, months, days, hours, minutes, seconds int) {
@@ -144,4 +145,14 @@ func secondsToMonths(seconds float64) float64 {
 
 func secondsToYears(seconds float64) float64 {
 	return seconds / SECONDS_PER_YEAR
+}
+
+func inStringSlice(needle string, haystack []string) bool {
+	for _, value := range haystack {
+		if needle == value {
+			return true
+		}
+	}
+
+	return false
 }

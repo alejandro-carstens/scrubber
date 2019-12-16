@@ -17,7 +17,7 @@ type aggregateBaseRunner struct {
 }
 
 // BaseInit initializes the base properties for a filter runner
-func (abr *aggregateBaseRunner) BaseInit(connection *golastic.Connection, info ...infos.Informable) error {
+func (abr *aggregateBaseRunner) BaseInit(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) error {
 	if len(info) == 0 {
 		return errors.New("info cannot be empty")
 	}
@@ -44,13 +44,9 @@ func (abr *aggregateBaseRunner) BaseInit(connection *golastic.Connection, info .
 		abr.report.AddName(element.Name())
 	}
 
-	return nil
-}
-
-func (abr *aggregateBaseRunner) validateCriteria(criteria criterias.Criteriable) error {
 	abr.report.SetCriteria(criteria)
 
-	return criteria.Validate()
+	return nil
 }
 
 func (abr *aggregateBaseRunner) excludeIndices(exludeList []string) []string {

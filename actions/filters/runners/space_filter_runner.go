@@ -18,22 +18,22 @@ type IndexStatsResponse struct {
 
 type spaceFilterRunner struct {
 	useAgeFilterRunner
+	criteria *criterias.Space
 }
 
 // Init initializes the filter runner
-func (sfr *spaceFilterRunner) Init(builder *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
-	err := sfr.BaseInit(builder, info...)
+func (sfr *spaceFilterRunner) Init(criteria criterias.Criteriable, builder *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	if err := sfr.BaseInit(criteria, builder, info...); err != nil {
+		return nil, err
+	}
 
-	return sfr, err
+	sfr.criteria = criteria.(*criterias.Space)
+
+	return sfr, nil
 }
 
 // RunFilter filters out elements from the actionable list
-func (sfr *spaceFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
-	if err := sfr.validateCriteria(criteria); err != nil {
-		channel <- sfr.response.setError(err)
-		return
-	}
-
+func (sfr *spaceFilterRunner) RunFilter(channel chan *FilterResponse) {
 	indicesStatsResponse := make(chan *IndexStatsResponse, 1)
 
 	go sfr.executeIndexStats(indicesStatsResponse)
@@ -41,12 +41,10 @@ func (sfr *spaceFilterRunner) RunFilter(channel chan *FilterResponse, criteria c
 	var err error
 	var sortedList []string
 
-	space := criteria.(*criterias.Space)
-
-	if space.UseAge {
-		sortedList, err = sfr.runAgeSorters(space)
+	if sfr.criteria.UseAge {
+		sortedList, err = sfr.runAgeSorters(sfr.criteria)
 	} else {
-		sortedList = sfr.runDefaultSorter(space)
+		sortedList = sfr.runDefaultSorter(sfr.criteria)
 	}
 
 	statsResponse := <-indicesStatsResponse
@@ -56,9 +54,9 @@ func (sfr *spaceFilterRunner) RunFilter(channel chan *FilterResponse, criteria c
 		return
 	}
 
-	sortedList = sfr.sumSpace(sortedList, statsResponse.sizeInBytes, space)
+	sortedList = sfr.sumSpace(sortedList, statsResponse.sizeInBytes)
 
-	if !space.Include() {
+	if !sfr.criteria.Include() {
 		sfr.report.AddReason("Excluding indices: '%v' from list", sortedList)
 
 		sortedList = sfr.excludeIndices(sortedList)
@@ -103,7 +101,7 @@ func (sfr *spaceFilterRunner) executeIndexStats(indicesStatsResponse chan *Index
 	indicesStatsResponse <- response
 }
 
-func (sfr *spaceFilterRunner) sumSpace(sortedList []string, sizeInBytes map[string]float64, space *criterias.Space) []string {
+func (sfr *spaceFilterRunner) sumSpace(sortedList []string, sizeInBytes map[string]float64) []string {
 	count := float64(0)
 
 	sfr.report.AddReason("Starting space sum")
@@ -111,20 +109,20 @@ func (sfr *spaceFilterRunner) sumSpace(sortedList []string, sizeInBytes map[stri
 	for key, index := range sortedList {
 		count = count + sizeInBytes[index]
 
-		convertedCount := sfr.convertCount(count, space.Units)
+		convertedCount := sfr.convertCount(count, sfr.criteria.Units)
 
 		sfr.report.AddReason(
 			"Index %v space '%v' '%v', space sum '%v'",
 			index,
-			sfr.convertCount(sizeInBytes[index], space.Units),
-			space.Units,
+			sfr.convertCount(sizeInBytes[index], sfr.criteria.Units),
+			sfr.criteria.Units,
 			convertedCount,
 		)
 
-		if space.FeThresholdBehavior == "greater_than" && convertedCount > float64(space.DiskSpace) {
+		if sfr.criteria.FeThresholdBehavior == "greater_than" && convertedCount > float64(sfr.criteria.DiskSpace) {
 			sfr.report.AddReason(
 				"Threshold '%v' exceeded, space sum '%v'",
-				space.DiskSpace,
+				sfr.criteria.DiskSpace,
 				convertedCount,
 			)
 
@@ -132,11 +130,11 @@ func (sfr *spaceFilterRunner) sumSpace(sortedList []string, sizeInBytes map[stri
 		}
 	}
 
-	if space.FeThresholdBehavior == "less_than" && sfr.convertCount(count, space.Units) < float64(space.DiskSpace) {
+	if sfr.criteria.FeThresholdBehavior == "less_than" && sfr.convertCount(count, sfr.criteria.Units) < float64(sfr.criteria.DiskSpace) {
 		sfr.report.AddReason(
 			"Threshold '%v' not exceeded, space sum '%v'",
-			space.DiskSpace,
-			sfr.convertCount(count, space.Units),
+			sfr.criteria.DiskSpace,
+			sfr.convertCount(count, sfr.criteria.Units),
 		)
 
 		return sortedList

@@ -17,7 +17,7 @@ type baseRunner struct {
 }
 
 // BaseInit initializes the base properties for a filter runner
-func (br *baseRunner) BaseInit(connection *golastic.Connection, info ...infos.Informable) error {
+func (br *baseRunner) BaseInit(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) error {
 	if len(info) != 1 {
 		return errors.New("This is not an aggregate filter runner and as such only accepts one index per run")
 	}
@@ -36,15 +36,11 @@ func (br *baseRunner) BaseInit(connection *golastic.Connection, info ...infos.In
 		report.SetType("index")
 	}
 
+	report.SetCriteria(criteria)
+
 	br.report = report
 	br.response = new(FilterResponse)
 	br.connection = connection
 
 	return nil
-}
-
-func (br *baseRunner) validateCriteria(criteria criterias.Criteriable) error {
-	br.report.SetCriteria(criteria)
-
-	return criteria.Validate()
 }

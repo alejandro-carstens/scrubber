@@ -9,43 +9,38 @@ import (
 
 type forcemergedFilterRunner struct {
 	baseRunner
+	criteria *criterias.Forcemerged
 }
 
 // Init initializes the filter runner
-func (ffr *forcemergedFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
-	if err := ffr.BaseInit(connection, info...); err != nil {
+func (ffr *forcemergedFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	if err := ffr.BaseInit(criteria, connection, info...); err != nil {
 		return nil, err
 	}
+
+	ffr.criteria = criteria.(*criterias.Forcemerged)
 
 	return ffr, nil
 }
 
 // RunFilter filters out elements from the actionable list
-func (ffr *forcemergedFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
-	if err := ffr.validateCriteria(criteria); err != nil {
-		channel <- ffr.response.setError(err)
-		return
-	}
-
+func (ffr *forcemergedFilterRunner) RunFilter(channel chan *FilterResponse) {
 	segments := ffr.info.(*infos.IndexInfo).SegmentsCount
-
-	forcemerged := criteria.(*criterias.Forcemerged)
-
-	passed := segments <= forcemerged.MaxNumSegments
+	passed := segments <= ffr.criteria.MaxNumSegments
 
 	if passed {
 		ffr.report.AddReason(
 			"Number of segments '%v' is lesser or equal to max number of segments '%v'",
 			segments,
-			forcemerged.MaxNumSegments,
+			ffr.criteria.MaxNumSegments,
 		)
 	} else {
 		ffr.report.AddReason(
 			"Number of segments '%v' is greater than the max number of segments '%v'",
 			segments,
-			forcemerged.MaxNumSegments,
+			ffr.criteria.MaxNumSegments,
 		)
 	}
 
-	channel <- ffr.response.setPassed(passed && forcemerged.Include()).setReport(ffr.report)
+	channel <- ffr.response.setPassed(passed && ffr.criteria.Include()).setReport(ffr.report)
 }

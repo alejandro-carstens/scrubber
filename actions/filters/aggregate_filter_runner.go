@@ -15,13 +15,13 @@ func (afr *AggregateFilterRunner) ApplyFilters() ([]string, error) {
 	channel := make(chan *runners.FilterResponse, len(afr.builder.AggregateCriteria()))
 
 	for _, criteria := range afr.builder.AggregateCriteria() {
-		runner, err := runners.NewRunner(criteria.Name(), afr.connection, afr.info...)
+		runner, err := runners.NewRunner(criteria, afr.connection, afr.info...)
 
 		if err != nil {
 			return nil, err
 		}
 
-		go runner.RunFilter(channel, criteria)
+		go runner.RunFilter(channel)
 	}
 
 	for i := 0; i < len(afr.builder.AggregateCriteria()); i++ {

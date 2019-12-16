@@ -9,26 +9,22 @@ import (
 
 type allocatedFilterRunner struct {
 	baseRunner
+	criteria *criterias.Allocated
 }
 
 // Init initializes the filter runner
-func (afr *allocatedFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
-	if err := afr.BaseInit(connection, info...); err != nil {
+func (afr *allocatedFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	if err := afr.BaseInit(criteria, connection, info...); err != nil {
 		return nil, err
 	}
+
+	afr.criteria = criteria.(*criterias.Allocated)
 
 	return afr, nil
 }
 
 // RunFilter filters out elements from the actionable list
-func (afr *allocatedFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
-	if err := afr.validateCriteria(criteria); err != nil {
-		channel <- afr.response.setError(err)
-		return
-	}
-
-	allocated := criteria.(*criterias.Allocated)
-
+func (afr *allocatedFilterRunner) RunFilter(channel chan *FilterResponse) {
 	settingsResponse, err := afr.connection.Indexer(nil).Settings(afr.info.Name())
 
 	if err != nil {
@@ -39,17 +35,17 @@ func (afr *allocatedFilterRunner) RunFilter(channel chan *FilterResponse, criter
 	passed := false
 	container := settingsResponse[afr.info.Name()]
 
-	value, valid := container.S("index", "routing", "allocation", allocated.AllocationType, allocated.Key).Data().(string)
+	value, valid := container.S("index", "routing", "allocation", afr.criteria.AllocationType, afr.criteria.Key).Data().(string)
 
 	if valid {
-		passed = value == allocated.Value
+		passed = value == afr.criteria.Value
 
 		if passed {
 			afr.report.AddReason(
 				"Allocation value '%v' matched for allocation type '%v' and key '%v'",
 				value,
-				allocated.AllocationType,
-				allocated.Key,
+				afr.criteria.AllocationType,
+				afr.criteria.Key,
 			)
 		}
 	}
@@ -58,10 +54,10 @@ func (afr *allocatedFilterRunner) RunFilter(channel chan *FilterResponse, criter
 		afr.report.AddReason(
 			"Allocation value '%v' not matched for allocation type '%v' and key '%v'",
 			value,
-			allocated.AllocationType,
-			allocated.Key,
+			afr.criteria.AllocationType,
+			afr.criteria.Key,
 		)
 	}
 
-	channel <- afr.response.setPassed(passed && allocated.Include()).setReport(afr.report)
+	channel <- afr.response.setPassed(passed && afr.criteria.Include()).setReport(afr.report)
 }

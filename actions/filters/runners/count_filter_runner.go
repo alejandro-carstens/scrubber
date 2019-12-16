@@ -11,43 +11,38 @@ import (
 
 type countFilterRunner struct {
 	useAgeFilterRunner
+	criteria *criterias.Count
 }
 
 // Init initializes the filter runner
-func (cfr *countFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
-	if err := cfr.BaseInit(connection, info...); err != nil {
+func (cfr *countFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	if err := cfr.BaseInit(criteria, connection, info...); err != nil {
 		return nil, err
 	}
+
+	cfr.criteria = criteria.(*criterias.Count)
 
 	return cfr, nil
 }
 
 // RunFilter filters out elements from the actionable list
-func (cfr *countFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
-	if err := cfr.validateCriteria(criteria); err != nil {
-		channel <- cfr.response.setError(err)
-
-		return
-	}
-
+func (cfr *countFilterRunner) RunFilter(channel chan *FilterResponse) {
 	var err error
 	var sortedList []string
 
-	count := criteria.(*criterias.Count)
-
-	if count.UseAge {
-		sortedList, err = cfr.runAgeSorters(count)
-	} else if len(count.Pattern) > 0 {
-		sortedList, err = cfr.sortByPattern(count)
+	if cfr.criteria.UseAge {
+		sortedList, err = cfr.runAgeSorters(cfr.criteria)
+	} else if len(cfr.criteria.Pattern) > 0 {
+		sortedList, err = cfr.sortByPattern()
 	} else {
-		sortedList = cfr.runDefaultSorter(count)
+		sortedList = cfr.runDefaultSorter(cfr.criteria)
 	}
 
-	if err == nil && len(sortedList) >= count.Count {
-		sortedList = sortedList[:count.Count]
+	if err == nil && len(sortedList) >= cfr.criteria.Count {
+		sortedList = sortedList[:cfr.criteria.Count]
 	}
 
-	if !count.Include() {
+	if !cfr.criteria.Include() {
 		cfr.report.AddReason("Excluding indices: %v from list", sortedList)
 
 		sortedList = cfr.excludeIndices(sortedList)
@@ -58,11 +53,11 @@ func (cfr *countFilterRunner) RunFilter(channel chan *FilterResponse, criteria c
 	channel <- cfr.response.setError(err).setPassed(true).setReport(cfr.report).setList(sortedList)
 }
 
-func (cfr *countFilterRunner) sortByPattern(count *criterias.Count) ([]string, error) {
+func (cfr *countFilterRunner) sortByPattern() ([]string, error) {
 	list := []string{}
 
 	for name, _ := range cfr.info {
-		match, err := regexp.MatchString(count.Pattern, name)
+		match, err := regexp.MatchString(cfr.criteria.Pattern, name)
 
 		if err != nil {
 			return nil, err
@@ -73,7 +68,7 @@ func (cfr *countFilterRunner) sortByPattern(count *criterias.Count) ([]string, e
 		}
 	}
 
-	if count.Reverse {
+	if cfr.criteria.Reverse {
 		sort.Sort(sort.Reverse(sort.StringSlice(list)))
 	} else {
 		sort.Sort(sort.StringSlice(list))

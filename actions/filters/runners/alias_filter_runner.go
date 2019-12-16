@@ -9,25 +9,22 @@ import (
 
 type aliasFilterRunner struct {
 	baseRunner
+	criteria *criterias.Alias
 }
 
 // Init initializes the filter runner
-func (afr *aliasFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
-	err := afr.BaseInit(connection, info...)
+func (afr *aliasFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	if err := afr.BaseInit(criteria, connection, info...); err != nil {
+		return nil, err
+	}
 
-	return afr, err
+	afr.criteria = criteria.(*criterias.Alias)
+
+	return afr, nil
 }
 
 // RunFilter filters out elements from the actionable list
-func (afr *aliasFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
-	if err := afr.validateCriteria(criteria); err != nil {
-		channel <- afr.response.setError(err)
-
-		return
-	}
-
-	alias := criteria.(*criterias.Alias)
-
+func (afr *aliasFilterRunner) RunFilter(channel chan *FilterResponse) {
 	container, err := afr.connection.Indexer(nil).AliasesCat()
 
 	if err != nil {
@@ -50,7 +47,7 @@ func (afr *aliasFilterRunner) RunFilter(channel chan *FilterResponse, criteria c
 		indexName, _ := aliasResponse.S("index").Data().(string)
 		aliasName, _ := aliasResponse.S("alias").Data().(string)
 
-		if afr.info.Name() == indexName && afr.inSlice(aliasName, alias.Aliases) {
+		if afr.info.Name() == indexName && inStringSlice(aliasName, afr.criteria.Aliases) {
 			afr.report.AddReason("Alias '%v' matched for index '%v'", aliasName, afr.info.Name())
 
 			passed = true
@@ -62,15 +59,5 @@ func (afr *aliasFilterRunner) RunFilter(channel chan *FilterResponse, criteria c
 		afr.report.AddReason("Alias not matched for index '%v'", afr.info.Name())
 	}
 
-	channel <- afr.response.setPassed(passed && alias.Include()).setReport(afr.report)
-}
-
-func (afr *aliasFilterRunner) inSlice(needle string, haystack []string) bool {
-	for _, value := range haystack {
-		if needle == value {
-			return true
-		}
-	}
-
-	return false
+	channel <- afr.response.setPassed(passed && afr.criteria.Include()).setReport(afr.report)
 }

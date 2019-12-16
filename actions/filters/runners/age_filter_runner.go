@@ -15,43 +15,41 @@ import (
 
 type ageFilterRunner struct {
 	baseRunner
+	criteria *criterias.Age
 }
 
 // Init initializes the filter runner
-func (afr *ageFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
-	err := afr.BaseInit(connection, info...)
+func (afr *ageFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	if err := afr.BaseInit(criteria, connection, info...); err != nil {
+		return nil, err
+	}
 
-	return afr, err
+	afr.criteria = criteria.(*criterias.Age)
+
+	return afr, nil
 }
 
 // RunFilter filters out elements from the actionable list
-func (afr *ageFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
-	if err := afr.validateCriteria(criteria); err != nil {
-		channel <- afr.response.setError(err)
-		return
-	}
-
+func (afr *ageFilterRunner) RunFilter(channel chan *FilterResponse) {
 	var passed bool
 	var err error
 
-	age := criteria.(*criterias.Age)
-
-	switch age.Source {
+	switch afr.criteria.Source {
 	case "creation_date":
-		passed, err = afr.processByCreationDate(age)
+		passed, err = afr.processByCreationDate()
 		break
 	case "name":
-		passed, err = afr.processByName(age)
+		passed, err = afr.processByName()
 		break
 	case "field_stats":
-		passed, err = afr.processByFieldStats(age)
+		passed, err = afr.processByFieldStats()
 		break
 	}
 
-	channel <- afr.response.setError(err).setPassed(passed && age.Include()).setReport(afr.report)
+	channel <- afr.response.setError(err).setPassed(passed && afr.criteria.Include()).setReport(afr.report)
 }
 
-func (afr *ageFilterRunner) processByCreationDate(age *criterias.Age) (bool, error) {
+func (afr *ageFilterRunner) processByCreationDate() (bool, error) {
 	creationDate, err := afr.creationDate()
 
 	if err != nil {
@@ -67,14 +65,14 @@ func (afr *ageFilterRunner) processByCreationDate(age *criterias.Age) (bool, err
 	afr.report.AddReason("Filtering by creation date")
 	afr.report.AddReason("Creation date: %v", creationTimestamp.Format(time.RFC3339))
 
-	return afr.compare(creationTimestamp, age)
+	return afr.compare(creationTimestamp)
 }
 
-func (afr *ageFilterRunner) processByName(age *criterias.Age) (bool, error) {
+func (afr *ageFilterRunner) processByName() (bool, error) {
 	var date time.Time
 	var err error
 
-	switch age.Timestring {
+	switch afr.criteria.Timestring {
 	case "Y.m.d":
 		date, err = afr.parseDateFromName(`\d{4}.\d{2}.\d{2}`)
 		break
@@ -109,19 +107,19 @@ func (afr *ageFilterRunner) processByName(age *criterias.Age) (bool, error) {
 	afr.report.AddReason(
 		"Generated timestamp for index '%v' and timestring '%v': %v",
 		afr.info.Name(),
-		age.Timestring,
+		afr.criteria.Timestring,
 		date.Format(time.RFC3339),
 	)
 
-	return afr.compare(date, age)
+	return afr.compare(date)
 }
 
-func (afr *ageFilterRunner) processByFieldStats(age *criterias.Age) (bool, error) {
+func (afr *ageFilterRunner) processByFieldStats() (bool, error) {
 	if afr.info.IsSnapshotInfo() {
 		return false, errors.New("Cannot process age filter by fields_stats for snapshot action")
 	}
 
-	result, err := afr.connection.Builder(afr.info.Name()).MinMax(age.Field, true)
+	result, err := afr.connection.Builder(afr.info.Name()).MinMax(afr.criteria.Field, true)
 
 	if err != nil {
 		return false, err
@@ -130,7 +128,7 @@ func (afr *ageFilterRunner) processByFieldStats(age *criterias.Age) (bool, error
 	var date string
 	var valid bool
 
-	switch age.StatsResult {
+	switch afr.criteria.StatsResult {
 	case "min":
 		date, valid = result.Min.(string)
 		break
@@ -152,19 +150,19 @@ func (afr *ageFilterRunner) processByFieldStats(age *criterias.Age) (bool, error
 	afr.report.AddReason("Filtering by field stats")
 	afr.report.AddReason(
 		"Stats result '%v' for field '%v': %v",
-		age.StatsResult,
-		age.Field,
+		afr.criteria.StatsResult,
+		afr.criteria.Field,
 		dateTime.Format(time.RFC3339),
 	)
 
-	return afr.compare(dateTime, age)
+	return afr.compare(dateTime)
 }
 
-func (afr *ageFilterRunner) compare(date time.Time, age *criterias.Age) (bool, error) {
-	duration := -1 * int64(age.UnitCount)
+func (afr *ageFilterRunner) compare(date time.Time) (bool, error) {
+	duration := -1 * int64(afr.criteria.UnitCount)
 	var since time.Time
 
-	switch age.Units {
+	switch afr.criteria.Units {
 	case "seconds":
 		since = time.Now().UTC().Add(time.Duration(duration) * time.Second)
 		break
@@ -185,16 +183,16 @@ func (afr *ageFilterRunner) compare(date time.Time, age *criterias.Age) (bool, e
 		break
 	}
 
-	diff := afr.diff(since, date, age)
+	diff := afr.diff(since, date)
 
 	afr.report.AddReason(
 		"Comparison date based on the current time minus '%v' '%v': %v",
-		strconv.Itoa(age.UnitCount),
-		age.Units,
+		strconv.Itoa(afr.criteria.UnitCount),
+		afr.criteria.Units,
 		since.Format(time.RFC3339),
 	)
 
-	switch age.Direction {
+	switch afr.criteria.Direction {
 	case "older":
 		return date.UTC().Before(since) && diff, nil
 	}
@@ -218,7 +216,7 @@ func (afr *ageFilterRunner) parseDateFromName(regPattern string) (time.Time, err
 	return dateparse.ParseLocal(value)
 }
 
-func (afr *ageFilterRunner) diff(from, to time.Time, age *criterias.Age) bool {
+func (afr *ageFilterRunner) diff(from, to time.Time) bool {
 	years, months, days, hours, minutes, seconds := elapsed(from, to)
 
 	afr.report.AddReason(
@@ -231,20 +229,20 @@ func (afr *ageFilterRunner) diff(from, to time.Time, age *criterias.Age) bool {
 		seconds,
 	)
 
-	switch age.Units {
+	switch afr.criteria.Units {
 	case "seconds":
-		return math.Abs(from.UTC().Sub(to.UTC()).Seconds()) > float64(age.UnitCount)
+		return math.Abs(from.UTC().Sub(to.UTC()).Seconds()) > float64(afr.criteria.UnitCount)
 	case "minutes":
-		return math.Abs(from.UTC().Sub(to.UTC()).Minutes()) > float64(age.UnitCount)
+		return math.Abs(from.UTC().Sub(to.UTC()).Minutes()) > float64(afr.criteria.UnitCount)
 	case "hours":
-		return math.Abs(from.UTC().Sub(to.UTC()).Hours()) > float64(age.UnitCount)
+		return math.Abs(from.UTC().Sub(to.UTC()).Hours()) > float64(afr.criteria.UnitCount)
 	case "days":
-		return secondsToDays(math.Abs(from.UTC().Sub(to.UTC()).Seconds())) > float64(age.UnitCount)
+		return secondsToDays(math.Abs(from.UTC().Sub(to.UTC()).Seconds())) > float64(afr.criteria.UnitCount)
 	case "months":
-		return secondsToMonths(math.Abs(from.UTC().Sub(to.UTC()).Seconds())) > float64(age.UnitCount)
+		return secondsToMonths(math.Abs(from.UTC().Sub(to.UTC()).Seconds())) > float64(afr.criteria.UnitCount)
 	}
 
-	return secondsToYears(math.Abs(from.UTC().Sub(to.UTC()).Seconds())) > float64(age.UnitCount)
+	return secondsToYears(math.Abs(from.UTC().Sub(to.UTC()).Seconds())) > float64(afr.criteria.UnitCount)
 }
 
 func (afr *ageFilterRunner) creationDate() (string, error) {

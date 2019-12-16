@@ -11,8 +11,8 @@ import (
 // implemented by filter runners
 type Runnerable interface {
 	// Init initializes the filter runner
-	Init(builder *golastic.Connection, info ...infos.Informable) (Runnerable, error)
+	Init(criteria criterias.Criteriable, builder *golastic.Connection, info ...infos.Informable) (Runnerable, error)
 
 	// RunFilter filters out elements from the actionable list
-	RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable)
+	RunFilter(channel chan *FilterResponse)
 }

@@ -9,23 +9,22 @@ import (
 
 type emptyFilterRunner struct {
 	baseRunner
+	criteria *criterias.Empty
 }
 
 // Init initializes the filter runner
-func (efr *emptyFilterRunner) Init(connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
-	err := efr.BaseInit(connection, info...)
+func (efr *emptyFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+	if err := efr.BaseInit(criteria, connection, info...); err != nil {
+		return nil, err
+	}
 
-	return efr, err
+	efr.criteria = criteria.(*criterias.Empty)
+
+	return efr, nil
 }
 
 // RunFilter filters out elements from the actionable list
-func (efr *emptyFilterRunner) RunFilter(channel chan *FilterResponse, criteria criterias.Criteriable) {
-	if err := efr.validateCriteria(criteria); err != nil {
-		channel <- efr.response.setError(err)
-		return
-	}
-
-	empty := criteria.(*criterias.Empty)
+func (efr *emptyFilterRunner) RunFilter(channel chan *FilterResponse) {
 	passed := false
 	docsCount := efr.info.(*infos.IndexInfo).DocsCount
 
@@ -40,5 +39,5 @@ func (efr *emptyFilterRunner) RunFilter(channel chan *FilterResponse, criteria c
 		)
 	}
 
-	channel <- efr.response.setPassed(passed && empty.Include()).setReport(efr.report)
+	channel <- efr.response.setPassed(passed && efr.criteria.Include()).setReport(efr.report)
 }
