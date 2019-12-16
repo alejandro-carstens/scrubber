@@ -24,7 +24,7 @@ func (afr *AggregateFilterRunner) ApplyFilters() ([]string, error) {
 		go runner.RunFilter(channel)
 	}
 
-	for i := 0; i < len(afr.builder.AggregateCriteria()); i++ {
+	for range afr.builder.AggregateCriteria() {
 		filterResponse := <-channel
 
 		if filterResponse.Err != nil || !filterResponse.Passed {
