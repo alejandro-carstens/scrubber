@@ -12,9 +12,10 @@ import (
 
 // Email represents an e-mail notification channel
 type Email struct {
+	retryCount    int
 	configuration *configurations.Email
 	message       *messages.Email
-	retryCount    int
+	sendCloser    mail.SendCloser
 }
 
 // Configure is responsible for configuring the notification channel
@@ -40,16 +41,7 @@ func (e *Email) Send(message messages.Sendable) error {
 
 	e.message = msg
 
-	dialer := mail.NewDialer(
-		e.configuration.Host,
-		e.configuration.Port,
-		e.configuration.Username,
-		e.configuration.Password,
-	)
-
-	dialer.StartTLSPolicy = mail.MandatoryStartTLS
-
-	sender, err := dialer.Dial()
+	sender, err := e.dialSender()
 
 	if err != nil {
 		return err
@@ -94,4 +86,25 @@ func (e *Email) Retry() error {
 
 		return nil
 	}, backoff.NewExponentialBackOff())
+}
+
+func (e *Email) dialSender() (mail.SendCloser, error) {
+	if e.sendCloser != nil {
+		return e.sendCloser, nil
+	}
+
+	dialer := mail.NewDialer(
+		e.configuration.Host,
+		e.configuration.Port,
+		e.configuration.Username,
+		e.configuration.Password,
+	)
+
+	dialer.StartTLSPolicy = mail.MandatoryStartTLS
+
+	return dialer.Dial()
+}
+
+func (e *Email) setSendCloser(sendCloser mail.SendCloser) {
+	e.sendCloser = sendCloser
 }

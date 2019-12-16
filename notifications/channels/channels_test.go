@@ -1,16 +1,22 @@
 package channels
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"reflect"
+	"scrubber/notifications/configurations"
 	"scrubber/notifications/messages"
+	"strings"
 	"testing"
 
 	"github.com/Jeffail/gabs"
+	"github.com/go-mail/mail"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,6 +25,21 @@ var pagerDutyRetryCounter int = -1
 
 type contextTemplate struct {
 	Count int
+}
+
+type mockSender mail.SendFunc
+
+func (s mockSender) Send(from string, to []string, msg io.WriterTo) error {
+	return s(from, to, msg)
+}
+
+type mockSendCloser struct {
+	mockSender
+	close func() error
+}
+
+func (s *mockSendCloser) Close() error {
+	return s.close()
 }
 
 func TestSlackChannel(t *testing.T) {
@@ -81,6 +102,48 @@ func TestPagerDutyChannelRetry(t *testing.T) {
 
 	assert.NotNil(t, Notify(msg))
 	assert.Equal(t, 3, pagerDutyRetryCounter)
+}
+
+func TestEmailChannel(t *testing.T) {
+	os.Setenv("EMAIL_RETRY_COUNT", "2")
+	os.Setenv("SMTP_HOST", "smtp_test_host")
+	os.Setenv("SMTP_PORT", "90")
+	os.Setenv("EMAIL_USERNAME", "test_email_username")
+	os.Setenv("EMAIL_PASSWORD", "test_password")
+
+	sendCloser := &mockSendCloser{
+		mockSender: stubSend(t, "alejandro@test.com", []string{"alejandro@test.com", "scrubber@test.com"}, "This is very cool 10"),
+		close: func() error {
+			return nil
+		},
+	}
+
+	channel := &Email{}
+	channel.setSendCloser(sendCloser)
+
+	b, err := json.Marshal(map[string]interface{}{
+		"notification_channel": "email",
+		"to":                   []string{"alejandro@test.com", "scrubber@test.com"},
+		"from":                 "alejandro@test.com",
+		"subject":              "Scrubber Email Message Test",
+		"text":                 "This is very cool {{ .Count }}",
+	})
+
+	assert.Nil(t, err)
+
+	container, err := gabs.ParseJSON(b)
+
+	assert.Nil(t, err)
+
+	message, err := messages.NewMessage(container, &contextTemplate{Count: 10}, "random_dedup_key")
+
+	assert.Nil(t, err)
+
+	config, err := configurations.Config(message.Type())
+
+	assert.Nil(t, err)
+	assert.Nil(t, channel.Configure(config))
+	assert.Nil(t, channel.Send(message))
 }
 
 func setSlackMessage() (messages.Sendable, error) {
@@ -199,4 +262,21 @@ func parseRequestToJSON(request *http.Request) (*gabs.Container, error) {
 	}
 
 	return gabs.ParseJSON(b)
+}
+
+func stubSend(t *testing.T, wantFrom string, wantTo []string, wantBody string) mockSender {
+	return func(from string, to []string, msg io.WriterTo) error {
+		assert.Equal(t, from, wantFrom)
+		assert.True(t, reflect.DeepEqual(to, wantTo))
+
+		buf := new(bytes.Buffer)
+
+		if _, err := msg.WriteTo(buf); err != nil {
+			t.Fatal(err)
+		}
+
+		assert.True(t, strings.Contains(buf.String(), wantBody))
+
+		return nil
+	}
 }
