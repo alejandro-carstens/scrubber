@@ -104,7 +104,10 @@ func TestPagerDutyChannelRetry(t *testing.T) {
 	assert.Equal(t, 3, pagerDutyRetryCounter)
 }
 
-func TestEmailChannel(t *testing.T) {
+func TestEmailChannelWithRetry(t *testing.T) {
+	message, err := setEmailMessage()
+	assert.Nil(t, err)
+
 	os.Setenv("EMAIL_RETRY_COUNT", "2")
 	os.Setenv("SMTP_HOST", "smtp_test_host")
 	os.Setenv("SMTP_PORT", "90")
@@ -121,29 +124,12 @@ func TestEmailChannel(t *testing.T) {
 	channel := &Email{}
 	channel.setSendCloser(sendCloser)
 
-	b, err := json.Marshal(map[string]interface{}{
-		"notification_channel": "email",
-		"to":                   []string{"alejandro@test.com", "scrubber@test.com"},
-		"from":                 "alejandro@test.com",
-		"subject":              "Scrubber Email Message Test",
-		"text":                 "This is very cool {{ .Count }}",
-	})
-
-	assert.Nil(t, err)
-
-	container, err := gabs.ParseJSON(b)
-
-	assert.Nil(t, err)
-
-	message, err := messages.NewMessage(container, &contextTemplate{Count: 10}, "random_dedup_key")
-
-	assert.Nil(t, err)
-
 	config, err := configurations.Config(message.Type())
 
 	assert.Nil(t, err)
 	assert.Nil(t, channel.Configure(config))
 	assert.Nil(t, channel.Send(message))
+	assert.Nil(t, channel.Retry())
 }
 
 func setSlackMessage() (messages.Sendable, error) {
@@ -182,6 +168,28 @@ func setPagerDutyMessage() (messages.Sendable, error) {
 		"component":            "application",
 		"group":                "application",
 		"class":                "application",
+		"text":                 "This is very cool {{ .Count }}",
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	container, err := gabs.ParseJSON(b)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return messages.NewMessage(container, &contextTemplate{Count: 10}, "random_dedup_key")
+}
+
+func setEmailMessage() (messages.Sendable, error) {
+	b, err := json.Marshal(map[string]interface{}{
+		"notification_channel": "email",
+		"to":                   []string{"alejandro@test.com", "scrubber@test.com"},
+		"from":                 "alejandro@test.com",
+		"subject":              "Scrubber Email Message Test",
 		"text":                 "This is very cool {{ .Count }}",
 	})
 
