@@ -12,6 +12,7 @@ type openIndices struct {
 	options *options.OpenIndicesOptions
 }
 
+// ApplyOptions implementation of the Actionable interface
 func (oi *openIndices) ApplyOptions() Actionable {
 	oi.options = oi.context.Options().(*options.OpenIndicesOptions)
 
@@ -20,6 +21,7 @@ func (oi *openIndices) ApplyOptions() Actionable {
 	return oi
 }
 
+// Perform implementation of the Actionable interface
 func (oi *openIndices) Perform() Actionable {
 	oi.exec(func(index string) error {
 		response, err := oi.indexer.Open(index)

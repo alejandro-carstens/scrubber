@@ -13,6 +13,7 @@ type deleteRepositories struct {
 	options *options.DeleteRepositoriesOptions
 }
 
+// ApplyOptions implementation of the actionable interface
 func (dr *deleteRepositories) ApplyOptions() Actionable {
 	dr.options = dr.context.Options().(*options.DeleteRepositoriesOptions)
 
@@ -21,6 +22,7 @@ func (dr *deleteRepositories) ApplyOptions() Actionable {
 	return dr
 }
 
+// Perform implementation of the actionable interface
 func (dr *deleteRepositories) Perform() Actionable {
 	response, err := dr.indexer.DeleteRepositories(strings.Split(dr.options.Repositories, ",")...)
 
@@ -41,6 +43,7 @@ func (dr *deleteRepositories) Perform() Actionable {
 	return dr
 }
 
+// ApplyFilters implementation of the Actionable interface
 func (dr *deleteRepositories) ApplyFilters() error {
 	return nil
 }

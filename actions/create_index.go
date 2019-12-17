@@ -12,6 +12,7 @@ type createIndex struct {
 	options *options.CreateIndexOptions
 }
 
+// ApplyOptions implementation of the Actionable interface
 func (ci *createIndex) ApplyOptions() Actionable {
 	ci.options = ci.context.Options().(*options.CreateIndexOptions)
 
@@ -20,6 +21,7 @@ func (ci *createIndex) ApplyOptions() Actionable {
 	return ci
 }
 
+// Perform implementation of the actionable interface
 func (ci *createIndex) Perform() Actionable {
 	exists, err := ci.indexer.Exists(ci.options.Name)
 
@@ -55,6 +57,7 @@ func (ci *createIndex) Perform() Actionable {
 	return ci
 }
 
+// ApplyFilters implementation of the actionable interface
 func (ci *createIndex) ApplyFilters() error {
 	return nil
 }

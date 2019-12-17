@@ -12,6 +12,7 @@ type indexSettings struct {
 	options *options.IndexSettingsOptions
 }
 
+// ApplyOptions implementation of the Actionable interface
 func (is *indexSettings) ApplyOptions() Actionable {
 	is.options = is.context.Options().(*options.IndexSettingsOptions)
 
@@ -20,6 +21,7 @@ func (is *indexSettings) ApplyOptions() Actionable {
 	return is
 }
 
+// Perform implementation of the Actionable interface
 func (is *indexSettings) Perform() Actionable {
 	is.exec(func(index string) error {
 		settings, err := mapToString(is.options.IndexSettings)

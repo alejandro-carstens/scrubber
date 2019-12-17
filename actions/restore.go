@@ -16,6 +16,7 @@ type restore struct {
 	options *options.RestoreOptions
 }
 
+// ApplyOptions implementation of the Actionable interface
 func (r *restore) ApplyOptions() Actionable {
 	r.options = r.context.Options().(*options.RestoreOptions)
 
@@ -49,6 +50,7 @@ func (r *restore) ApplyOptions() Actionable {
 	return r
 }
 
+// Perform implementation of the Actionable interface
 func (r *restore) Perform() Actionable {
 	if len(r.list) == 0 {
 		return r

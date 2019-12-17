@@ -7,9 +7,20 @@ import (
 	"github.com/alejandro-carstens/golastic"
 )
 
+// DEFAULT_MAX_SNAPSHOT_BYTES_PER_SECOND is the default
+// option for the max_snapshot_bytes_per_second option
 const DEFAULT_MAX_SNAPSHOT_BYTES_PER_SECOND string = "20mb"
+
+// DEFAULT_MAX_RESTORE_BYTES_PER_SECOND is the default
+// option for the max_restore_bytes_per_second option
 const DEFAULT_MAX_RESTORE_BYTES_PER_SECOND string = "20mb"
+
+// DEFAULT_COMPRESS is the default
+// option for the compress option
 const DEFAULT_COMPRESS bool = true
+
+// DEFAULT_VERIFY is the default
+// value for the verify option
 const DEFAULT_VERIFY bool = true
 
 type createRepository struct {
@@ -17,6 +28,7 @@ type createRepository struct {
 	options *options.CreateRepositoryOptions
 }
 
+// ApplyOptions implementation of the Actionable interface
 func (cr *createRepository) ApplyOptions() Actionable {
 	cr.options = cr.context.Options().(*options.CreateRepositoryOptions)
 
@@ -41,6 +53,7 @@ func (cr *createRepository) ApplyOptions() Actionable {
 	return cr
 }
 
+// Perform implementation of the Actionable interface
 func (cr *createRepository) Perform() Actionable {
 	settings := map[string]interface{}{}
 

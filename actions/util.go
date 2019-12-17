@@ -12,10 +12,19 @@ import (
 	"github.com/alejandro-carstens/golastic"
 )
 
+// SNAPSHOT_ACTION_TYPE (self explanatory)
 const SNAPSHOT_ACTION_TYPE string = "snapshot"
+
+// INDEX_ACTION_TYPE (self explanatory)
 const INDEX_ACTION_TYPE string = "index"
+
+// SECONDS_IN_A_DAY (self explanatory)
 const SECONDS_IN_A_DAY int64 = 86400
+
+// SECONDS_IN_A_MONTH (self explanatory)
 const SECONDS_IN_A_MONTH int64 = 2628000
+
+// SECONDS_IN_A_YEAR (self explanatory)
 const SECONDS_IN_A_YEAR int64 = 31540000
 
 var availableNumericTypes []string = []string{
@@ -29,6 +38,7 @@ var availableNumericTypes []string = []string{
 	"scaled_float",
 }
 
+// Create builds an Actionable action
 func Create(context contexts.Contextable, logger *logger.Logger, connection *golastic.Connection, queue *notifications.Queue) (Actionable, error) {
 	action, err := build(context.Action())
 

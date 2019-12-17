@@ -13,6 +13,7 @@ type deleteSnapshots struct {
 	options *options.DeleteSnapshotsOptions
 }
 
+// ApplyOptions implementation of the Actionable interface
 func (ds *deleteSnapshots) ApplyOptions() Actionable {
 	ds.options = ds.context.Options().(*options.DeleteSnapshotsOptions)
 
@@ -21,6 +22,7 @@ func (ds *deleteSnapshots) ApplyOptions() Actionable {
 	return ds
 }
 
+// Perform implementation of the Actionable interface
 func (ds *deleteSnapshots) Perform() Actionable {
 	ds.exec(func(snapshot string) error {
 		count := 0

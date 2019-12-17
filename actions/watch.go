@@ -37,6 +37,7 @@ type watch struct {
 	options *options.WatchOptions
 }
 
+// ApplyOptions implementation of the Actionable interface
 func (w *watch) ApplyOptions() Actionable {
 	w.options = w.context.Options().(*options.WatchOptions)
 
@@ -45,6 +46,7 @@ func (w *watch) ApplyOptions() Actionable {
 	return w
 }
 
+// Perform implementation of the Actionable interface
 func (w *watch) Perform() Actionable {
 	w.exec(func(index string) error {
 		var err error

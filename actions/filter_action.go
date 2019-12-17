@@ -71,6 +71,7 @@ func (fa *filterAction) ApplyFilters() error {
 	return err
 }
 
+// List returns the actionable list
 func (fa *filterAction) List() []string {
 	return fa.list
 }

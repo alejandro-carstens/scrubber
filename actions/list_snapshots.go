@@ -11,6 +11,7 @@ type listSnapshots struct {
 	options *options.ListSnapshotsOptions
 }
 
+// ApplyOptions implementation of the Actionable interface
 func (ls *listSnapshots) ApplyOptions() Actionable {
 	ls.options = ls.context.Options().(*options.ListSnapshotsOptions)
 
@@ -19,6 +20,7 @@ func (ls *listSnapshots) ApplyOptions() Actionable {
 	return ls
 }
 
+// Perform implementation of the Actionable interface
 func (ls *listSnapshots) Perform() Actionable {
 	ls.reporter.Logger().Noticef("snapshots:")
 

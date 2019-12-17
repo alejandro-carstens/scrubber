@@ -14,6 +14,7 @@ type rollover struct {
 	options *options.RolloverOptions
 }
 
+// ApplyOptions implementation of the Actionable interface
 func (r *rollover) ApplyOptions() Actionable {
 	r.options = r.context.Options().(*options.RolloverOptions)
 
@@ -22,6 +23,7 @@ func (r *rollover) ApplyOptions() Actionable {
 	return r
 }
 
+// Perform implementation of the Actionable interface
 func (r *rollover) Perform() Actionable {
 	if err := r.verifyRollableIndex(); err != nil {
 		r.errorReportMap.push(r.name, r.options.Name, err)
@@ -59,6 +61,7 @@ func (r *rollover) Perform() Actionable {
 	return r
 }
 
+// ApplyFilters implementation of the Actionable interface
 func (r *rollover) ApplyFilters() error {
 	return nil
 }

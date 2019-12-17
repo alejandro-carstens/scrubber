@@ -11,6 +11,7 @@ type listIndices struct {
 	options *options.ListIndicesOptions
 }
 
+// ApplyOptions implementation of the Actionable interface
 func (li *listIndices) ApplyOptions() Actionable {
 	li.options = li.context.Options().(*options.ListIndicesOptions)
 
@@ -19,6 +20,7 @@ func (li *listIndices) ApplyOptions() Actionable {
 	return li
 }
 
+// Perform implementation of the Actionable interface
 func (li *listIndices) Perform() Actionable {
 	li.reporter.Logger().Noticef("indices:")
 

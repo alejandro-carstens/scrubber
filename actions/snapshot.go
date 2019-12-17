@@ -9,12 +9,27 @@ import (
 	"github.com/alejandro-carstens/golastic"
 )
 
+// DEFAULT_WAIT_FOR_COMPLETION default
+// wait_for_completion option
 const DEFAULT_WAIT_FOR_COMPLETION bool = true
+
+// DEFAULT_MAX_WAIT default max_wait option
 const DEFAULT_MAX_WAIT int = 3600
+
+// DEFAULT_WAIT_INTERVAL default
+// wait_interval option
 const DEFAULT_WAIT_INTERVAL int = 9
+
+// SUCCESS_STATUS elasticsearch snapshot state
 const SUCCESS_STATUS string = "SUCCESS"
+
+// FAILED_STATUS elasticsearch snapshot state
 const FAILED_STATUS string = "FAILED"
+
+// PARTIAL_STATUS elasticsearch snapshot state
 const PARTIAL_STATUS string = "PARTIAL"
+
+// IN_PROGRESS_STATUS elasticsearch snapshot state
 const IN_PROGRESS_STATUS string = "IN_PROGRESS"
 
 type snapshot struct {
@@ -22,6 +37,7 @@ type snapshot struct {
 	options *options.SnapshotOptions
 }
 
+// ApplyOptions implementation of the Actionable interface
 func (s *snapshot) ApplyOptions() Actionable {
 	s.options = s.context.Options().(*options.SnapshotOptions)
 
@@ -54,6 +70,7 @@ func (s *snapshot) ApplyOptions() Actionable {
 	return s
 }
 
+// Perform implementation of the Actionable interface
 func (s *snapshot) Perform() Actionable {
 	snapshotsInProgress, err := s.checkForSnapshotsInProgress(s.options.Repository)
 

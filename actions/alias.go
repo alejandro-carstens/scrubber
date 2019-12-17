@@ -14,6 +14,7 @@ type alias struct {
 	options *options.AliasOptions
 }
 
+// ApplyOptions implementation of the Actionable interface
 func (a *alias) ApplyOptions() Actionable {
 	a.options = a.context.Options().(*options.AliasOptions)
 	a.indexer.SetOptions(&golastic.IndexOptions{Timeout: a.options.TimeoutInSeconds()})
@@ -21,6 +22,7 @@ func (a *alias) ApplyOptions() Actionable {
 	return a
 }
 
+// Perform implementation of the Actionable interface
 func (a *alias) Perform() Actionable {
 	a.exec(func(index string) error {
 		if a.options.Type == "add" {

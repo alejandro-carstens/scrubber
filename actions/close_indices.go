@@ -12,6 +12,7 @@ type closeIndices struct {
 	options *options.CloseIndicesOptions
 }
 
+// ApplyOptions implementation of the Actionable interface
 func (ci *closeIndices) ApplyOptions() Actionable {
 	ci.options = ci.context.Options().(*options.CloseIndicesOptions)
 
@@ -20,6 +21,7 @@ func (ci *closeIndices) ApplyOptions() Actionable {
 	return ci
 }
 
+// Perform implementation of the Actionable interface
 func (ci *closeIndices) Perform() Actionable {
 	ci.exec(func(index string) error {
 		response, err := ci.indexer.Close(index)
