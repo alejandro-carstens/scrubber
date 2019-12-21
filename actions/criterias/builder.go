@@ -33,6 +33,10 @@ func (b *Builder) Build(action string, filters []*gabs.Container) error {
 		}
 
 		if filterCriteria != nil {
+			if err := filterCriteria.Validate(); err != nil {
+				return err
+			}
+
 			criteria = append(criteria, filterCriteria)
 
 			continue
@@ -41,6 +45,10 @@ func (b *Builder) Build(action string, filters []*gabs.Container) error {
 		filterCriteria, err = b.fillAggregateCriteria(filterType, filter)
 
 		if err != nil {
+			return err
+		}
+
+		if err := filterCriteria.Validate(); err != nil {
 			return err
 		}
 
