@@ -3,13 +3,13 @@ package actions
 import (
 	"encoding/json"
 	"errors"
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/logger"
-	"github.com/alejandro-carstens/scrubber/notifications"
 	"strconv"
 
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions/contexts"
+	"github.com/alejandro-carstens/scrubber/logger"
+	"github.com/alejandro-carstens/scrubber/notifications"
 )
 
 // SNAPSHOT_ACTION_TYPE (self explanatory)

@@ -2,10 +2,10 @@ package runners
 
 import (
 	"errors"
-	"github.com/alejandro-carstens/scrubber/actions/criterias"
-	"github.com/alejandro-carstens/scrubber/actions/infos"
 
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions/criterias"
+	"github.com/alejandro-carstens/scrubber/actions/infos"
 )
 
 const CLOSED_STATUS string = "close"

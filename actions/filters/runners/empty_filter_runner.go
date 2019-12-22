@@ -1,10 +1,9 @@
 package runners
 
 import (
+	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/actions/criterias"
 	"github.com/alejandro-carstens/scrubber/actions/infos"
-
-	"github.com/alejandro-carstens/golastic"
 )
 
 type emptyFilterRunner struct {

@@ -1,10 +1,9 @@
 package runners
 
 import (
+	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/actions/criterias"
 	"github.com/alejandro-carstens/scrubber/actions/infos"
-
-	"github.com/alejandro-carstens/golastic"
 )
 
 const GIGABYTE_CONVERSION float64 = 1000000000

@@ -3,10 +3,10 @@ package actions
 import (
 	"errors"
 	"fmt"
-	"github.com/alejandro-carstens/scrubber/actions/options"
 	"time"
 
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
 // DEFAULT_WAIT_FOR_COMPLETION default

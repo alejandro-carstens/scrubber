@@ -2,11 +2,11 @@ package runners
 
 import (
 	"regexp"
-	"github.com/alejandro-carstens/scrubber/actions/criterias"
-	"github.com/alejandro-carstens/scrubber/actions/infos"
 	"sort"
 
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions/criterias"
+	"github.com/alejandro-carstens/scrubber/actions/infos"
 )
 
 type countFilterRunner struct {

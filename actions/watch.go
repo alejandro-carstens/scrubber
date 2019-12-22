@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/notifications"
-	"github.com/alejandro-carstens/scrubber/notifications/messages"
 	"time"
 
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions/options"
+	"github.com/alejandro-carstens/scrubber/notifications"
+	"github.com/alejandro-carstens/scrubber/notifications/messages"
 )
 
 type count struct {

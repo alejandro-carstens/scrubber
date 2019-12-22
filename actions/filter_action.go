@@ -3,7 +3,6 @@ package actions
 import (
 	"github.com/alejandro-carstens/scrubber/actions/filters"
 	"github.com/alejandro-carstens/scrubber/actions/infos"
-
 	"github.com/ivpusic/grpool"
 )
 

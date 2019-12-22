@@ -3,12 +3,12 @@ package actions
 import (
 	"errors"
 	"regexp"
-	"github.com/alejandro-carstens/scrubber/actions/infos"
-	"github.com/alejandro-carstens/scrubber/actions/options"
 	"strings"
 	"time"
 
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions/infos"
+	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
 type restore struct {

@@ -4,12 +4,12 @@ import (
 	"errors"
 	"math"
 	"regexp"
-	"github.com/alejandro-carstens/scrubber/actions/criterias"
-	"github.com/alejandro-carstens/scrubber/actions/infos"
 	"strconv"
 	"time"
 
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions/criterias"
+	"github.com/alejandro-carstens/scrubber/actions/infos"
 	"github.com/araddon/dateparse"
 )
 

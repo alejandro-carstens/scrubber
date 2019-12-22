@@ -3,11 +3,11 @@ package runners
 import (
 	"errors"
 	"regexp"
-	"github.com/alejandro-carstens/scrubber/actions/criterias"
-	"github.com/alejandro-carstens/scrubber/actions/infos"
 	"sort"
 	"time"
 
+	"github.com/alejandro-carstens/scrubber/actions/criterias"
+	"github.com/alejandro-carstens/scrubber/actions/infos"
 	"github.com/araddon/dateparse"
 )
 

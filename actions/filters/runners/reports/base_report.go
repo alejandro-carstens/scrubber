@@ -3,10 +3,10 @@ package reports
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/alejandro-carstens/scrubber/actions/criterias"
 	"time"
 
 	"github.com/Jeffail/gabs"
+	"github.com/alejandro-carstens/scrubber/actions/criterias"
 )
 
 type baseReport struct {

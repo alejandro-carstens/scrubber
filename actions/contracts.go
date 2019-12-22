@@ -1,11 +1,10 @@
 package actions
 
 import (
+	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/actions/contexts"
 	"github.com/alejandro-carstens/scrubber/logger"
 	"github.com/alejandro-carstens/scrubber/notifications"
-
-	"github.com/alejandro-carstens/golastic"
 )
 
 // Actionable represents the contract

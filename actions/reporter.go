@@ -2,6 +2,7 @@ package actions
 
 import (
 	"fmt"
+
 	"github.com/alejandro-carstens/scrubber/actions/filters/runners/reports"
 	"github.com/alejandro-carstens/scrubber/logger"
 )

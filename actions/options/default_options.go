@@ -3,9 +3,8 @@ package options
 import (
 	"fmt"
 
-	"github.com/spf13/pflag"
-
 	"github.com/Jeffail/gabs"
+	"github.com/spf13/pflag"
 )
 
 type defaultOptions struct {

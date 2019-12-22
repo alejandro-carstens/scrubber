@@ -2,10 +2,10 @@ package actions
 
 import (
 	"errors"
-	"github.com/alejandro-carstens/scrubber/actions/options"
 	"strings"
 
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
 type deleteRepositories struct {

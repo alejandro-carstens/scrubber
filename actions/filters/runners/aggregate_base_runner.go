@@ -2,11 +2,11 @@ package runners
 
 import (
 	"errors"
+
+	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/actions/criterias"
 	"github.com/alejandro-carstens/scrubber/actions/filters/runners/reports"
 	"github.com/alejandro-carstens/scrubber/actions/infos"
-
-	"github.com/alejandro-carstens/golastic"
 )
 
 type aggregateBaseRunner struct {

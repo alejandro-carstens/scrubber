@@ -1,9 +1,8 @@
 package contexts
 
 import (
-	"github.com/alejandro-carstens/scrubber/actions/options"
-
 	"github.com/Jeffail/gabs"
+	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
 type RestoreContext struct {

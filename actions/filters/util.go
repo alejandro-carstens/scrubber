@@ -2,10 +2,10 @@ package filters
 
 import (
 	"errors"
-	"github.com/alejandro-carstens/scrubber/actions/criterias"
-	"github.com/alejandro-carstens/scrubber/actions/infos"
 
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions/criterias"
+	"github.com/alejandro-carstens/scrubber/actions/infos"
 )
 
 func NewFilterRunner(info infos.Informable, builder *criterias.Builder, connection *golastic.Connection) (*FilterRunner, error) {
