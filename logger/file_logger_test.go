@@ -9,7 +9,7 @@ import (
 )
 
 func TestFileLogger(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("", "github.com/alejandro-carstens/scrubber")
+	tmpDir, err := ioutil.TempDir("", "scrubber")
 
 	if err != nil {
 		t.Fatal("Could not create tmp dir")
@@ -17,7 +17,7 @@ func TestFileLogger(t *testing.T) {
 
 	defer os.RemoveAll(tmpDir)
 
-	file, err := ioutil.TempFile(tmpDir, "github.com/alejandro-carstens/scrubber:log_")
+	file, err := ioutil.TempFile(tmpDir, "scrubber:log_")
 
 	if err != nil {
 		t.Fatalf("Could not create the temp file: %v", err)
@@ -43,7 +43,7 @@ func TestFileLogger(t *testing.T) {
 		t.Fatalf("Expected '%s', received '%s'\n", "[INFO] foo", string(buf))
 	}
 
-	file, err = ioutil.TempFile(tmpDir, "github.com/alejandro-carstens/scrubber:log_")
+	file, err = ioutil.TempFile(tmpDir, "scrubber:log_")
 
 	if err != nil {
 		t.Fatalf("Could not create the temp file: %v", err)
