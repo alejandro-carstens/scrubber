@@ -3,9 +3,9 @@ package cmd
 import (
 	"errors"
 	"os"
-	"scrubber/console"
-	"scrubber/logger"
-	"scrubber/notifications"
+	"github.com/alejandro-carstens/scrubber/console"
+	"github.com/alejandro-carstens/scrubber/logger"
+	"github.com/alejandro-carstens/scrubber/notifications"
 	"strconv"
 
 	"github.com/alejandro-carstens/golastic"

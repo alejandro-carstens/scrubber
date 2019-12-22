@@ -3,7 +3,7 @@ package reports
 import (
 	"encoding/json"
 	"fmt"
-	"scrubber/actions/criterias"
+	"github.com/alejandro-carstens/scrubber/actions/criterias"
 	"time"
 
 	"github.com/Jeffail/gabs"

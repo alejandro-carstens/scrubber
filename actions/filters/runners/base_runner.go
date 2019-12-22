@@ -2,9 +2,9 @@ package runners
 
 import (
 	"errors"
-	"scrubber/actions/criterias"
-	"scrubber/actions/filters/runners/reports"
-	"scrubber/actions/infos"
+	"github.com/alejandro-carstens/scrubber/actions/criterias"
+	"github.com/alejandro-carstens/scrubber/actions/filters/runners/reports"
+	"github.com/alejandro-carstens/scrubber/actions/infos"
 
 	"github.com/alejandro-carstens/golastic"
 )

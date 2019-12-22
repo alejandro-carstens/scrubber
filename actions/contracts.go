@@ -1,9 +1,9 @@
 package actions
 
 import (
-	"scrubber/actions/contexts"
-	"scrubber/logger"
-	"scrubber/notifications"
+	"github.com/alejandro-carstens/scrubber/actions/contexts"
+	"github.com/alejandro-carstens/scrubber/logger"
+	"github.com/alejandro-carstens/scrubber/notifications"
 
 	"github.com/alejandro-carstens/golastic"
 )

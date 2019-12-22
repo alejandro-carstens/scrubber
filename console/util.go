@@ -1,12 +1,11 @@
 package console
 
 import (
-	"scrubber/actions"
-	"scrubber/actions/contexts"
-	"scrubber/logger"
-	"scrubber/notifications"
-
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions"
+	"github.com/alejandro-carstens/scrubber/actions/contexts"
+	"github.com/alejandro-carstens/scrubber/logger"
+	"github.com/alejandro-carstens/scrubber/notifications"
 )
 
 func NewScheduler(basePath string, logger *logger.Logger, builder *golastic.Connection, queue *notifications.Queue) *Scheduler {

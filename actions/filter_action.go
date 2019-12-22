@@ -1,8 +1,8 @@
 package actions
 
 import (
-	"scrubber/actions/filters"
-	"scrubber/actions/infos"
+	"github.com/alejandro-carstens/scrubber/actions/filters"
+	"github.com/alejandro-carstens/scrubber/actions/infos"
 
 	"github.com/ivpusic/grpool"
 )

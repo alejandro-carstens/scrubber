@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"bytes"
-	"scrubber/logger"
 	"testing"
 
+	"github.com/alejandro-carstens/scrubber/logger"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 )

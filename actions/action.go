@@ -2,12 +2,12 @@ package actions
 
 import (
 	"os"
-	"scrubber/actions/contexts"
-	"scrubber/logger"
-	"scrubber/notifications"
+	"github.com/alejandro-carstens/scrubber/actions/contexts"
 	"strconv"
 
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/logger"
+	"github.com/alejandro-carstens/scrubber/notifications"
 )
 
 const DEFAULT_HEALTH_CHECK_INTERVAL int64 = 30

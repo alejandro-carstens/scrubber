@@ -10,12 +10,12 @@ import (
 	"net/http/httptest"
 	"os"
 	"reflect"
-	"scrubber/notifications/configurations"
-	"scrubber/notifications/messages"
 	"strings"
 	"testing"
 
 	"github.com/Jeffail/gabs"
+	"github.com/alejandro-carstens/scrubber/notifications/configurations"
+	"github.com/alejandro-carstens/scrubber/notifications/messages"
 	"github.com/go-mail/mail"
 	"github.com/stretchr/testify/assert"
 )
@@ -115,7 +115,7 @@ func TestEmailChannelWithRetry(t *testing.T) {
 	os.Setenv("EMAIL_PASSWORD", "test_password")
 
 	sendCloser := &mockSendCloser{
-		mockSender: stubSend(t, "alejandro@test.com", []string{"alejandro@test.com", "scrubber@test.com"}, "This is very cool 10"),
+		mockSender: stubSend(t, "alejandro@test.com", []string{"alejandro@test.com", "github.com/alejandro-carstens/scrubber@test.com"}, "This is very cool 10"),
 		close: func() error {
 			return nil
 		},
@@ -163,7 +163,7 @@ func setSlackMessage() (messages.Sendable, error) {
 func setPagerDutyMessage() (messages.Sendable, error) {
 	b, err := json.Marshal(map[string]interface{}{
 		"notification_channel": "pager_duty",
-		"source":               "scrubber",
+		"source":               "github.com/alejandro-carstens/scrubber",
 		"severity":             "info",
 		"component":            "application",
 		"group":                "application",
@@ -187,7 +187,7 @@ func setPagerDutyMessage() (messages.Sendable, error) {
 func setEmailMessage() (messages.Sendable, error) {
 	b, err := json.Marshal(map[string]interface{}{
 		"notification_channel": "email",
-		"to":                   []string{"alejandro@test.com", "scrubber@test.com"},
+		"to":                   []string{"alejandro@test.com", "github.com/alejandro-carstens/scrubber@test.com"},
 		"from":                 "alejandro@test.com",
 		"subject":              "Scrubber Email Message Test",
 		"text":                 "This is very cool {{ .Count }}",
@@ -244,7 +244,7 @@ func setHttpTestMockServer(t *testing.T) *httptest.Server {
 
 			assert.Equal(t, "random_dedup_key", request.S("dedup_key").Data().(string))
 			assert.Equal(t, "trigger", request.S("event_action").Data().(string))
-			assert.Equal(t, "scrubber", request.S("payload", "source").Data().(string))
+			assert.Equal(t, "github.com/alejandro-carstens/scrubber", request.S("payload", "source").Data().(string))
 			assert.Equal(t, "info", request.S("payload", "severity").Data().(string))
 			assert.Equal(t, "This is very cool 10", request.S("payload", "summary").Data().(string))
 			assert.Equal(t, "application", request.S("payload", "component").Data().(string))

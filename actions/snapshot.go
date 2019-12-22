@@ -3,7 +3,7 @@ package actions
 import (
 	"errors"
 	"fmt"
-	"scrubber/actions/options"
+	"github.com/alejandro-carstens/scrubber/actions/options"
 	"time"
 
 	"github.com/alejandro-carstens/golastic"
@@ -42,7 +42,7 @@ func (s *snapshot) ApplyOptions() Actionable {
 	s.options = s.context.Options().(*options.SnapshotOptions)
 
 	if len(s.options.Name) == 0 {
-		s.options.Name = "scrubber-" + time.Now().Format("1992-06-02")
+		s.options.Name = "github.com/alejandro-carstens/scrubber-" + time.Now().Format("1992-06-02")
 	}
 
 	if !s.options.Exists("wait_for_completion") {

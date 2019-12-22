@@ -3,8 +3,8 @@ package runners
 import (
 	"errors"
 	"regexp"
-	"scrubber/actions/criterias"
-	"scrubber/actions/infos"
+	"github.com/alejandro-carstens/scrubber/actions/criterias"
+	"github.com/alejandro-carstens/scrubber/actions/infos"
 	"sort"
 	"time"
 

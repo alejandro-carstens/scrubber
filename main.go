@@ -2,7 +2,8 @@ package main
 
 import (
 	"os"
-	"scrubber/console/cmd"
+
+	"github.com/alejandro-carstens/scrubber/console/cmd"
 )
 
 func main() {

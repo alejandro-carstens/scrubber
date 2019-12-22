@@ -1,9 +1,9 @@
 package notifications
 
 import (
-	"scrubber/logger"
-	"scrubber/notifications/channels"
-	"scrubber/notifications/messages"
+	"github.com/alejandro-carstens/scrubber/logger"
+	"github.com/alejandro-carstens/scrubber/notifications/channels"
+	"github.com/alejandro-carstens/scrubber/notifications/messages"
 )
 
 // NewQueue instantiates a queue

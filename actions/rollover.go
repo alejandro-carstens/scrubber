@@ -3,7 +3,7 @@ package actions
 import (
 	"errors"
 	"fmt"
-	"scrubber/actions/options"
+	"github.com/alejandro-carstens/scrubber/actions/options"
 	"time"
 
 	"github.com/alejandro-carstens/golastic"
@@ -116,5 +116,5 @@ func (r *rollover) verifyRollableIndex() error {
 }
 
 func (r *rollover) generateNewIndexName() string {
-	return fmt.Sprintf("scrubber-rollover-%v", time.Now().Format(time.RFC3339))
+	return fmt.Sprintf("github.com/alejandro-carstens/scrubber-rollover-%v", time.Now().Format(time.RFC3339))
 }

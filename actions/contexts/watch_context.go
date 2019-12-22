@@ -1,7 +1,7 @@
 package contexts
 
 import (
-	"scrubber/actions/options"
+	"github.com/alejandro-carstens/scrubber/actions/options"
 
 	"github.com/Jeffail/gabs"
 )

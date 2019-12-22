@@ -2,8 +2,8 @@ package actions
 
 import (
 	"fmt"
-	"scrubber/actions/filters/runners/reports"
-	"scrubber/logger"
+	"github.com/alejandro-carstens/scrubber/actions/filters/runners/reports"
+	"github.com/alejandro-carstens/scrubber/logger"
 )
 
 type reporter struct {

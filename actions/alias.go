@@ -2,11 +2,11 @@ package actions
 
 import (
 	"errors"
-	"scrubber/actions/options"
 	"strings"
 
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
 type alias struct {

@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"scrubber/actions/contexts"
-	"scrubber/actions/options"
-	"scrubber/logger"
+	"github.com/alejandro-carstens/scrubber/actions/contexts"
+	"github.com/alejandro-carstens/scrubber/actions/options"
+	"github.com/alejandro-carstens/scrubber/logger"
 
 	"github.com/spf13/cobra"
 )

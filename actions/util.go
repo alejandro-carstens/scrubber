@@ -3,9 +3,9 @@ package actions
 import (
 	"encoding/json"
 	"errors"
-	"scrubber/actions/contexts"
-	"scrubber/logger"
-	"scrubber/notifications"
+	"github.com/alejandro-carstens/scrubber/actions/contexts"
+	"github.com/alejandro-carstens/scrubber/logger"
+	"github.com/alejandro-carstens/scrubber/notifications"
 	"strconv"
 
 	"github.com/Jeffail/gabs"

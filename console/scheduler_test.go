@@ -2,10 +2,10 @@ package console
 
 import (
 	"os"
-	"scrubber/logger"
 	"strings"
 	"testing"
 
+	"github.com/alejandro-carstens/scrubber/logger"
 	"github.com/stretchr/testify/assert"
 )
 

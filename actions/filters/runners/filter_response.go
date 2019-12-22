@@ -1,6 +1,6 @@
 package runners
 
-import "scrubber/actions/filters/runners/reports"
+import "github.com/alejandro-carstens/scrubber/actions/filters/runners/reports"
 
 // FilterResponse is the response of a filter run
 type FilterResponse struct {

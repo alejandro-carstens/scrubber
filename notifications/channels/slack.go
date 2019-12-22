@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"scrubber/notifications/configurations"
-	"scrubber/notifications/messages"
 	"strconv"
 	"time"
 
+	"github.com/alejandro-carstens/scrubber/notifications/configurations"
+	"github.com/alejandro-carstens/scrubber/notifications/messages"
 	"github.com/cenkalti/backoff"
 )
 

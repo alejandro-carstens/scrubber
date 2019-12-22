@@ -1,7 +1,7 @@
 package reports
 
 import (
-	"scrubber/actions/criterias"
+	"github.com/alejandro-carstens/scrubber/actions/criterias"
 
 	"github.com/Jeffail/gabs"
 )

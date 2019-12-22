@@ -3,9 +3,9 @@ package channels
 import (
 	"errors"
 	"log"
-	"scrubber/notifications/configurations"
-	"scrubber/notifications/messages"
 
+	"github.com/alejandro-carstens/scrubber/notifications/configurations"
+	"github.com/alejandro-carstens/scrubber/notifications/messages"
 	"github.com/cenkalti/backoff"
 	"github.com/go-mail/mail"
 )
