@@ -8,6 +8,7 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
+// Allocated represents the allocated filter criteria
 type Allocated struct {
 	baseCriteria
 	AllocationType string      `json:"allocation_type"`
@@ -16,6 +17,7 @@ type Allocated struct {
 	Value          string
 }
 
+// Validate implementation of the Criteriable interface
 func (a *Allocated) Validate() error {
 	if len(a.Key) == 0 {
 		return errors.New("key is a required field")
@@ -32,6 +34,7 @@ func (a *Allocated) Validate() error {
 	return nil
 }
 
+// FillFromContainer implementation of the Criteriable interface
 func (a *Allocated) FillFromContainer(container *gabs.Container) (Criteriable, error) {
 	err := json.Unmarshal(container.Bytes(), a)
 
@@ -46,6 +49,7 @@ func (a *Allocated) FillFromContainer(container *gabs.Container) (Criteriable, e
 	return a, err
 }
 
+// Name implementation of the Criteriable interface
 func (a *Allocated) Name() string {
 	return "allocated"
 }

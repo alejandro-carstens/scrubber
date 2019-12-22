@@ -15,26 +15,32 @@ type baseUseAge struct {
 	StrictMode  bool   `json:"strict_mode"`
 }
 
+// GetTimestring returns the Timestring property
 func (bua *baseUseAge) GetTimestring() string {
 	return bua.Timestring
 }
 
+// GetField returns the Field property
 func (bua *baseUseAge) GetField() string {
 	return bua.Field
 }
 
+// GetStatsResult returns the StatsResult property
 func (bua *baseUseAge) GetStatsResult() string {
 	return bua.StatsResult
 }
 
+// GetReverse return the Reverse property
 func (bua *baseUseAge) GetReverse() bool {
 	return bua.Reverse
 }
 
+// GetSource returns the Source property
 func (bua *baseUseAge) GetSource() string {
 	return bua.Source
 }
 
+// GetStrictMode returns the StrictMode property
 func (bua *baseUseAge) GetStrictMode() bool {
 	return bua.StrictMode
 }

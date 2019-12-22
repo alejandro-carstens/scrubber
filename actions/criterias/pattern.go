@@ -7,12 +7,14 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
+// Pattern represents the pattern filter criteria
 type Pattern struct {
 	baseCriteria
 	Kind  string `json:"kind"`
 	Value string `json:"value"`
 }
 
+// Validate implementation of the Criteriable interface
 func (p *Pattern) Validate() error {
 	if len(p.Kind) == 0 {
 		return errors.New("Kind cannot be empty")
@@ -35,12 +37,14 @@ func (p *Pattern) Validate() error {
 	return nil
 }
 
+// FillFromContainer implementation of the Criteriable interface
 func (p *Pattern) FillFromContainer(container *gabs.Container) (Criteriable, error) {
 	err := json.Unmarshal(container.Bytes(), p)
 
 	return p, err
 }
 
+// Name implementation of the Criteriable interface
 func (p *Pattern) Name() string {
 	return "pattern"
 }

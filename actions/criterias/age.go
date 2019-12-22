@@ -7,6 +7,7 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
+// Age represents the age filter criteria
 type Age struct {
 	baseCriteria
 	Source      string `json:"source"`
@@ -18,16 +19,19 @@ type Age struct {
 	StatsResult string `json:"stats_result,omitempty"`
 }
 
+// Name implementation of the Criteriable interface
 func (a *Age) Name() string {
 	return "age"
 }
 
+// FillFromContainer implementation of the Criteriable interface
 func (a *Age) FillFromContainer(container *gabs.Container) (Criteriable, error) {
 	err := json.Unmarshal(container.Bytes(), a)
 
 	return a, err
 }
 
+// Validate implementation of the Criteriable interface
 func (a *Age) Validate() error {
 	if a.Source != "name" && a.Source != "creation_date" && a.Source != "field_stats" {
 		return errors.New("Invalid Source type")

@@ -2,6 +2,7 @@ package criterias
 
 import "errors"
 
+// NewBuilder returns a *Builder instance
 func NewBuilder() *Builder {
 	return new(Builder)
 }
