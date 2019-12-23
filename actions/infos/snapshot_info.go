@@ -6,6 +6,7 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
+// SnapshotInfo holds an elasticsearch snapshot information
 type SnapshotInfo struct {
 	Snapshot          string                 `json:"snapshot"`
 	UUID              string                 `json:"uuid"`
@@ -19,29 +20,33 @@ type SnapshotInfo struct {
 	EndTime           string                 `json:"end_time"`
 	EndTimeInMillis   int64                  `json:"end_time_in_millis"`
 	DurationInMillis  int64                  `json:"duration_in_millis"`
-	Failures          []SnapshotShardFailure `json:"failures"`
-	Shards            *ShardsInfo            `json:"shards"`
+	Failures          []snapshotShardFailure `json:"failures"`
+	Shards            *shardsInfo            `json:"shards"`
 }
 
+// Marshal implementation of the Informable interface
 func (si *SnapshotInfo) Marshal(container *gabs.Container) (Informable, error) {
 	err := json.Unmarshal(container.Bytes(), si)
 
 	return si, err
 }
 
+// IsSnapshot implementation of the Informable interface
 func (si *SnapshotInfo) IsSnapshotInfo() bool {
 	return true
 }
 
+// Name implementation of the Informable interface
 func (si *SnapshotInfo) Name() string {
 	return si.Snapshot
 }
 
+// CreationDate implementation of the Informable interface
 func (si *SnapshotInfo) CreationDate() string {
 	return si.EndTime
 }
 
-type SnapshotShardFailure struct {
+type snapshotShardFailure struct {
 	Index     string `json:"index"`
 	IndexUUID string `json:"index_uuid"`
 	ShardID   int    `json:"shard_id"`
@@ -50,14 +55,14 @@ type SnapshotShardFailure struct {
 	Status    string `json:"status"`
 }
 
-type ShardsInfo struct {
+type shardsInfo struct {
 	Total      int             `json:"total"`
 	Successful int             `json:"successful"`
 	Failed     int             `json:"failed"`
-	Failures   []*ShardFailure `json:"failures,omitempty"`
+	Failures   []*shardFailure `json:"failures,omitempty"`
 }
 
-type ShardFailure struct {
+type shardFailure struct {
 	Index   string                 `json:"_index,omitempty"`
 	Shard   int                    `json:"_shard,omitempty"`
 	Node    string                 `json:"_node,omitempty"`

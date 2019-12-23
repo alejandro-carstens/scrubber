@@ -6,6 +6,7 @@ import (
 	"github.com/Jeffail/gabs"
 )
 
+// IndexInfo holds an elasticsearch index information
 type IndexInfo struct {
 	Health                       string `json:"health"`
 	Status                       string `json:"status"`
@@ -135,20 +136,24 @@ type IndexInfo struct {
 	PriMemoryTotal               string `json:"pri.memory.total"`
 }
 
+// Marshal implementation of the Informable interface
 func (ii *IndexInfo) Marshal(container *gabs.Container) (Informable, error) {
 	err := json.Unmarshal(container.Bytes(), ii)
 
 	return ii, err
 }
 
+// IsSnapshotInfo implementation of the Informable interface
 func (ii *IndexInfo) IsSnapshotInfo() bool {
 	return false
 }
 
+// Name implementation of the Informable interface
 func (ii *IndexInfo) Name() string {
 	return ii.Index
 }
 
+// CreationDate implementation of the Informable interface
 func (ii *IndexInfo) CreationDate() string {
 	return ii.CreationDateString
 }
