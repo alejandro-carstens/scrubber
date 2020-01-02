@@ -3,12 +3,12 @@ package cmd
 import (
 	"errors"
 	"os"
-	"github.com/alejandro-carstens/scrubber/console"
-	"github.com/alejandro-carstens/scrubber/logger"
-	"github.com/alejandro-carstens/scrubber/notifications"
 	"strconv"
 
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/console"
+	"github.com/alejandro-carstens/scrubber/logger"
+	"github.com/alejandro-carstens/scrubber/notifications"
 	"github.com/spf13/cobra"
 )
 
@@ -35,6 +35,7 @@ func (sc *schedulerCmd) new(logger *logger.Logger) *cobra.Command {
 	return command
 }
 
+// Validate implementation of the Commandable interface
 func (sc *schedulerCmd) Validate(cmd *cobra.Command, args []string) error {
 	path, _ := cmd.Flags().GetString("path")
 

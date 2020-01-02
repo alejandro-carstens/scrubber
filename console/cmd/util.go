@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"os"
-	"github.com/alejandro-carstens/scrubber/logger"
 
+	"github.com/alejandro-carstens/scrubber/logger"
 	"github.com/spf13/cobra"
 )
 
@@ -12,7 +12,7 @@ func Run() error {
 }
 
 func boot(logger *logger.Logger) *cobra.Command {
-	scrubber := &cobra.Command{Use: "github.com/alejandro-carstens/scrubber"}
+	scrubber := &cobra.Command{Use: "scrubber"}
 
 	scrubber.PersistentFlags().Int("timeout", 300, "elasticsearch operation timeout")
 	scrubber.PersistentFlags().Bool("disable_action", false, "flag for preventing the action to be ran")

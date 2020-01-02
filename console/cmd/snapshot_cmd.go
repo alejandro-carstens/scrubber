@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"errors"
+
 	"github.com/alejandro-carstens/scrubber/actions/contexts"
 	"github.com/alejandro-carstens/scrubber/actions/options"
 	"github.com/alejandro-carstens/scrubber/logger"
-
 	"github.com/spf13/cobra"
 )
 

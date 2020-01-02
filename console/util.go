@@ -8,10 +8,12 @@ import (
 	"github.com/alejandro-carstens/scrubber/notifications"
 )
 
-func NewScheduler(basePath string, logger *logger.Logger, builder *golastic.Connection, queue *notifications.Queue) *Scheduler {
-	return &Scheduler{basePath: basePath, logger: logger, builder: builder, queue: queue}
+// NewScheduler instantiates a scheduler
+func NewScheduler(basePath string, logger *logger.Logger, builder *golastic.Connection, queue *notifications.Queue) *scheduler {
+	return &scheduler{basePath: basePath, logger: logger, builder: builder, queue: queue}
 }
 
+// Execute performs a given action
 func Execute(context contexts.Contextable, logger *logger.Logger, builder *golastic.Connection, queue *notifications.Queue) {
 	action, err := actions.Create(context, logger, builder, queue)
 

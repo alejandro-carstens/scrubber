@@ -24,14 +24,15 @@ type configMap struct {
 	path      string
 }
 
-type Scheduler struct {
+type scheduler struct {
 	basePath string
 	logger   *logger.Logger
 	builder  *golastic.Connection
 	queue    *notifications.Queue
 }
 
-func (s *Scheduler) Run() error {
+// Run executes the scheduled actions
+func (s *scheduler) Run() error {
 	configs, err := s.extractConfigs()
 
 	if err != nil {
@@ -89,7 +90,7 @@ func (s *Scheduler) Run() error {
 	return nil
 }
 
-func (s *Scheduler) extractConfigs() (map[string]*gabs.Container, error) {
+func (s *scheduler) extractConfigs() (map[string]*gabs.Container, error) {
 	paths := []string{}
 
 	if err := filepath.Walk(s.basePath, func(path string, info os.FileInfo, err error) error {
@@ -137,7 +138,7 @@ func (s *Scheduler) extractConfigs() (map[string]*gabs.Container, error) {
 	return containers, nil
 }
 
-func (s *Scheduler) runAsyncActions(contexts []contexts.Contextable) {
+func (s *scheduler) runAsyncActions(contexts []contexts.Contextable) {
 	pool := grpool.NewPool(NUMBER_OF_WORKERS, len(contexts))
 
 	pool.WaitCount(len(contexts))
@@ -156,13 +157,13 @@ func (s *Scheduler) runAsyncActions(contexts []contexts.Contextable) {
 	pool.Release()
 }
 
-func (s *Scheduler) runActions(contexts []contexts.Contextable) {
+func (s *scheduler) runActions(contexts []contexts.Contextable) {
 	for _, context := range contexts {
 		Execute(context, s.logger, s.builder, s.queue)
 	}
 }
 
-func (s *Scheduler) schedule(config *gabs.Container) (*gocron.Job, error) {
+func (s *scheduler) schedule(config *gabs.Container) (*gocron.Job, error) {
 	value, valid := config.S("schedule", "value").Data().(float64)
 
 	if !valid && value <= 0 {

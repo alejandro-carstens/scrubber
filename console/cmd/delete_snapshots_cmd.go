@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"errors"
+
 	"github.com/alejandro-carstens/scrubber/actions/contexts"
 	"github.com/alejandro-carstens/scrubber/actions/options"
 	"github.com/alejandro-carstens/scrubber/logger"
-
 	"github.com/spf13/cobra"
 )
 
@@ -31,6 +31,7 @@ func (dsc *deleteSnaphotsCmd) new(logger *logger.Logger) *cobra.Command {
 	return command
 }
 
+// Validate implementation of the Commandable interface
 func (dsc *deleteSnaphotsCmd) Validate(cmd *cobra.Command, args []string) error {
 	snapshots, _ := cmd.Flags().GetStringSlice("snapshots")
 

@@ -3,10 +3,10 @@ package cmd
 import (
 	"errors"
 	"os"
+
 	"github.com/alejandro-carstens/scrubber/actions/contexts"
 	"github.com/alejandro-carstens/scrubber/logger"
 	"github.com/alejandro-carstens/scrubber/ymlparser"
-
 	"github.com/spf13/cobra"
 )
 
@@ -29,6 +29,7 @@ func (rac *runActionCmd) new(logger *logger.Logger) *cobra.Command {
 	return command
 }
 
+// Validate implementation of the Commandable interface
 func (rac *runActionCmd) Validate(cmd *cobra.Command, args []string) error {
 	filePath, err := cmd.Flags().GetString("file_path")
 

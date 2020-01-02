@@ -4,7 +4,6 @@ import (
 	"github.com/alejandro-carstens/scrubber/actions/contexts"
 	"github.com/alejandro-carstens/scrubber/actions/options"
 	"github.com/alejandro-carstens/scrubber/logger"
-
 	"github.com/spf13/cobra"
 )
 
@@ -25,6 +24,7 @@ func (lic *listIndicesCmd) new(logger *logger.Logger) *cobra.Command {
 	return command
 }
 
+// Validate implementation of the Commandable interface
 func (lic *listIndicesCmd) Validate(cmd *cobra.Command, args []string) error {
 	lic.context = new(contexts.ListIndicesContext)
 

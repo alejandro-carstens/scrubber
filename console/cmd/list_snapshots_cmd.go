@@ -4,7 +4,6 @@ import (
 	"github.com/alejandro-carstens/scrubber/actions/contexts"
 	"github.com/alejandro-carstens/scrubber/actions/options"
 	"github.com/alejandro-carstens/scrubber/logger"
-
 	"github.com/spf13/cobra"
 )
 
@@ -27,6 +26,7 @@ func (lsc *listSnapshotsCmd) new(logger *logger.Logger) *cobra.Command {
 	return command
 }
 
+// Validate implementation of the Commandable interface
 func (lsc *listSnapshotsCmd) Validate(cmd *cobra.Command, args []string) error {
 	lsc.context = new(contexts.ListSnapshotsContext)
 

@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"errors"
+
 	"github.com/alejandro-carstens/scrubber/actions/contexts"
 	"github.com/alejandro-carstens/scrubber/actions/options"
 	"github.com/alejandro-carstens/scrubber/logger"
-
 	"github.com/spf13/cobra"
 )
 
@@ -28,6 +28,7 @@ func (oic *openIndicesCmd) new(logger *logger.Logger) *cobra.Command {
 	return command
 }
 
+// Validate implementation of the Commandable interface
 func (oic *openIndicesCmd) Validate(cmd *cobra.Command, args []string) error {
 	indices, _ := cmd.Flags().GetStringSlice("indices")
 

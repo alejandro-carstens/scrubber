@@ -54,12 +54,8 @@ func (e *Email) Send(message messages.Sendable) error {
 	m.SetHeader("Subject", msg.Subject)
 	m.SetBody("text/html", msg.Body)
 
-	err = mail.Send(sender, m)
-
-	if err != nil {
+	if err := mail.Send(sender, m); err != nil {
 		log.Println(err.Error())
-	} else {
-		log.Println("No errors")
 	}
 
 	return err
