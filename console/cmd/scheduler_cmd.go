@@ -76,10 +76,21 @@ func (sc *schedulerCmd) Handle(cmd *cobra.Command, args []string) {
 		InfoLogPrefix:       os.Getenv("ELASTICSEARCH_INFO_LOG_PREFIX"),
 	})
 
-	if err := connection.Connect(); err != nil {
-		sc.logger.Errorf("%v [ELASTICSEARCH_URI:%v]", err.Error(), os.Getenv("ELASTICSEARCH_URI"))
+	counter := 0
 
-		return
+	for {
+		if err := connection.Connect(); err != nil {
+			counter++
+			sc.logger.Errorf("%v [ELASTICSEARCH_URI: %v]", err.Error(), os.Getenv("ELASTICSEARCH_URI"))
+
+			if counter == 10 {
+				return
+			}
+
+			continue
+		}
+
+		break
 	}
 
 	var capacity int = DEFAULT_NOTIFICATIONS_QUEUE_CAPACITY
