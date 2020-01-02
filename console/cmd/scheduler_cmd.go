@@ -77,7 +77,7 @@ func (sc *schedulerCmd) Handle(cmd *cobra.Command, args []string) {
 	})
 
 	if err := connection.Connect(); err != nil {
-		sc.logger.Errorf(err.Error())
+		sc.logger.Errorf("%v [ELASTICSEARCH_URI:%v]", err.Error(), os.Getenv("ELASTICSEARCH_URI"))
 
 		return
 	}
