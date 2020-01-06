@@ -4,7 +4,6 @@ import (
 	"errors"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/console"
@@ -77,23 +76,10 @@ func (sc *schedulerCmd) Handle(cmd *cobra.Command, args []string) {
 		InfoLogPrefix:       os.Getenv("ELASTICSEARCH_INFO_LOG_PREFIX"),
 	})
 
-	counter := 0
+	if err := connection.Connect(); err != nil {
+		sc.logger.Errorf("%v [ELASTICSEARCH_URI: %v]", err.Error(), os.Getenv("ELASTICSEARCH_URI"))
 
-	for {
-		if err := connection.Connect(); err != nil {
-			counter++
-			sc.logger.Errorf("%v [ELASTICSEARCH_URI: %v]", err.Error(), os.Getenv("ELASTICSEARCH_URI"))
-
-			time.Sleep(1 * time.Second)
-
-			if counter == 10 {
-				return
-			}
-
-			continue
-		}
-
-		break
+		return
 	}
 
 	var capacity int = DEFAULT_NOTIFICATIONS_QUEUE_CAPACITY
