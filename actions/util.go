@@ -58,15 +58,16 @@ func Create(context contexts.Contextable, logger *logger.Logger, connection *gol
 }
 
 func newReporter(logger *logger.Logger) *reporter {
-	return &reporter{
-		logger: logger,
-	}
+	r := new(reporter)
+	r.logger = logger
+
+	return r
 }
 
 func newErrorReport(action string, name string, err error) *errorReport {
 	errorReport := new(errorReport)
 
-	errorReport.errs = append([]error{}, err)
+	errorReport.errors = append([]error{}, err)
 	errorReport.name = name
 	errorReport.action = action
 
@@ -79,12 +80,12 @@ func newErrorReport(action string, name string, err error) *errorReport {
 	return errorReport
 }
 
-func newErrorReportMap() *errorReportMap {
-	errorReportMap := new(errorReportMap)
+func newErrorContainer() *errorContainer {
+	errorContainer := new(errorContainer)
 
-	errorReportMap.reports = map[string]*errorReport{}
+	errorContainer.reports = map[string]*errorReport{}
 
-	return errorReportMap
+	return errorContainer
 }
 
 func build(name string) (Actionable, error) {

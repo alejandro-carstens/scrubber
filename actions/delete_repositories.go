@@ -27,13 +27,13 @@ func (dr *deleteRepositories) Perform() Actionable {
 	response, err := dr.indexer.DeleteRepositories(strings.Split(dr.options.Repositories, ",")...)
 
 	if err != nil {
-		dr.errorReportMap.push(dr.name, dr.options.Repositories, err)
+		dr.errorContainer.push(dr.name, dr.options.Repositories, err)
 
 		return dr
 	}
 
 	if acknowledged, _ := response.S("acknowledged").Data().(bool); !acknowledged {
-		dr.errorReportMap.push(
+		dr.errorContainer.push(
 			dr.name,
 			dr.options.Repositories,
 			errors.New("delete repositopries action not acknoledged"),

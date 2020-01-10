@@ -259,7 +259,7 @@ func (w *watch) compare(metric float64, threshold *options.Threshold, context in
 	min := *threshold.Min
 	max := *threshold.Max
 
-	w.reporter.Logger().Noticef("metric: %v, min: %v, max: %v", metric, min, max)
+	w.reporter.logger.Noticef("metric: %v, min: %v, max: %v", metric, min, max)
 
 	if threshold.Min != nil && metric < min {
 		return w.alert(threshold.Alerts, context)

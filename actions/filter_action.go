@@ -10,8 +10,8 @@ type runAction func(element string) error
 
 type filterAction struct {
 	action
-	info map[string]infos.Informable
 	list []string
+	info map[string]infos.Informable
 }
 
 // ApplyFilters runs filters for each element on the actionable list
@@ -49,7 +49,7 @@ func (fa *filterAction) ApplyFilters() error {
 		include, err := fa.runFilter(element)
 
 		if err != nil {
-			fa.reporter.LogFilterResults()
+			fa.reporter.logFilterResults()
 
 			return err
 		}
@@ -65,7 +65,7 @@ func (fa *filterAction) ApplyFilters() error {
 
 	fa.list = list
 
-	fa.reporter.LogFilterResults()
+	fa.reporter.logFilterResults()
 
 	return err
 }
@@ -103,7 +103,7 @@ func (fa *filterAction) runFilter(element string) (bool, error) {
 
 	passed, err := runner.ApplyFilters()
 
-	fa.reporter.AddReports(runner.GetReports()...)
+	fa.reporter.addReports(runner.GetReports()...)
 
 	return passed, err
 }
@@ -123,7 +123,7 @@ func (fa *filterAction) runAggregateFilters(list []string) ([]string, error) {
 
 	indicesList, err := runner.ApplyFilters()
 
-	fa.reporter.AddReports(runner.GetReports()...)
+	fa.reporter.addReports(runner.GetReports()...)
 
 	return indicesList, err
 }
@@ -143,7 +143,7 @@ func (fa *filterAction) exec(fn runAction) {
 				defer pool.JobDone()
 
 				if err := fn(param); err != nil {
-					fa.errorReportMap.push(fa.name, param, err)
+					fa.errorContainer.push(fa.name, param, err)
 				}
 			}
 		}
@@ -152,14 +152,14 @@ func (fa *filterAction) exec(fn runAction) {
 	} else {
 		for _, element := range fa.list {
 			if err := fn(element); err != nil {
-				fa.errorReportMap.push(fa.name, element, err)
+				fa.errorContainer.push(fa.name, element, err)
 			}
 		}
 	}
 
-	if len(fa.errorReportMap.list()) > 0 && fa.retryCount < fa.context.GetRetryCount() {
+	if len(fa.errorContainer.list()) > 0 && fa.retryCount < fa.context.GetRetryCount() {
 		fa.retryCount = fa.retryCount + 1
-		fa.list = fa.errorReportMap.list()
+		fa.list = fa.errorContainer.list()
 
 		fa.exec(fn)
 	}

@@ -167,7 +167,7 @@ func (s *snapshot) checkActionStatus() error {
 }
 
 func (s *snapshot) logError(err error) *snapshot {
-	s.errorReportMap.push(s.name, fmt.Sprint(s.list), err)
+	s.errorContainer.push(s.name, fmt.Sprint(s.list), err)
 
 	return s
 }

@@ -26,7 +26,7 @@ func (r *rollover) ApplyOptions() Actionable {
 // Perform implementation of the Actionable interface
 func (r *rollover) Perform() Actionable {
 	if err := r.verifyRollableIndex(); err != nil {
-		r.errorReportMap.push(r.name, r.options.Name, err)
+		r.errorContainer.push(r.name, r.options.Name, err)
 
 		return r
 	}
@@ -47,13 +47,13 @@ func (r *rollover) Perform() Actionable {
 	)
 
 	if err != nil {
-		r.errorReportMap.push(r.name, r.options.Name, err)
+		r.errorContainer.push(r.name, r.options.Name, err)
 
 		return r
 	}
 
 	if rolledOver, _ := response.S("rolled_over").Data().(bool); !rolledOver {
-		r.errorReportMap.push(r.name, r.options.Name, errors.New("rollover failed: "+response.String()))
+		r.errorContainer.push(r.name, r.options.Name, errors.New("rollover failed: "+response.String()))
 
 		return r
 	}

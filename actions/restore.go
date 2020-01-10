@@ -61,20 +61,20 @@ func (r *restore) Perform() Actionable {
 	snapshotsInProgress, err := r.checkForSnapshotsInProgress(r.options.Repository)
 
 	if err != nil {
-		r.errorReportMap.push(r.name, snapshot, err)
+		r.errorContainer.push(r.name, snapshot, err)
 
 		return r
 	}
 
 	if snapshotsInProgress {
-		r.errorReportMap.push(r.name, snapshot, errors.New("Snapshot currently in progress"))
+		r.errorContainer.push(r.name, snapshot, errors.New("Snapshot currently in progress"))
 
 		return r
 	}
 
 	if r.options.WaitForCompletion {
 		if err := r.runAndWaitForCompletion(snapshot); err != nil {
-			r.errorReportMap.push(r.name, snapshot, err)
+			r.errorContainer.push(r.name, snapshot, err)
 		}
 
 		return r
@@ -83,19 +83,19 @@ func (r *restore) Perform() Actionable {
 	response, err := r.indexer.SnapshotRestore(r.options.Repository, snapshot)
 
 	if err != nil {
-		r.errorReportMap.push(r.name, snapshot, err)
+		r.errorContainer.push(r.name, snapshot, err)
 
 		return r
 	}
 
 	if accepted, _ := response.S("accepted").Data().(bool); !accepted {
-		r.errorReportMap.push(r.name, snapshot, errors.New("Restore was not accepted"))
+		r.errorContainer.push(r.name, snapshot, errors.New("Restore was not accepted"))
 
 		return r
 	}
 
 	if err := r.checkRestoreStatus(snapshot); err != nil {
-		r.errorReportMap.push(r.name, snapshot, err)
+		r.errorContainer.push(r.name, snapshot, err)
 	}
 
 	return r

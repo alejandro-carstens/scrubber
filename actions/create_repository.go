@@ -74,13 +74,13 @@ func (cr *createRepository) Perform() Actionable {
 	response, err := cr.indexer.CreateRepository(cr.options.Repository, cr.options.RepoType, cr.options.Verify, settings)
 
 	if err != nil {
-		cr.errorReportMap.push(cr.name, "_all", err)
+		cr.errorContainer.push(cr.name, "_all", err)
 
 		return cr
 	}
 
 	if acknowledged, _ := response.S("acknowledged").Data().(bool); !acknowledged {
-		cr.errorReportMap.push(cr.name, "_all", errors.New("repository was not acknowledge"))
+		cr.errorContainer.push(cr.name, "_all", errors.New("repository was not acknowledge"))
 	}
 
 	return cr

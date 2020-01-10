@@ -26,13 +26,13 @@ func (ci *createIndex) Perform() Actionable {
 	exists, err := ci.indexer.Exists(ci.options.Name)
 
 	if err != nil {
-		ci.errorReportMap.push(ci.options.Name, ci.name, err)
+		ci.errorContainer.push(ci.options.Name, ci.name, err)
 
 		return ci
 	}
 
 	if exists {
-		ci.errorReportMap.push(ci.options.Name, ci.name, errors.New("Index already exists"))
+		ci.errorContainer.push(ci.options.Name, ci.name, errors.New("Index already exists"))
 
 		return ci
 	}
@@ -40,16 +40,16 @@ func (ci *createIndex) Perform() Actionable {
 	schema, err := mapToString(ci.options.ExtraSettings)
 
 	if err != nil {
-		ci.errorReportMap.push(ci.options.Name, ci.name, err)
+		ci.errorContainer.push(ci.options.Name, ci.name, err)
 
 		return ci
 	}
 
 	if err := ci.indexer.CreateIndex(ci.options.Name, schema); err != nil {
-		ci.errorReportMap.push(ci.options.Name, ci.name, err)
+		ci.errorContainer.push(ci.options.Name, ci.name, err)
 	}
 
-	if len(ci.errorReportMap.list()) > 0 && ci.retryCount < ci.context.GetRetryCount() {
+	if len(ci.errorContainer.list()) > 0 && ci.retryCount < ci.context.GetRetryCount() {
 		ci.retryCount = ci.retryCount + 1
 		ci.Perform()
 	}

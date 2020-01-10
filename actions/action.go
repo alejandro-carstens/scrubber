@@ -18,7 +18,7 @@ type action struct {
 	queue          *notifications.Queue
 	context        contexts.Contextable
 	reporter       *reporter
-	errorReportMap *errorReportMap
+	errorContainer *errorContainer
 	connection     *golastic.Connection
 	indexer        *golastic.Indexer
 }
@@ -56,7 +56,7 @@ func (a *action) Init(context contexts.Contextable, logger *logger.Logger, conne
 	a.indexer = connection.Indexer(nil)
 	a.context = context
 	a.name = context.Action()
-	a.errorReportMap = newErrorReportMap()
+	a.errorContainer = newErrorContainer()
 	a.reporter = newReporter(logger)
 	a.queue = queue
 
@@ -65,17 +65,17 @@ func (a *action) Init(context contexts.Contextable, logger *logger.Logger, conne
 
 // HasErrors signals and logs whether the action experienced errors
 func (a *action) HasErrors() bool {
-	for _, report := range a.errorReportMap.reports {
-		if a.reporter.Logger() == nil {
+	for _, report := range a.errorContainer.reports {
+		if a.reporter.logger == nil {
 			break
 		}
 
-		for _, err := range report.errs {
-			a.reporter.Logger().Errorf("Errors: %v", err)
+		for _, err := range report.errors {
+			a.reporter.logger.Errorf("Errors: %v", err)
 		}
 	}
 
-	return a.errorReportMap.hasErrors()
+	return a.errorContainer.hasErrors()
 }
 
 // DisableAction indicates whether or not the action should be performed

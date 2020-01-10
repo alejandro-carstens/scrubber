@@ -12,9 +12,7 @@ type reporter struct {
 	logger  *logger.Logger
 }
 
-// AddReports appends a new report to the
-// reporter reports.Reportable slice
-func (r *reporter) AddReports(reports ...reports.Reportable) *reporter {
+func (r *reporter) addReports(reports ...reports.Reportable) *reporter {
 	if len(r.reports) == 0 {
 		r.reports = reports
 
@@ -26,14 +24,7 @@ func (r *reporter) AddReports(reports ...reports.Reportable) *reporter {
 	return r
 }
 
-// Logger returns the reporter logger
-func (r *reporter) Logger() *logger.Logger {
-	return r.logger
-}
-
-// LogFilterResults logs the
-// filter execution results
-func (r *reporter) LogFilterResults() error {
+func (r *reporter) logFilterResults() error {
 	for _, report := range r.reports {
 		line, err := report.Line()
 

@@ -21,10 +21,10 @@ func (li *listIndices) ApplyOptions() Actionable {
 
 // Perform implementation of the Actionable interface
 func (li *listIndices) Perform() Actionable {
-	li.reporter.Logger().Noticef("indices:")
+	li.reporter.logger.Noticef("indices:")
 
 	for _, element := range li.list {
-		li.reporter.Logger().Noticef("%v", element)
+		li.reporter.logger.Noticef("%v", element)
 	}
 
 	return li

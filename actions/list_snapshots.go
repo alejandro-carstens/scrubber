@@ -21,10 +21,10 @@ func (ls *listSnapshots) ApplyOptions() Actionable {
 
 // Perform implementation of the Actionable interface
 func (ls *listSnapshots) Perform() Actionable {
-	ls.reporter.Logger().Noticef("snapshots:")
+	ls.reporter.logger.Noticef("snapshots:")
 
 	for _, element := range ls.list {
-		ls.reporter.Logger().Noticef("%v", element)
+		ls.reporter.logger.Noticef("%v", element)
 	}
 
 	return ls
