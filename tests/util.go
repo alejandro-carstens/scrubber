@@ -3,11 +3,6 @@ package tests
 import (
 	"log"
 	"os"
-	"github.com/alejandro-carstens/scrubber/actions"
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/logger"
-	"github.com/alejandro-carstens/scrubber/notifications"
-	"github.com/alejandro-carstens/scrubber/ymlparser"
 	"strconv"
 	"sync"
 	"testing"
@@ -15,6 +10,11 @@ import (
 
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions"
+	"github.com/alejandro-carstens/scrubber/actions/contexts"
+	"github.com/alejandro-carstens/scrubber/logger"
+	"github.com/alejandro-carstens/scrubber/notifications"
+	"github.com/alejandro-carstens/scrubber/ymlparser"
 	"github.com/stretchr/testify/assert"
 )
 
