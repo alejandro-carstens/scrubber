@@ -1,10 +1,10 @@
 package actions
 
 import (
-	"scrubber/actions/options"
 	"time"
 
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
 const DEFAULT_BATCH_SIZE int = 5000
@@ -53,20 +53,18 @@ func (m *mutate) buildQuery(index string) *golastic.Builder {
 }
 
 func (m *mutate) update(builder *golastic.Builder) error {
+	var err error
 	retryCounter := 0
-	var lastError error
 
 	for {
-		if retryCounter == m.options.RetryCounterPerQuery {
-			return lastError
+		if retryCounter == m.options.RetryCountPerQuery {
+			return err
 		}
 
 		count, err := builder.Count()
 
 		if err != nil {
-			lastError = err
 			retryCounter++
-
 			m.reporter.logger.Errorf("Attempt [%v] %v", retryCounter, err.Error())
 
 			continue
@@ -75,11 +73,11 @@ func (m *mutate) update(builder *golastic.Builder) error {
 		response, err := builder.Execute(m.options.Mutation)
 
 		if response != nil {
-			m.reporter.logger.Infof("Response: %v", response.String())
+			m.reporter.logger.Noticef("Response: %v", response.String())
 		}
 
 		if err == nil {
-			if count <= m.options.BatchSize {
+			if count <= int64(m.options.BatchSize) {
 				break
 			}
 
@@ -89,9 +87,7 @@ func (m *mutate) update(builder *golastic.Builder) error {
 			continue
 		}
 
-		lastError = err
 		retryCounter++
-
 		m.reporter.logger.Errorf("Attempt [%v] %v", retryCounter, err.Error())
 	}
 

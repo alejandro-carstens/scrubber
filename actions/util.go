@@ -3,12 +3,12 @@ package actions
 import (
 	"encoding/json"
 	"errors"
-	"scrubber/actions/options"
 	"strconv"
 
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/actions/contexts"
+	"github.com/alejandro-carstens/scrubber/actions/options"
 	"github.com/alejandro-carstens/scrubber/logger"
 	"github.com/alejandro-carstens/scrubber/notifications"
 )
