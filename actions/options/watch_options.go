@@ -115,7 +115,7 @@ func (t *Threshold) validate(dateField, statsField string) error {
 	return nil
 }
 
-type queryCriteria struct {
+type QueryCriteria struct {
 	Clause   string        `json:"clause"`
 	Key      string        `json:"key"`
 	Operator string        `json:"operator"`
@@ -125,7 +125,7 @@ type queryCriteria struct {
 	Order    bool          `json:"order"`
 }
 
-func (qc *queryCriteria) validate() error {
+func (qc *QueryCriteria) validate() error {
 	if len(qc.Key) == 0 {
 		return errors.New("key on query criteria cannot be empty")
 	}
@@ -159,7 +159,7 @@ type WatchOptions struct {
 	IntervalUnit    string           `json:"interval_unit"`
 	DateField       string           `json:"date_field"`
 	StatsField      string           `json:"stats_field"`
-	Criteria        []*queryCriteria `json:"criteria"`
+	Criteria        []*QueryCriteria `json:"criteria"`
 	Thresholds      []*Threshold     `json:"thresholds"`
 	AlertChannels   []string         `json:"alert_channels"`
 	MessageTemplate string           `json:"message_template"`
