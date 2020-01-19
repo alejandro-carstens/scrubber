@@ -57,7 +57,7 @@ func (m *mutate) update(builder *golastic.Builder) error {
 	retryCounter := 0
 
 	for {
-		if retryCounter == m.options.RetryCountPerQuery {
+		if retryCounter > 0 && retryCounter == m.options.RetryCountPerQuery {
 			return err
 		}
 

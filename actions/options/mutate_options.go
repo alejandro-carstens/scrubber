@@ -40,15 +40,15 @@ func (mo *MutateOptions) Validate() error {
 	}
 
 	if mo.BatchSize < 0 {
-		return errors.New("batch_size can't be negative")
+		return errors.New("batch_size must be greater than 0")
 	}
 
 	if mo.MaxExecutionTime < 0 {
-		return errors.New("max_execution_time can't be negative")
+		return errors.New("max_execution_time must be greater than 0")
 	}
 
 	if mo.RetryCountPerQuery < 0 {
-		return errors.New("retry_count_per_query can't be negative")
+		return errors.New("retry_count_per_query must be greater than 0")
 	}
 
 	return nil

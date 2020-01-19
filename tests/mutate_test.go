@@ -3,6 +3,8 @@ package tests
 import (
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMutateAction(t *testing.T) {
@@ -22,6 +24,19 @@ func TestMutateAction(t *testing.T) {
 		time.Sleep(time.Duration(int64(1)) * time.Second)
 
 		takeAction(mutateActionFilePath, t)
+
+		time.Sleep(time.Duration(int64(1)) * time.Second)
+
+		builder := connection.Builder("variants-1992.06.02")
+		builder.Where("key", "=", "value").Where("other_key", "=", 300)
+
+		count, err := builder.Count()
+
+		if err != nil {
+			t.Error(err)
+		}
+
+		assert.Equal(t, int64(148), count)
 
 		if err := connection.Indexer(nil).DeleteIndex("_all"); err != nil {
 			t.Error(err)

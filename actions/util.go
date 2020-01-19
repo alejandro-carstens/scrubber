@@ -138,6 +138,9 @@ func build(name string) (Actionable, error) {
 	case "watch":
 		action = new(watch)
 		break
+	case "mutate":
+		action = new(mutate)
+		break
 	default:
 		return nil, errors.New("Invalid action type")
 	}

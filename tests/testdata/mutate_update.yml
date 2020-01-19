@@ -25,7 +25,7 @@ options:
       value: 150
     - clause: where
       key: other_key
-      operator: "="
+      operator: "<>"
       value: 300
 filters:
   - filtertype: age
