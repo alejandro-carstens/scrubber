@@ -1,0 +1,36 @@
+action: mutate
+description: Updates or deletes elasticsearch documents that meet a given criteria
+disable_action: true
+options:
+  timeout_override: 300
+  action: update
+  wait_interval: 1
+  mutation:
+    key: value
+    other_key: 300
+  criteria:
+    - clause: where_nested
+      key: attributes.color
+      operator: "="
+      value: Red
+    - clause: filter_nested
+      key: attributes.size
+      operator: "<="
+      value: 31
+    - clause: match_in_nested
+      key: attributes.sku
+      values: [Red-31]
+    - clause: where
+      key: price
+      operator: "<"
+      value: 150
+    - clause: where
+      key: other_key
+      operator: "<>"
+      value: 300
+filters:
+  - filtertype: age
+    source: creation_date
+    direction: older
+    units: seconds
+    unit_count: 1

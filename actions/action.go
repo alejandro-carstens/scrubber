@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"context"
 	"os"
 	"strconv"
 
@@ -24,7 +25,7 @@ type action struct {
 }
 
 // Init initializes an action
-func (a *action) Init(context contexts.Contextable, logger *logger.Logger, connection *golastic.Connection, queue *notifications.Queue) error {
+func (a *action) Init(ctx contexts.Contextable, logger *logger.Logger, connection *golastic.Connection, queue *notifications.Queue) error {
 	if connection == nil {
 		var healthCheckInterval int64 = DEFAULT_HEALTH_CHECK_INTERVAL
 
@@ -45,6 +46,7 @@ func (a *action) Init(context contexts.Contextable, logger *logger.Logger, conne
 			HealthCheckInterval: healthCheckInterval,
 			ErrorLogPrefix:      os.Getenv("ELASTICSEARCH_ERROR_LOG_PREFIX"),
 			InfoLogPrefix:       os.Getenv("ELASTICSEARCH_INFO_LOG_PREFIX"),
+			Context:             context.Background(),
 		})
 
 		if err := connection.Connect(); err != nil {
@@ -54,8 +56,8 @@ func (a *action) Init(context contexts.Contextable, logger *logger.Logger, conne
 
 	a.connection = connection
 	a.indexer = connection.Indexer(nil)
-	a.context = context
-	a.name = context.Action()
+	a.context = ctx
+	a.name = ctx.Action()
 	a.errorContainer = newErrorContainer()
 	a.reporter = newReporter(logger)
 	a.queue = queue

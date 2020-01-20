@@ -4,13 +4,41 @@ import (
 	"encoding/json"
 	"errors"
 	"strconv"
+	"time"
 
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/actions/contexts"
+	"github.com/alejandro-carstens/scrubber/actions/options"
 	"github.com/alejandro-carstens/scrubber/logger"
 	"github.com/alejandro-carstens/scrubber/notifications"
 )
+
+type timer struct {
+	done  bool
+	timer *time.Timer
+}
+
+func (t *timer) start(seconds int64) *timer {
+	t.timer = time.NewTimer(time.Duration(seconds) * time.Second)
+
+	return t
+}
+
+func (t *timer) expired() bool {
+	if t.done {
+		return t.done
+	}
+
+	select {
+	case <-t.timer.C:
+		t.done = true
+
+		return t.done
+	default:
+		return false
+	}
+}
 
 // SNAPSHOT_ACTION_TYPE (self explanatory)
 const SNAPSHOT_ACTION_TYPE string = "snapshot"
@@ -137,6 +165,9 @@ func build(name string) (Actionable, error) {
 	case "watch":
 		action = new(watch)
 		break
+	case "mutate":
+		action = new(mutate)
+		break
 	default:
 		return nil, errors.New("Invalid action type")
 	}
@@ -214,4 +245,68 @@ func intervalToSeconds(interval int64, unit string) int64 {
 	}
 
 	return interval
+}
+
+func buildQuery(builder *golastic.Builder, queryCriteria []*options.QueryCriteria) {
+	for _, criteria := range queryCriteria {
+		switch criteria.Clause {
+		case "where":
+			builder.Where(criteria.Key, criteria.Operator, criteria.Value)
+			break
+		case "where_nested":
+			builder.WhereNested(criteria.Key, criteria.Operator, criteria.Value)
+			break
+		case "where_in":
+			builder.WhereIn(criteria.Key, criteria.Values)
+			break
+		case "where_in_nested":
+			builder.WhereInNested(criteria.Key, criteria.Values)
+			break
+		case "where_not_in":
+			builder.WhereNotIn(criteria.Key, criteria.Values)
+			break
+		case "where_not_in_nested":
+			builder.WhereNotInNested(criteria.Key, criteria.Values)
+			break
+		case "filter":
+			builder.Filter(criteria.Key, criteria.Operator, criteria.Value)
+			break
+		case "filter_nested":
+			builder.FilterNested(criteria.Key, criteria.Operator, criteria.Value)
+			break
+		case "filter_in":
+			builder.FilterIn(criteria.Key, criteria.Values)
+			break
+		case "filter_in_nested":
+			builder.FilterInNested(criteria.Key, criteria.Values)
+			break
+		case "match":
+			builder.Match(criteria.Key, criteria.Operator, criteria.Value)
+			break
+		case "match_nested":
+			builder.MatchNested(criteria.Key, criteria.Operator, criteria.Value)
+			break
+		case "match_in":
+			builder.MatchIn(criteria.Key, criteria.Values)
+			break
+		case "match_in_nested":
+			builder.MatchInNested(criteria.Key, criteria.Values)
+			break
+		case "match_not_in":
+			builder.MatchNotIn(criteria.Key, criteria.Values)
+			break
+		case "match_not_in_nested":
+			builder.MatchNotInNested(criteria.Key, criteria.Values)
+			break
+		case "limit":
+			builder.Limit(criteria.Limit)
+			break
+		case "order_by":
+			builder.OrderBy(criteria.Key, criteria.Order)
+			break
+		case "order_by_nested":
+			builder.OrderByNested(criteria.Key, criteria.Order)
+			break
+		}
+	}
 }

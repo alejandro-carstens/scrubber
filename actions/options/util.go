@@ -3,9 +3,8 @@ package options
 import (
 	"encoding/json"
 
-	"github.com/spf13/pflag"
-
 	"github.com/Jeffail/gabs"
+	"github.com/spf13/pflag"
 )
 
 func toContainer(val interface{}) *gabs.Container {

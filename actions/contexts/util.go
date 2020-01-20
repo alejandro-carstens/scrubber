@@ -92,6 +92,9 @@ func build(action string) (Contextable, error) {
 	case "watch":
 		ctx = new(WatchContext)
 		break
+	case "mutate":
+		ctx = new(MutateContext)
+		break
 	default:
 		return nil, errors.New("Invalid action")
 	}

@@ -145,67 +145,7 @@ func (w *watch) execute(index string) error {
 func (w *watch) buildQuery(index string) *golastic.Builder {
 	builder := w.connection.Builder(index)
 
-	for _, criteria := range w.options.Criteria {
-		switch criteria.Clause {
-		case "where":
-			builder.Where(criteria.Key, criteria.Operator, criteria.Value)
-			break
-		case "where_nested":
-			builder.WhereNested(criteria.Key, criteria.Operator, criteria.Value)
-			break
-		case "where_in":
-			builder.WhereIn(criteria.Key, criteria.Values)
-			break
-		case "where_in_nested":
-			builder.WhereInNested(criteria.Key, criteria.Values)
-			break
-		case "where_not_in":
-			builder.WhereNotIn(criteria.Key, criteria.Values)
-			break
-		case "where_not_in_nested":
-			builder.WhereNotInNested(criteria.Key, criteria.Values)
-			break
-		case "filter":
-			builder.Filter(criteria.Key, criteria.Operator, criteria.Value)
-			break
-		case "filter_nested":
-			builder.FilterNested(criteria.Key, criteria.Operator, criteria.Value)
-			break
-		case "filter_in":
-			builder.FilterIn(criteria.Key, criteria.Values)
-			break
-		case "filter_in_nested":
-			builder.FilterInNested(criteria.Key, criteria.Values)
-			break
-		case "match":
-			builder.Match(criteria.Key, criteria.Operator, criteria.Value)
-			break
-		case "match_nested":
-			builder.MatchNested(criteria.Key, criteria.Operator, criteria.Value)
-			break
-		case "match_in":
-			builder.MatchIn(criteria.Key, criteria.Values)
-			break
-		case "match_in_nested":
-			builder.MatchInNested(criteria.Key, criteria.Values)
-			break
-		case "match_not_in":
-			builder.MatchNotIn(criteria.Key, criteria.Values)
-			break
-		case "match_not_in_nested":
-			builder.MatchNotInNested(criteria.Key, criteria.Values)
-			break
-		case "limit":
-			builder.Limit(criteria.Limit)
-			break
-		case "order_by":
-			builder.OrderBy(criteria.Key, criteria.Order)
-			break
-		case "order_by_nested":
-			builder.OrderByNested(criteria.Key, criteria.Order)
-			break
-		}
-	}
+	buildQuery(builder, w.options.Criteria)
 
 	if len(w.options.DateField) > 0 {
 		duration := -1 * intervalToSeconds(w.options.Interval, w.options.IntervalUnit)

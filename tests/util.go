@@ -1,13 +1,9 @@
 package tests
 
 import (
+	"context"
 	"log"
 	"os"
-	"github.com/alejandro-carstens/scrubber/actions"
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/logger"
-	"github.com/alejandro-carstens/scrubber/notifications"
-	"github.com/alejandro-carstens/scrubber/ymlparser"
 	"strconv"
 	"sync"
 	"testing"
@@ -15,6 +11,11 @@ import (
 
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
+	"github.com/alejandro-carstens/scrubber/actions"
+	"github.com/alejandro-carstens/scrubber/actions/contexts"
+	"github.com/alejandro-carstens/scrubber/logger"
+	"github.com/alejandro-carstens/scrubber/notifications"
+	"github.com/alejandro-carstens/scrubber/ymlparser"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -125,6 +126,7 @@ func connection() *golastic.Connection {
 		Password:            os.Getenv("ELASTICSEARCH_PASSWORD"),
 		Username:            os.Getenv("ELASTICSEARCH_USERNAME"),
 		HealthCheckInterval: 30,
+		Context:             context.Background(),
 	})
 
 	if err := connection.Connect(); err != nil {
