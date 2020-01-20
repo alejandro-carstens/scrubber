@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"context"
 	"log"
 	"os"
 	"strconv"
@@ -125,6 +126,7 @@ func connection() *golastic.Connection {
 		Password:            os.Getenv("ELASTICSEARCH_PASSWORD"),
 		Username:            os.Getenv("ELASTICSEARCH_USERNAME"),
 		HealthCheckInterval: 30,
+		Context:             context.Background(),
 	})
 
 	if err := connection.Connect(); err != nil {

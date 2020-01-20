@@ -4,6 +4,7 @@ disable_action: true
 options:
   timeout_override: 300
   action: update
+  wait_interval: 1
   mutation:
     key: value
     other_key: 300

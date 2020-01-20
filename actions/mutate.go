@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"errors"
 	"time"
 
 	"github.com/alejandro-carstens/golastic"
@@ -53,43 +54,59 @@ func (m *mutate) buildQuery(index string) *golastic.Builder {
 }
 
 func (m *mutate) update(builder *golastic.Builder) error {
-	var err error
-	retryCounter := 0
+	response, err := builder.ExecuteAsync(m.options.BatchSize, m.options.Mutation)
+
+	if err != nil {
+		return err
+	}
+
+	if response != nil {
+		m.reporter.logger.Noticef("Response: %v", response.String())
+	}
+
+	taskId, valid := response.S("task").Data().(string)
+
+	if !valid {
+		return errors.New("could not parse the task_id")
+	}
+
+	timer := new(timer).start(int64(m.options.MaxExecutionTime))
 
 	for {
-		if retryCounter > 0 && retryCounter == m.options.RetryCountPerQuery {
+		task, err := builder.GetTask(taskId)
+
+		if err != nil {
 			return err
 		}
 
-		count, err := builder.Count()
+		m.reporter.logger.Debugf(task.String())
 
-		if err != nil {
-			retryCounter++
-			m.reporter.logger.Errorf("Attempt [%v] %v", retryCounter, err.Error())
+		complete, valid := task.S("completed").Data().(bool)
 
-			continue
+		if !valid {
+			return errors.New("could not parse task completed field")
 		}
 
-		response, err := builder.Execute(m.options.Mutation)
-
-		if response != nil {
-			m.reporter.logger.Noticef("Response: %v", response.String())
+		if complete {
+			return nil
 		}
 
-		if err == nil {
-			if count <= int64(m.options.BatchSize) {
-				break
-			}
+		time.Sleep(time.Duration(int64(m.options.WaitInterval)) * time.Second)
 
-			retryCounter = 0
-			time.Sleep(time.Duration(500) * time.Millisecond)
+		if timer.expired() {
+			m.reporter.logger.Noticef("max_execution_time %v exceeded", m.options.MaxExecutionTime)
 
-			continue
+			break
 		}
-
-		retryCounter++
-		m.reporter.logger.Errorf("Attempt [%v] %v", retryCounter, err.Error())
 	}
+
+	cancelledTask, err := builder.CancelTask(taskId)
+
+	if err != nil {
+		return err
+	}
+
+	m.reporter.logger.Debugf(cancelledTask.String())
 
 	return nil
 }

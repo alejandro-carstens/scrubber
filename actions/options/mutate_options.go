@@ -8,20 +8,30 @@ import (
 	"github.com/spf13/pflag"
 )
 
+const DEFAULT_MAX_EXECUTION_TIME int = 1
+
 type MutateOptions struct {
 	defaultOptions
-	Criteria           []*QueryCriteria       `json:"criteria"`
-	BatchSize          int                    `json:"batch_size"`
-	MaxExecutionTime   int                    `json:"max_execution_time"`
-	RetryCountPerQuery int                    `json:"retry_count_per_query"`
-	Action             string                 `json:"action"`
-	Mutation           map[string]interface{} `json:"mutation"`
+	Criteria         []*QueryCriteria       `json:"criteria"`
+	BatchSize        int                    `json:"batch_size"`
+	MaxExecutionTime int                    `json:"max_execution_time"`
+	WaitInterval     int                    `json:"wait_interval"`
+	Action           string                 `json:"action"`
+	Mutation         map[string]interface{} `json:"mutation"`
 }
 
 func (mo *MutateOptions) FillFromContainer(container *gabs.Container) error {
 	mo.container = container
 
-	return json.Unmarshal(container.Bytes(), mo)
+	if err := json.Unmarshal(container.Bytes(), mo); err != nil {
+		return err
+	}
+
+	if mo.MaxExecutionTime == 0 {
+		mo.MaxExecutionTime = DEFAULT_MAX_EXECUTION_TIME
+	}
+
+	return nil
 }
 
 func (mo *MutateOptions) Validate() error {
@@ -40,15 +50,15 @@ func (mo *MutateOptions) Validate() error {
 	}
 
 	if mo.BatchSize < 0 {
-		return errors.New("batch_size must be greater than 0")
+		return errors.New("batch_size must be greater than 0 or equal to 0")
 	}
 
 	if mo.MaxExecutionTime < 0 {
-		return errors.New("max_execution_time must be greater than 0")
+		return errors.New("max_execution_time must be greater than or equal to 0")
 	}
 
-	if mo.RetryCountPerQuery < 0 {
-		return errors.New("retry_count_per_query must be greater than 0")
+	if mo.WaitInterval <= 0 {
+		return errors.New("wait_interval must be greater than 0")
 	}
 
 	return nil

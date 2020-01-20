@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"os"
 	"strconv"
@@ -74,6 +75,7 @@ func (sc *schedulerCmd) Handle(cmd *cobra.Command, args []string) {
 		HealthCheckInterval: healthCheckInterval,
 		ErrorLogPrefix:      os.Getenv("ELASTICSEARCH_ERROR_LOG_PREFIX"),
 		InfoLogPrefix:       os.Getenv("ELASTICSEARCH_INFO_LOG_PREFIX"),
+		Context:             context.Background(),
 	})
 
 	if err := connection.Connect(); err != nil {

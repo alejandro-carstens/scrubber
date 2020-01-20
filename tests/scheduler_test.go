@@ -2,9 +2,10 @@ package tests
 
 import (
 	"os"
+	"testing"
+
 	"github.com/alejandro-carstens/scrubber/console"
 	"github.com/alejandro-carstens/scrubber/logger"
-	"testing"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"strconv"
+	"time"
 
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
@@ -12,6 +13,32 @@ import (
 	"github.com/alejandro-carstens/scrubber/logger"
 	"github.com/alejandro-carstens/scrubber/notifications"
 )
+
+type timer struct {
+	done  bool
+	timer *time.Timer
+}
+
+func (t *timer) start(seconds int64) *timer {
+	t.timer = time.NewTimer(time.Duration(seconds) * time.Second)
+
+	return t
+}
+
+func (t *timer) expired() bool {
+	if t.done {
+		return t.done
+	}
+
+	select {
+	case <-t.timer.C:
+		t.done = true
+
+		return t.done
+	default:
+		return false
+	}
+}
 
 // SNAPSHOT_ACTION_TYPE (self explanatory)
 const SNAPSHOT_ACTION_TYPE string = "snapshot"

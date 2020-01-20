@@ -1,8 +1,6 @@
 package actions
 
 import (
-	"fmt"
-
 	"github.com/alejandro-carstens/scrubber/actions/filters/runners/reports"
 	"github.com/alejandro-carstens/scrubber/logger"
 )
@@ -32,11 +30,7 @@ func (r *reporter) logFilterResults() error {
 			return err
 		}
 
-		if r.logger != nil {
-			r.logger.Debugf("%v", line)
-		} else {
-			fmt.Println(line)
-		}
+		r.logger.Debugf("%v", line)
 	}
 
 	return nil
