@@ -9,6 +9,7 @@ import (
 )
 
 const DEFAULT_MAX_EXECUTION_TIME int = 1
+const DEFAULT_BATCH_SIZE int = 10000
 
 type MutateOptions struct {
 	defaultOptions
@@ -29,6 +30,10 @@ func (mo *MutateOptions) FillFromContainer(container *gabs.Container) error {
 
 	if mo.MaxExecutionTime == 0 {
 		mo.MaxExecutionTime = DEFAULT_MAX_EXECUTION_TIME
+	}
+
+	if mo.BatchSize == 0 {
+		mo.BatchSize = DEFAULT_BATCH_SIZE
 	}
 
 	return nil

@@ -4,11 +4,10 @@ import (
 	"errors"
 	"time"
 
+	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/actions/options"
 )
-
-const DEFAULT_BATCH_SIZE int = 5000
 
 type mutate struct {
 	filterAction
@@ -33,7 +32,7 @@ func (m *mutate) Perform() Actionable {
 			return m.update(builder)
 		}
 
-		return nil
+		return m.delete(builder)
 	})
 
 	return m
@@ -41,28 +40,37 @@ func (m *mutate) Perform() Actionable {
 
 func (m *mutate) buildQuery(index string) *golastic.Builder {
 	builder := m.connection.Builder(index)
-
 	buildQuery(builder, m.options.Criteria)
-
-	if m.options.BatchSize == 0 {
-		m.options.BatchSize = DEFAULT_BATCH_SIZE
-	}
-
-	builder.Limit(m.options.BatchSize)
 
 	return builder
 }
 
 func (m *mutate) update(builder *golastic.Builder) error {
-	response, err := builder.ExecuteAsync(m.options.BatchSize, m.options.Mutation)
+	taskResponse, err := builder.ExecuteAsync(m.options.BatchSize, m.options.Mutation)
 
 	if err != nil {
 		return err
 	}
 
-	m.reporter.logger.Noticef("Response: %v", response.String())
+	m.reporter.logger.Noticef("Response: %v", taskResponse.String())
 
-	taskId, valid := response.S("task").Data().(string)
+	return m.monitorTask(taskResponse, builder)
+}
+
+func (m *mutate) delete(builder *golastic.Builder) error {
+	taskResponse, err := builder.DestroyAsync()
+
+	if err != nil {
+		return err
+	}
+
+	m.reporter.logger.Noticef("Response: %v", taskResponse.String())
+
+	return m.monitorTask(taskResponse, builder)
+}
+
+func (m *mutate) monitorTask(taskResponse *gabs.Container, builder *golastic.Builder) error {
+	taskId, valid := taskResponse.S("task").Data().(string)
 
 	if !valid {
 		return errors.New("could not parse the task_id")
@@ -79,13 +87,13 @@ func (m *mutate) update(builder *golastic.Builder) error {
 
 		m.reporter.logger.Debugf(task.String())
 
-		complete, valid := task.S("completed").Data().(bool)
+		completed, valid := task.S("completed").Data().(bool)
 
 		if !valid {
 			return errors.New("could not parse task completed field")
 		}
 
-		if complete {
+		if completed {
 			return nil
 		}
 
