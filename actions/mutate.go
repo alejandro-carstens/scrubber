@@ -60,9 +60,7 @@ func (m *mutate) update(builder *golastic.Builder) error {
 		return err
 	}
 
-	if response != nil {
-		m.reporter.logger.Noticef("Response: %v", response.String())
-	}
+	m.reporter.logger.Noticef("Response: %v", response.String())
 
 	taskId, valid := response.S("task").Data().(string)
 
