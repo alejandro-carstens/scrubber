@@ -12,7 +12,11 @@ type allocatedFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (afr *allocatedFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+func (afr *allocatedFilterRunner) Init(
+	criteria criterias.Criteriable,
+	connection *golastic.Connection,
+	info ...infos.Informable,
+) (Runnerable, error) {
 	if err := afr.BaseInit(criteria, connection, info...); err != nil {
 		return nil, err
 	}
@@ -27,7 +31,8 @@ func (afr *allocatedFilterRunner) RunFilter(channel chan *FilterResponse) {
 	settingsResponse, err := afr.connection.Indexer(nil).Settings(afr.info.Name())
 
 	if err != nil {
-		channel <- afr.response.setError(err)
+		channel <- &FilterResponse{Err: err}
+
 		return
 	}
 
@@ -58,5 +63,9 @@ func (afr *allocatedFilterRunner) RunFilter(channel chan *FilterResponse) {
 		)
 	}
 
-	channel <- afr.response.setPassed(passed && afr.criteria.Include()).setReport(afr.report)
+	channel <- &FilterResponse{
+		Err:    err,
+		Passed: passed && afr.criteria.Include(),
+		Report: afr.report,
+	}
 }

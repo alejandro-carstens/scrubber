@@ -19,7 +19,11 @@ type ageFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (afr *ageFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+func (afr *ageFilterRunner) Init(
+	criteria criterias.Criteriable,
+	connection *golastic.Connection,
+	info ...infos.Informable,
+) (Runnerable, error) {
 	if err := afr.BaseInit(criteria, connection, info...); err != nil {
 		return nil, err
 	}
@@ -46,7 +50,11 @@ func (afr *ageFilterRunner) RunFilter(channel chan *FilterResponse) {
 		break
 	}
 
-	channel <- afr.response.setError(err).setPassed(passed && afr.criteria.Include()).setReport(afr.report)
+	channel <- &FilterResponse{
+		Err:    err,
+		Passed: passed && afr.criteria.Include(),
+		Report: afr.report,
+	}
 }
 
 func (afr *ageFilterRunner) processByCreationDate() (bool, error) {

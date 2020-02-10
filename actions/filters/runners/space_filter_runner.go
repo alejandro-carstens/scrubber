@@ -21,7 +21,11 @@ type spaceFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (sfr *spaceFilterRunner) Init(criteria criterias.Criteriable, builder *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+func (sfr *spaceFilterRunner) Init(
+	criteria criterias.Criteriable,
+	builder *golastic.Connection,
+	info ...infos.Informable,
+) (Runnerable, error) {
 	if err := sfr.BaseInit(criteria, builder, info...); err != nil {
 		return nil, err
 	}
@@ -42,6 +46,12 @@ func (sfr *spaceFilterRunner) RunFilter(channel chan *FilterResponse) {
 
 	if sfr.criteria.UseAge {
 		sortedList, err = sfr.runAgeSorters(sfr.criteria)
+
+		if err != nil {
+			channel <- &FilterResponse{Err: err}
+
+			return
+		}
 	} else {
 		sortedList = sfr.runDefaultSorter(sfr.criteria)
 	}
@@ -49,7 +59,8 @@ func (sfr *spaceFilterRunner) RunFilter(channel chan *FilterResponse) {
 	statsResponse := <-indicesStatsResponse
 
 	if statsResponse.err != nil {
-		channel <- sfr.response.setError(statsResponse.err)
+		channel <- &FilterResponse{Err: statsResponse.err}
+
 		return
 	}
 
@@ -63,7 +74,12 @@ func (sfr *spaceFilterRunner) RunFilter(channel chan *FilterResponse) {
 
 	sfr.report.AddResults(sortedList...)
 
-	channel <- sfr.response.setError(err).setPassed(true).setReport(sfr.report).setList(sortedList)
+	channel <- &FilterResponse{
+		Err:    err,
+		Passed: true,
+		Report: sfr.report,
+		List:   sortedList,
+	}
 }
 
 func (sfr *spaceFilterRunner) executeIndexStats(indicesStatsResponse chan *IndexStatsResponse) {

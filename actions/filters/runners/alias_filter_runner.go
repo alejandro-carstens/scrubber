@@ -12,7 +12,11 @@ type aliasFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (afr *aliasFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+func (afr *aliasFilterRunner) Init(
+	criteria criterias.Criteriable,
+	connection *golastic.Connection,
+	info ...infos.Informable,
+) (Runnerable, error) {
 	if err := afr.BaseInit(criteria, connection, info...); err != nil {
 		return nil, err
 	}
@@ -27,7 +31,7 @@ func (afr *aliasFilterRunner) RunFilter(channel chan *FilterResponse) {
 	container, err := afr.connection.Indexer(nil).AliasesCat()
 
 	if err != nil {
-		channel <- afr.response.setError(err)
+		channel <- &FilterResponse{Err: err}
 
 		return
 	}
@@ -35,7 +39,7 @@ func (afr *aliasFilterRunner) RunFilter(channel chan *FilterResponse) {
 	aliasesResponse, err := container.Children()
 
 	if err != nil {
-		channel <- afr.response.setError(err)
+		channel <- &FilterResponse{Err: err}
 
 		return
 	}
@@ -58,5 +62,9 @@ func (afr *aliasFilterRunner) RunFilter(channel chan *FilterResponse) {
 		afr.report.AddReason("Alias not matched for index '%v'", afr.info.Name())
 	}
 
-	channel <- afr.response.setPassed(passed && afr.criteria.Include()).setReport(afr.report)
+	channel <- &FilterResponse{
+		Err:    err,
+		Passed: passed && afr.criteria.Include(),
+		Report: afr.report,
+	}
 }

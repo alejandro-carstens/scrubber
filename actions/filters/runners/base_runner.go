@@ -12,12 +12,15 @@ import (
 type baseRunner struct {
 	info       infos.Informable
 	report     *reports.Report
-	response   *FilterResponse
 	connection *golastic.Connection
 }
 
 // BaseInit initializes the base properties for a filter runner
-func (br *baseRunner) BaseInit(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) error {
+func (br *baseRunner) BaseInit(
+	criteria criterias.Criteriable,
+	connection *golastic.Connection,
+	info ...infos.Informable,
+) error {
 	if len(info) != 1 {
 		return errors.New("This is not an aggregate filter runner and as such only accepts one index per run")
 	}
@@ -39,7 +42,6 @@ func (br *baseRunner) BaseInit(criteria criterias.Criteriable, connection *golas
 	report.SetCriteria(criteria)
 
 	br.report = report
-	br.response = new(FilterResponse)
 	br.connection = connection
 
 	return nil

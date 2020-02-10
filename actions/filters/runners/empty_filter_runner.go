@@ -12,7 +12,11 @@ type emptyFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (efr *emptyFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+func (efr *emptyFilterRunner) Init(
+	criteria criterias.Criteriable,
+	connection *golastic.Connection,
+	info ...infos.Informable,
+) (Runnerable, error) {
 	if err := efr.BaseInit(criteria, connection, info...); err != nil {
 		return nil, err
 	}
@@ -38,5 +42,8 @@ func (efr *emptyFilterRunner) RunFilter(channel chan *FilterResponse) {
 		)
 	}
 
-	channel <- efr.response.setPassed(passed && efr.criteria.Include()).setReport(efr.report)
+	channel <- &FilterResponse{
+		Passed: passed && efr.criteria.Include(),
+		Report: efr.report,
+	}
 }

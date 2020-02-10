@@ -12,7 +12,11 @@ type stateFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (sfr *stateFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+func (sfr *stateFilterRunner) Init(
+	criteria criterias.Criteriable,
+	connection *golastic.Connection,
+	info ...infos.Informable,
+) (Runnerable, error) {
 	if err := sfr.BaseInit(criteria, connection, info...); err != nil {
 		return nil, err
 	}
@@ -44,5 +48,8 @@ func (sfr *stateFilterRunner) RunFilter(channel chan *FilterResponse) {
 		)
 	}
 
-	channel <- sfr.response.setReport(sfr.report).setPassed(passed && sfr.criteria.Include())
+	channel <- &FilterResponse{
+		Passed: passed && sfr.criteria.Include(),
+		Report: sfr.report,
+	}
 }

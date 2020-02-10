@@ -17,7 +17,11 @@ type aggregateBaseRunner struct {
 }
 
 // BaseInit initializes the base properties for a filter runner
-func (abr *aggregateBaseRunner) BaseInit(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) error {
+func (abr *aggregateBaseRunner) BaseInit(
+	criteria criterias.Criteriable,
+	connection *golastic.Connection,
+	info ...infos.Informable,
+) error {
 	if len(info) == 0 {
 		return errors.New("info cannot be empty")
 	}

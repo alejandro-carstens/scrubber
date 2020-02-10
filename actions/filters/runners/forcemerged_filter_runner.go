@@ -12,7 +12,11 @@ type forcemergedFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (ffr *forcemergedFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+func (ffr *forcemergedFilterRunner) Init(
+	criteria criterias.Criteriable,
+	connection *golastic.Connection,
+	info ...infos.Informable,
+) (Runnerable, error) {
 	if err := ffr.BaseInit(criteria, connection, info...); err != nil {
 		return nil, err
 	}
@@ -41,5 +45,8 @@ func (ffr *forcemergedFilterRunner) RunFilter(channel chan *FilterResponse) {
 		)
 	}
 
-	channel <- ffr.response.setPassed(passed && ffr.criteria.Include()).setReport(ffr.report)
+	channel <- &FilterResponse{
+		Passed: passed && ffr.criteria.Include(),
+		Report: ffr.report,
+	}
 }

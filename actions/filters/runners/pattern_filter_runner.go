@@ -15,7 +15,11 @@ type patternFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (pfr *patternFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+func (pfr *patternFilterRunner) Init(
+	criteria criterias.Criteriable,
+	connection *golastic.Connection,
+	info ...infos.Informable,
+) (Runnerable, error) {
 	if err := pfr.BaseInit(criteria, connection, info...); err != nil {
 		return nil, err
 	}
@@ -45,10 +49,11 @@ func (pfr *patternFilterRunner) RunFilter(channel chan *FilterResponse) {
 		break
 	}
 
-	channel <- pfr.response.
-		setError(err).
-		setReport(pfr.report).
-		setPassed(passed && pfr.criteria.Include())
+	channel <- &FilterResponse{
+		Err:    err,
+		Passed: passed && pfr.criteria.Include(),
+		Report: pfr.report,
+	}
 }
 
 func (pfr *patternFilterRunner) processTimestring() (bool, error) {

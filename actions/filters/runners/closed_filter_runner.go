@@ -17,7 +17,11 @@ type closedFilterRunner struct {
 }
 
 // Init initializes the filter runner
-func (cfr *closedFilterRunner) Init(criteria criterias.Criteriable, connection *golastic.Connection, info ...infos.Informable) (Runnerable, error) {
+func (cfr *closedFilterRunner) Init(
+	criteria criterias.Criteriable,
+	connection *golastic.Connection,
+	info ...infos.Informable,
+) (Runnerable, error) {
 	if err := cfr.BaseInit(criteria, connection, info...); err != nil {
 		return nil, err
 	}
@@ -29,11 +33,13 @@ func (cfr *closedFilterRunner) Init(criteria criterias.Criteriable, connection *
 
 // RunFilter filters out elements from the actionable list
 func (cfr *closedFilterRunner) RunFilter(channel chan *FilterResponse) {
+	var err error
+
 	passed := false
 	status := cfr.info.(*infos.IndexInfo).Status
 
 	if len(status) == 0 {
-		cfr.response.setError(errors.New("Could not determine if the index is closed"))
+		err = errors.New("Could not determine if the index is closed")
 
 		passed = false
 	}
@@ -48,5 +54,9 @@ func (cfr *closedFilterRunner) RunFilter(channel chan *FilterResponse) {
 		cfr.report.AddReason("Index '%v' is  not closed", cfr.info.Name())
 	}
 
-	channel <- cfr.response.setPassed(passed && cfr.criteria.Include()).setReport(cfr.report)
+	channel <- &FilterResponse{
+		Err:    err,
+		Passed: passed && cfr.criteria.Include(),
+		Report: cfr.report,
+	}
 }
