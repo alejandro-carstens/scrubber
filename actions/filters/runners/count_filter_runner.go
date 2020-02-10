@@ -58,6 +58,7 @@ func (cfr *countFilterRunner) RunFilter(channel chan *FilterResponse) {
 		Err:    err,
 		Passed: true,
 		Report: cfr.report,
+		List:   sortedList,
 	}
 }
 
