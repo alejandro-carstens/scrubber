@@ -5,7 +5,6 @@ import (
 
 	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/actions/criterias"
-	"github.com/alejandro-carstens/scrubber/actions/filters/runners"
 	"github.com/alejandro-carstens/scrubber/actions/filters/runners/reports"
 )
 
@@ -33,8 +32,4 @@ func (bfr *baseFilterRunner) AddReport(report reports.Reportable) {
 
 func (bfr *baseFilterRunner) GetReports() []reports.Reportable {
 	return bfr.reports
-}
-
-func (bfr *baseFilterRunner) release(channel chan *runners.FilterResponse) {
-	close(channel)
 }

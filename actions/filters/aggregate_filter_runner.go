@@ -35,7 +35,7 @@ func (afr *AggregateFilterRunner) ApplyFilters() ([]string, error) {
 		afr.addIndicesToCountMap(filterResponse.List...)
 	}
 
-	afr.release(channel)
+	close(channel)
 
 	return afr.getIndicesList(len(afr.builder.AggregateCriteria())), nil
 }

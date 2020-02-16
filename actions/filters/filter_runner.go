@@ -42,7 +42,7 @@ func (fr *FilterRunner) ApplyFilters() (bool, error) {
 		fr.AddReport(filterResponse.Report.(*reports.Report).SetResult(true))
 	}
 
-	fr.release(channel)
+	close(channel)
 
 	return true, nil
 }
