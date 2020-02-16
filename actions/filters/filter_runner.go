@@ -14,8 +14,6 @@ type FilterRunner struct {
 func (fr *FilterRunner) ApplyFilters() (bool, error) {
 	channel := make(chan *runners.FilterResponse, len(fr.builder.Criteria()))
 
-	defer fr.release(channel)
-
 	for _, criteria := range fr.builder.Criteria() {
 		runner, err := runners.NewRunner(criteria, fr.connection, fr.info)
 
@@ -43,6 +41,8 @@ func (fr *FilterRunner) ApplyFilters() (bool, error) {
 
 		fr.AddReport(filterResponse.Report.(*reports.Report).SetResult(true))
 	}
+
+	fr.release(channel)
 
 	return true, nil
 }

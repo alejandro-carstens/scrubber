@@ -14,8 +14,6 @@ type AggregateFilterRunner struct {
 func (afr *AggregateFilterRunner) ApplyFilters() ([]string, error) {
 	channel := make(chan *runners.FilterResponse, len(afr.builder.AggregateCriteria()))
 
-	defer afr.release(channel)
-
 	for _, criteria := range afr.builder.AggregateCriteria() {
 		runner, err := runners.NewRunner(criteria, afr.connection, afr.info...)
 
@@ -36,6 +34,8 @@ func (afr *AggregateFilterRunner) ApplyFilters() ([]string, error) {
 		afr.AddReport(filterResponse.Report)
 		afr.addIndicesToCountMap(filterResponse.List...)
 	}
+
+	afr.release(channel)
 
 	return afr.getIndicesList(len(afr.builder.AggregateCriteria())), nil
 }
