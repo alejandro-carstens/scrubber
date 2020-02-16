@@ -104,7 +104,7 @@ func (r *rollover) verifyRollableIndex() error {
 
 	last2chars := indices[0][len(indices[0])-2:]
 
-	if string(last2chars[0]) == "-" && isDigit(string(last2chars[1])) {
+	if isDigit(string(last2chars[1])) && string(last2chars[0]) == "-" {
 		return nil
 	}
 
