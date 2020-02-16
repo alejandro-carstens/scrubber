@@ -116,5 +116,5 @@ func (r *rollover) verifyRollableIndex() error {
 }
 
 func (r *rollover) generateNewIndexName() string {
-	return fmt.Sprintf("github.com/alejandro-carstens/scrubber-rollover-%v", time.Now().Format(time.RFC3339))
+	return fmt.Sprintf("scrubber-rollover-%v", time.Now().Format(time.RFC3339))
 }
