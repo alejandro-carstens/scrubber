@@ -59,7 +59,7 @@ func (s *scheduler) Run() error {
 				return err
 			}
 
-			job.Do(Execute, context, s.logger, s.builder)
+			job.Do(Execute, context, s.logger, s.builder, s.queue)
 
 			startCron = true
 
@@ -134,6 +134,8 @@ func (s *scheduler) extractConfigs() (map[string]*gabs.Container, error) {
 
 		containers[confMap.path] = confMap.container
 	}
+
+	close(channel)
 
 	return containers, nil
 }
