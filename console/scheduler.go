@@ -33,6 +33,8 @@ type scheduler struct {
 
 // Run executes the scheduled actions
 func (s *scheduler) Run() error {
+	s.logger.Noticef("Oh Hi! Starting the scheduler...")
+
 	configs, err := s.extractConfigs()
 
 	if err != nil {
@@ -45,7 +47,7 @@ func (s *scheduler) Run() error {
 
 	defer gocron.Clear()
 
-	for _, config := range configs {
+	for path, config := range configs {
 		context, err := contexts.New(config)
 
 		if err != nil {
@@ -60,6 +62,8 @@ func (s *scheduler) Run() error {
 			}
 
 			job.Do(Execute, context, s.logger, s.builder, s.queue)
+
+			s.logger.Noticef("Scheduled job for %v", path)
 
 			startCron = true
 
