@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/console"
@@ -17,8 +18,9 @@ const DEFAULT_HEALTH_CHECK_INTERVAL int64 = 30
 const DEFAULT_NOTIFICATIONS_QUEUE_CAPACITY int = 10000
 
 type schedulerCmd struct {
-	logger *logger.Logger
-	path   string
+	logger  *logger.Logger
+	path    string
+	exclude []string
 }
 
 func (sc *schedulerCmd) new(logger *logger.Logger) *cobra.Command {
@@ -30,6 +32,7 @@ func (sc *schedulerCmd) new(logger *logger.Logger) *cobra.Command {
 	}
 
 	command.Flags().String("path", "", "the path of the directory or file containing the actions config")
+	command.Flags().StringSlice("eclude", []string{}, "exclude files that matches any element of the comma separated list of words")
 
 	sc.logger = logger
 
@@ -48,7 +51,14 @@ func (sc *schedulerCmd) Validate(cmd *cobra.Command, args []string) error {
 		return errors.New("the path field is required")
 	}
 
+	exclude, _ := cmd.Flags().GetStringSlice("exclude")
+
+	if len(exclude) == 0 {
+		exclude = strings.Split(os.Getenv("EXCLUDE_MATCHES"), ",")
+	}
+
 	sc.path = path
+	sc.exclude = exclude
 
 	return nil
 }
@@ -104,7 +114,7 @@ func (sc *schedulerCmd) Handle(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	if err := console.NewScheduler(sc.path, sc.logger, connection, queue).Run(); err != nil {
+	if err := console.NewScheduler(sc.path, sc.exclude, sc.logger, connection, queue).Run(); err != nil {
 		sc.logger.Errorf(err.Error())
 	}
 }

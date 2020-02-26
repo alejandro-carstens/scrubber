@@ -9,8 +9,14 @@ import (
 )
 
 // NewScheduler instantiates a scheduler
-func NewScheduler(basePath string, logger *logger.Logger, builder *golastic.Connection, queue *notifications.Queue) *scheduler {
-	return &scheduler{basePath: basePath, logger: logger, builder: builder, queue: queue}
+func NewScheduler(
+	basePath string,
+	exclude []string,
+	logger *logger.Logger,
+	builder *golastic.Connection,
+	queue *notifications.Queue,
+) *scheduler {
+	return &scheduler{basePath: basePath, exclude: exclude, logger: logger, builder: builder, queue: queue}
 }
 
 // Execute performs a given action

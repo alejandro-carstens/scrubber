@@ -21,7 +21,7 @@ func TestSchedulerRunActionImmidiately(t *testing.T) {
 	logger := logger.NewLogger("", true, true, true, true)
 	connection := connection()
 
-	scheduler := console.NewScheduler(filePath, logger, connection, nil)
+	scheduler := console.NewScheduler(filePath, []string{}, logger, connection, nil)
 
 	if err := scheduler.Run(); err != nil {
 		t.Error(err)

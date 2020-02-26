@@ -26,6 +26,7 @@ type configMap struct {
 
 type scheduler struct {
 	basePath string
+	exclude  []string
 	logger   *logger.Logger
 	builder  *golastic.Connection
 	queue    *notifications.Queue
@@ -100,6 +101,12 @@ func (s *scheduler) extractConfigs() (map[string]*gabs.Container, error) {
 	if err := filepath.Walk(s.basePath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
+		}
+
+		for _, match := range s.exclude {
+			if strings.Contains(path, match) {
+				return nil
+			}
 		}
 
 		if strings.Contains(path, ".yml") && info.Size() > 0 {
