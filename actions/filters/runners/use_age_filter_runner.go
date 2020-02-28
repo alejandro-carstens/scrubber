@@ -184,8 +184,7 @@ func (uafr *useAgeFilterRunner) parseDatesFromName(regPattern string, strictMode
 		} else if !strictMode && len(value) == 0 {
 			uafr.report.AddReason(
 				"Could not match the expected pattern '%v' for index/snapshot '%v'",
-				regPattern,
-				name,
+				regPattern, name,
 			)
 
 			continue
@@ -227,13 +226,12 @@ func (uafr *useAgeFilterRunner) executeFieldStats(channel chan *fieldStatsRespon
 	var date string
 	var valid bool
 
-	switch criteria.GetStatsResult() {
-	case "min":
+	if criteria.GetStatsResult() == "min" {
 		date, valid = result.Min.(string)
-		break
-	case "max":
+	}
+
+	if criteria.GetStatsResult() == "max" {
 		date, valid = result.Max.(string)
-		break
 	}
 
 	if !valid {

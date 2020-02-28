@@ -429,6 +429,12 @@ func filterIndicesDataProvider() []map[string]string {
 		"action_mock": "/testdata/delete_timestring_pattern_index.yml",
 		"index_name":  "alejandro-carstens-1992.06.02",
 	})
+	dataProvider = append(dataProvider, map[string]string{
+		"test_name":   "TestDeleteIndexByTimestringPatternCloserDate",
+		"create_mock": "/testdata/create_closer_date_pattern_index.yml",
+		"action_mock": "/testdata/delete_timestring_closer_date_pattern_index.yml",
+		"index_name":  "alejandro-carstens-2020-02-17",
+	})
 
 	return dataProvider
 }

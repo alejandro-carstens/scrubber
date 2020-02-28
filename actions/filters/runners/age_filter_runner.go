@@ -200,8 +200,7 @@ func (afr *ageFilterRunner) compare(date time.Time) (bool, error) {
 		since.Format(time.RFC3339),
 	)
 
-	switch afr.criteria.Direction {
-	case "older":
+	if afr.criteria.Direction == "older" {
 		return date.UTC().Before(since) && diff, nil
 	}
 
@@ -229,28 +228,23 @@ func (afr *ageFilterRunner) diff(from, to time.Time) bool {
 
 	afr.report.AddReason(
 		"Diff in Years: %v, Months: %v, Days: %v, Hours: %v, Minutes: %v, Seconds: %v",
-		years,
-		months,
-		days,
-		hours,
-		minutes,
-		seconds,
+		years, months, days, hours, minutes, seconds,
 	)
 
 	switch afr.criteria.Units {
 	case "seconds":
-		return math.Abs(from.UTC().Sub(to.UTC()).Seconds()) > float64(afr.criteria.UnitCount)
+		return math.Abs(from.UTC().Sub(to.UTC()).Seconds()) != float64(afr.criteria.UnitCount)
 	case "minutes":
-		return math.Abs(from.UTC().Sub(to.UTC()).Minutes()) > float64(afr.criteria.UnitCount)
+		return math.Abs(from.UTC().Sub(to.UTC()).Minutes()) != float64(afr.criteria.UnitCount)
 	case "hours":
-		return math.Abs(from.UTC().Sub(to.UTC()).Hours()) > float64(afr.criteria.UnitCount)
+		return math.Abs(from.UTC().Sub(to.UTC()).Hours()) != float64(afr.criteria.UnitCount)
 	case "days":
-		return secondsToDays(math.Abs(from.UTC().Sub(to.UTC()).Seconds())) > float64(afr.criteria.UnitCount)
+		return secondsToDays(math.Abs(from.UTC().Sub(to.UTC()).Seconds())) != float64(afr.criteria.UnitCount)
 	case "months":
-		return secondsToMonths(math.Abs(from.UTC().Sub(to.UTC()).Seconds())) > float64(afr.criteria.UnitCount)
+		return secondsToMonths(math.Abs(from.UTC().Sub(to.UTC()).Seconds())) != float64(afr.criteria.UnitCount)
 	}
 
-	return secondsToYears(math.Abs(from.UTC().Sub(to.UTC()).Seconds())) > float64(afr.criteria.UnitCount)
+	return secondsToYears(math.Abs(from.UTC().Sub(to.UTC()).Seconds())) != float64(afr.criteria.UnitCount)
 }
 
 func (afr *ageFilterRunner) creationDate() (string, error) {
