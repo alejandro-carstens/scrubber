@@ -51,6 +51,7 @@ func (ci *createIndex) Perform() Actionable {
 
 	if len(ci.errorContainer.list()) > 0 && ci.retryCount < ci.context.GetRetryCount() {
 		ci.retryCount = ci.retryCount + 1
+		
 		ci.Perform()
 	}
 
