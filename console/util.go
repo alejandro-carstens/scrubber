@@ -40,4 +40,8 @@ func Execute(context contexts.Contextable, logger *logger.Logger, builder *golas
 	if !action.Perform().HasErrors() {
 		logger.Noticef("successfully executed %v action", context.Action())
 	}
+
+	if err := action.Notify(); err != nil {
+		logger.Errorf("an error [%v] occurred while notifying action", err.Error())
+	}
 }

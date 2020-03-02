@@ -17,20 +17,11 @@ type pagerDutyAlert struct {
 }
 
 type slackAlert struct {
-	Webhook       string   `json:"webhook"`
-	Color         string   `json:"color"`
-	Fallback      string   `json:"fallback"`
-	AuthorName    string   `json:"author_name"`
-	AuthorSubname string   `json:"author_subname"`
-	AuthorIcon    string   `json:"author_icon"`
-	Footer        string   `json:"footer"`
-	FooterIcon    string   `json:"footer_icon"`
-	To            []string `json:"to"`
+	slackNotification
 }
 
 type emailAlert struct {
-	From    string `json:"from"`
-	Subject string `json:"subject"`
+	emailNotification
 }
 
 type Alert struct {

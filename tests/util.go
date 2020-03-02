@@ -89,6 +89,8 @@ func takeAction(path string, t *testing.T) actions.Actionable {
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
 
+	assert.Nil(t, action.Notify())
+
 	return action
 }
 

@@ -43,4 +43,8 @@ type Actionable interface {
 	// Disconnect releases resources used
 	// for performing the given action
 	Disconnect()
+
+	// Notify issues a notification regarding the execution
+	// of an action over an actionable list
+	Notify() error
 }

@@ -105,7 +105,11 @@ func (c *context) extractConfig(action string, container *gabs.Container, extrac
 		return fn(nil)
 	}
 
-	return fn(options)
+	if err := fn(options); err != nil {
+		return err
+	}
+
+	return c.options.ValidateNotifiableOptions()
 }
 
 func (c *context) extractFilters(action string, config map[string]*gabs.Container) error {

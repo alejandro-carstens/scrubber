@@ -58,6 +58,8 @@ func (r *rollover) Perform() Actionable {
 		return r
 	}
 
+	r.notifiableList = append(r.notifiableList, newIndex)
+
 	return r
 }
 

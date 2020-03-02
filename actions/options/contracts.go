@@ -7,6 +7,10 @@ type Optionable interface {
 
 	Validate() error
 
+	ValidateNotifiableOptions() error
+
+	IsNotifiable() bool
+
 	GetDisableAction() bool
 
 	GetContainer() *gabs.Container

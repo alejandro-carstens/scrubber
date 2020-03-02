@@ -81,7 +81,11 @@ func (cr *createRepository) Perform() Actionable {
 
 	if acknowledged, _ := response.S("acknowledged").Data().(bool); !acknowledged {
 		cr.errorContainer.push(cr.name, "_all", errors.New("repository was not acknowledge"))
+
+		return cr
 	}
+
+	cr.notifiableList = append(cr.notifiableList, cr.options.Repository)
 
 	return cr
 }

@@ -54,6 +54,8 @@ func (ci *createIndex) Perform() Actionable {
 		ci.Perform()
 	}
 
+	ci.notifiableList = append(ci.notifiableList, ci.options.Name)
+
 	return ci
 }
 

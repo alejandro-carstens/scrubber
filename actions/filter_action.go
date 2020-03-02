@@ -137,23 +137,31 @@ func (fa *filterAction) exec(fn runAction) {
 		pool.WaitCount(len(fa.list))
 
 		for _, element := range fa.list {
-			param := element
+			index := element
 
 			pool.JobQueue <- func() {
 				defer pool.JobDone()
 
-				if err := fn(param); err != nil {
-					fa.errorContainer.push(fa.name, param, err)
+				if err := fn(index); err != nil {
+					fa.errorContainer.push(fa.name, index, err)
+
+					return
 				}
+
+				fa.notifiableList = append(fa.notifiableList, index)
 			}
 		}
 
 		pool.WaitAll()
 	} else {
-		for _, element := range fa.list {
-			if err := fn(element); err != nil {
-				fa.errorContainer.push(fa.name, element, err)
+		for _, index := range fa.list {
+			if err := fn(index); err != nil {
+				fa.errorContainer.push(fa.name, index, err)
+
+				continue
 			}
+
+			fa.notifiableList = append(fa.notifiableList, index)
 		}
 	}
 
