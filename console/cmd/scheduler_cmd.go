@@ -114,6 +114,8 @@ func (sc *schedulerCmd) Handle(cmd *cobra.Command, args []string) {
 		return
 	}
 
+	defer queue.Release()
+
 	if err := console.NewScheduler(sc.path, sc.exclude, sc.logger, connection, queue).Run(); err != nil {
 		sc.logger.Errorf(err.Error())
 	}
