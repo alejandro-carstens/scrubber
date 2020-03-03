@@ -196,7 +196,7 @@ func (w *watch) processStats(stats *stats, threshold *options.Threshold) error {
 }
 
 func (w *watch) compare(metric float64, threshold *options.Threshold, context interface{}) error {
-	s.reporter.logger.Noticef("metric: %v")
+	w.reporter.logger.Noticef("metric: %v", metric)
 
 	if threshold.Min != nil && metric < *threshold.Min {
 		w.reporter.logger.Noticef("min: %v", *threshold.Min)
