@@ -161,11 +161,11 @@ func (w *watch) buildQuery(index string) *golastic.Builder {
 }
 
 func (w *watch) processCountThreshold(count *count, threshold *options.Threshold) error {
-	return w.compare(float64(count.Count), threshold, count)
+	return w.compare(count.Count, threshold, count)
 }
 
 func (w *watch) processAverageCountThreshold(count *count, threshold *options.Threshold) error {
-	count.Count = float64(count.Count) / float64(intervalToSeconds(w.options.Interval, w.options.IntervalUnit))
+	count.Count = count.Count / float64(intervalToSeconds(w.options.Interval, w.options.IntervalUnit))
 
 	return w.compare(count.Count, threshold, count)
 }
@@ -196,14 +196,16 @@ func (w *watch) processStats(stats *stats, threshold *options.Threshold) error {
 }
 
 func (w *watch) compare(metric float64, threshold *options.Threshold, context interface{}) error {
+	s.reporter.logger.Noticef("metric: %v")
+
 	if threshold.Min != nil && metric < *threshold.Min {
-		w.reporter.logger.Noticef("metric: %v, min: %v", metric, *threshold.Min)
+		w.reporter.logger.Noticef("min: %v", *threshold.Min)
 
 		return w.alert(threshold.Alerts, context)
 	}
 
 	if threshold.Max != nil && metric > *threshold.Max {
-		w.reporter.logger.Noticef("metric: %v, min: %v", metric, *threshold.Max)
+		w.reporter.logger.Noticef("max: %v", *threshold.Max)
 
 		return w.alert(threshold.Alerts, context)
 	}
