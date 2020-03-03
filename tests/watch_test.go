@@ -37,6 +37,7 @@ func watchActionDataProvider() []string {
 		"/testdata/watch_count.yml",
 		"/testdata/watch_average_count.yml",
 		"/testdata/watch_stats_count.yml",
+		"/testdata/watch_count_no_min_threshold.yml",
 	}
 }
 

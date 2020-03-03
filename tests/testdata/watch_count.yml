@@ -44,7 +44,6 @@ options:
       key: price
       operator: "<"
       value: 150
-  alert_channel: log
 filters:
   - filtertype: age
     source: creation_date

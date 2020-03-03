@@ -33,8 +33,8 @@ type Alert struct {
 }
 
 func (a *Alert) validate() error {
-	if len(a.NotificationChannel) == 0 {
-		return errors.New("an alert requires a notification_channel")
+	if !inStringSlice(a.NotificationChannel, availableAlertChannels) {
+		return errors.New("invalid notification_channel specified")
 	}
 
 	if len(a.Text) == 0 {
@@ -152,7 +152,6 @@ type WatchOptions struct {
 	StatsField      string           `json:"stats_field"`
 	Criteria        []*QueryCriteria `json:"criteria"`
 	Thresholds      []*Threshold     `json:"thresholds"`
-	AlertChannels   []string         `json:"alert_channels"`
 	MessageTemplate string           `json:"message_template"`
 }
 
@@ -172,12 +171,6 @@ func (wo *WatchOptions) Validate() error {
 	for _, threshold := range wo.Thresholds {
 		if err := threshold.validate(wo.DateField, wo.StatsField); err != nil {
 			return err
-		}
-	}
-
-	for _, alertChannel := range wo.AlertChannels {
-		if !inStringSlice(alertChannel, availableAlertChannels) {
-			return errors.New("invalid alert channel")
 		}
 	}
 

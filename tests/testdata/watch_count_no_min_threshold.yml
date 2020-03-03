@@ -4,11 +4,9 @@ disable_action: true
 options:
   timeout_override: 300
   interval: 10
-  interval_unit: hours
-  date_field: created_at
+  interval_unit: minutes
   thresholds:
-    - type: average_count
-      min: 10
+    - type: count
       max: 100
   criteria:
     - clause: where_nested
@@ -24,7 +22,7 @@ options:
       values: [Red-31]
     - clause: where
       key: price
-      operator: ">"
+      operator: "<"
       value: 150
 filters:
   - filtertype: age

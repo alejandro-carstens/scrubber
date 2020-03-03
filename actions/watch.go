@@ -196,16 +196,15 @@ func (w *watch) processStats(stats *stats, threshold *options.Threshold) error {
 }
 
 func (w *watch) compare(metric float64, threshold *options.Threshold, context interface{}) error {
-	min := *threshold.Min
-	max := *threshold.Max
+	if threshold.Min != nil && metric < *threshold.Min {
+		w.reporter.logger.Noticef("metric: %v, min: %v", metric, *threshold.Min)
 
-	w.reporter.logger.Noticef("metric: %v, min: %v, max: %v", metric, min, max)
-
-	if threshold.Min != nil && metric < min {
 		return w.alert(threshold.Alerts, context)
 	}
 
-	if threshold.Max != nil && metric > max {
+	if threshold.Max != nil && metric > *threshold.Max {
+		w.reporter.logger.Noticef("metric: %v, min: %v", metric, *threshold.Max)
+
 		return w.alert(threshold.Alerts, context)
 	}
 

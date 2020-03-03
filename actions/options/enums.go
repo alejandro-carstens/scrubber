@@ -2,7 +2,7 @@ package options
 
 var availableThresholdTypes []string = []string{"count", "average_count", "stats"}
 
-var availableAlertChannels []string = []string{"slack", "email", "sms", "pager_duty"}
+var availableAlertChannels []string = []string{"slack", "email", "log", "pager_duty"}
 
 var availableIntervalUnits []string = []string{"seconds", "minutes", "hours", "days", "months", "years"}
 
