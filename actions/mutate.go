@@ -79,7 +79,7 @@ func (m *mutate) monitorTask(taskResponse *gabs.Container, builder *golastic.Bui
 	timer := new(timer).start(int64(m.options.MaxExecutionTime))
 
 	for {
-		task, err := builder.GetTask(taskId)
+		task, err := builder.GetTask(taskId, false)
 
 		if err != nil {
 			return err
