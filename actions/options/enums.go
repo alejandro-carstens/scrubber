@@ -32,6 +32,10 @@ var availableInClauses []string = []string{
 	"match_in_nested",
 	"match_not_in",
 	"match_not_in_nested",
+	"match_phrase_in",
+	"match_phrase_in_nested",
+	"match_phrase_not_in",
+	"match_phrase_not_in_nested",
 }
 
 var availableClauses []string = append([]string{
@@ -41,4 +45,6 @@ var availableClauses []string = append([]string{
 	"filter_nested",
 	"match",
 	"match_nested",
+	"match_phrase",
+	"match_phrase_nested",
 }, append(availableInClauses, nonMatchingClauses...)...)

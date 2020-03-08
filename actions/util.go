@@ -298,6 +298,24 @@ func buildQuery(builder *golastic.Builder, queryCriteria []*options.QueryCriteri
 		case "match_not_in_nested":
 			builder.MatchNotInNested(criteria.Key, criteria.Values)
 			break
+		case "match_prhase":
+			builder.MatchPhrase(criteria.Key, criteria.Operator, criteria.Value)
+			break
+		case "match_phrase_nested":
+			builder.MatchPhraseNested(criteria.Key, criteria.Operator, criteria.Value)
+			break
+		case "match_phrase_in":
+			builder.MatchPhraseIn(criteria.Key, criteria.Values)
+			break
+		case "match_phrase_in_nested":
+			builder.MatchPhraseInNested(criteria.Key, criteria.Values)
+			break
+		case "match_phrase_not_in":
+			builder.MatchPhraseNotIn(criteria.Key, criteria.Values)
+			break
+		case "match_phrase_not_in_nested":
+			builder.MatchPhraseNotInNested(criteria.Key, criteria.Values)
+			break
 		case "limit":
 			builder.Limit(criteria.Limit)
 			break
