@@ -71,6 +71,10 @@ func (s *scheduler) Run() error {
 			continue
 		}
 
+		if runMode, valid := config.S("run_mode").Data().(string); valid && runMode == "manual" {
+			continue
+		}
+
 		if runMode, valid := config.S("run_mode").Data().(string); valid && runMode == "async" {
 			asyncContexts = append(asyncContexts, context)
 
