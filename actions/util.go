@@ -298,7 +298,7 @@ func buildQuery(builder *golastic.Builder, queryCriteria []*options.QueryCriteri
 		case "match_not_in_nested":
 			builder.MatchNotInNested(criteria.Key, criteria.Values)
 			break
-		case "match_prhase":
+		case "match_phrase":
 			builder.MatchPhrase(criteria.Key, criteria.Operator, criteria.Value)
 			break
 		case "match_phrase_nested":
