@@ -156,7 +156,7 @@ func seedIndexAsync(index string, count int, connection *golastic.Connection, wa
 	for i := 0; i < count; i++ {
 		value := map[string]interface{}{}
 
-		value["id"] = strconv.Itoa(i + 1 + 1000000000)
+		value["variant_id"] = strconv.Itoa(i + 1 + 1000000000)
 		value["exception"] = "Exception exception exception exception exception exception exception exception exception"
 		value["request"] = "Request request request request request request request request request"
 		value["message"] = "Message message message message message message message message message"

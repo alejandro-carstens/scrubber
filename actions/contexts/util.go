@@ -95,6 +95,9 @@ func build(action string) (Contextable, error) {
 	case "mutate":
 		ctx = new(MutateContext)
 		break
+	case "dump":
+		ctx = new(DumpContext)
+		break
 	default:
 		return nil, errors.New("Invalid action")
 	}

@@ -4,8 +4,9 @@ go 1.12
 
 require (
 	github.com/Jeffail/gabs v1.4.0
-	github.com/alejandro-carstens/golastic v0.0.0-20200308064111-f1aa61e1cd49
+	github.com/alejandro-carstens/golastic v0.0.0-20200323032132-7291533e445c
 	github.com/araddon/dateparse v0.0.0-20190622164848-0fb0a474d195
+	github.com/bxcodec/faker/v3 v3.3.0 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/go-mail/mail v2.3.1+incompatible
 	github.com/google/go-cmp v0.4.0 // indirect

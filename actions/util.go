@@ -168,6 +168,9 @@ func build(name string) (Actionable, error) {
 	case "mutate":
 		action = new(mutate)
 		break
+	case "dump":
+		action = new(dump)
+		break
 	default:
 		return nil, errors.New("Invalid action type")
 	}
