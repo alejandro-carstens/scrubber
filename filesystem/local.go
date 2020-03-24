@@ -36,8 +36,9 @@ func (l *Local) Name() string {
 }
 
 type local struct {
-	path       string
-	streamFile *os.File
+	path          string
+	streamFile    *os.File
+	streamChannel chan string
 }
 
 // Init implementation of the Configurable interface
@@ -85,19 +86,18 @@ func (l *local) OpenStream(name string) error {
 	}
 
 	l.streamFile = file
+	l.streamChannel = make(chan string)
 
 	return nil
 }
 
 // Stream implementation of the Storeable interface
-func (l *local) Stream(content chan string) error {
-	if l.streamFile == nil {
-		return errors.New("please open a stream file")
+func (l *local) Stream() error {
+	if l.streamFile == nil || l.streamChannel == nil {
+		return errors.New("please open a stream")
 	}
 
-	defer l.streamFile.Close()
-
-	for line := range content {
+	for line := range l.streamChannel {
 		n, err := l.streamFile.Write([]byte(line))
 
 		if err != nil {
@@ -112,7 +112,25 @@ func (l *local) Stream(content chan string) error {
 	return nil
 }
 
+// Channel implementation of
+// the Storeable interface
+func (l *local) Channel(data string) {
+	l.streamChannel <- data
+}
+
 // Remove implementation of the Storeable interface
 func (l *local) Remove(name string) error {
 	return os.Remove(filepath.Join(l.path, filepath.FromSlash(name)))
+}
+
+// Close implementation of
+// the Storeable interface
+func (l *local) Close() error {
+	if l.streamFile == nil || l.streamChannel == nil {
+		return errors.New("please open a stream")
+	}
+
+	close(l.streamChannel)
+
+	return l.streamFile.Close()
 }

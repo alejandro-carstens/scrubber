@@ -72,19 +72,18 @@ func (d *dump) Perform() Actionable {
 			return err
 		}
 
-		if err := fs.OpenStream(d.fileName("data")); err != nil {
-			return err
-		}
-
 		done := make(chan bool)
-		data := make(chan string)
 		failed := make(chan error)
-
-		go d.stream(fs, failed, done, data)
 
 		go d.process(index, "mappings", fs, failed, done, func(index string) (*gabs.Container, error) {
 			return d.indexer.Mappings(index)
 		})
+
+		go d.process(index, "aliases", fs, failed, done, func(index string) (*gabs.Container, error) {
+			return d.indexer.Aliases(index)
+		})
+
+		go d.scroll(index, failed, done)
 
 		go d.process(index, "settings", fs, failed, done, func(index string) (*gabs.Container, error) {
 			response, err := d.indexer.Settings(index)
@@ -102,23 +101,14 @@ func (d *dump) Perform() Actionable {
 			return settings, nil
 		})
 
-		go d.process(index, "aliases", fs, failed, done, func(index string) (*gabs.Container, error) {
-			return d.indexer.Aliases(index)
-		})
-
-		go d.scroll(index, failed, data)
-
 		select {
 		case err := <-failed:
 			d.semaphore.turnOn()
-			close(failed)
-			close(done)
-			close(data)
+			d.close(failed, done)
 
 			return err
 		case <-done:
-			close(failed)
-			close(done)
+			d.close(failed, done)
 
 			return nil
 		}
@@ -147,7 +137,7 @@ func (d *dump) process(index, name string, fs filesystem.Storeable, failed chan 
 	}
 }
 
-func (d *dump) scroll(index string, failed chan error, data chan string) {
+func (d *dump) scroll(index string, failed chan error, done chan bool) {
 	pool := grpool.NewPool(d.options.Concurrency, d.options.Concurrency)
 
 	defer pool.Release()
@@ -155,21 +145,39 @@ func (d *dump) scroll(index string, failed chan error, data chan string) {
 	pool.WaitCount(d.options.Concurrency)
 
 	for i := 0; i < d.options.Concurrency; i++ {
-		var b *golastic.Builder
+		var builder *golastic.Builder
 
 		if d.options.Concurrency > 1 {
-			b = d.builder(index).InitSlicedScroller(i, d.options.Concurrency, CHUNK, KEEP_ALIVE)
+			builder = d.builder(index).InitSlicedScroller(i, d.options.Concurrency, CHUNK, KEEP_ALIVE)
 		} else {
-			b = d.builder(index).InitScroller(CHUNK, KEEP_ALIVE)
+			builder = d.builder(index).InitScroller(CHUNK, KEEP_ALIVE)
+		}
+
+		stream, err := d.openStream(fmt.Sprintf("data_%v", i))
+
+		if err != nil {
+			failed <- err
+
+			return
 		}
 
 		pool.JobQueue <- func() {
 			defer pool.JobDone()
 
+			go func() {
+				if err := stream.Stream(); err != nil {
+					failed <- err
+				}
+			}()
+
 			for {
-				response, err := b.Scroll()
+				response, err := builder.Scroll()
 
 				if err == io.EOF {
+					if err := stream.Close(); err != nil {
+						failed <- err
+					}
+
 					return
 				}
 
@@ -189,10 +197,14 @@ func (d *dump) scroll(index string, failed chan error, data chan string) {
 
 				for _, item := range items {
 					if d.semaphore.get() {
+						if err := stream.Close(); err != nil {
+							d.reporter.logger.Errorf(err.Error())
+						}
+
 						return
 					}
 
-					data <- item.String() + "\n"
+					stream.Channel(item.String() + "\n")
 				}
 			}
 		}
@@ -200,19 +212,21 @@ func (d *dump) scroll(index string, failed chan error, data chan string) {
 
 	pool.WaitAll()
 
-	close(data)
-}
-
-func (d *dump) stream(fs filesystem.Storeable, failed chan error, done chan bool, data chan string) {
-	if err := fs.Stream(data); err != nil {
-		failed <- err
-
-		return
-	}
-
 	if d.counter.increment() == 4 {
 		done <- true
 	}
+}
+
+func (d *dump) openStream(fileName string) (filesystem.Storeable, error) {
+	fs, err := filesystem.Build(d.filesystemConfig())
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = fs.OpenStream(d.fileName(fileName))
+
+	return fs, err
 }
 
 func (d *dump) filesystemConfig() filesystem.Configurable {
@@ -231,4 +245,9 @@ func (d *dump) builder(index string) *golastic.Builder {
 	buildQuery(builder, d.options.Criteria)
 
 	return builder
+}
+
+func (d *dump) close(failed chan error, done chan bool) {
+	close(failed)
+	close(done)
 }

@@ -16,10 +16,16 @@ type Storeable interface {
 	Remove(name string) error
 
 	// Stream streams data into a file
-	Stream(content chan string) error
+	Stream() error
 
 	// OpenStream initializes the stream
 	OpenStream(name string) error
+
+	// Channel returns the stream channel
+	Channel(data string)
+
+	// Close releases the streaming resources
+	Close() error
 }
 
 // Configurable represents the contract to be implemented
