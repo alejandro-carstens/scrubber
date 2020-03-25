@@ -1,0 +1,1 @@
+{"variants-1992.06.02":{"mappings":{"properties":{"attributes":{"properties":{"color":{"type":"keyword"},"size":{"type":"integer"},"sku":{"type":"text"}},"type":"nested"},"created_at":{"type":"date"},"id":{"type":"keyword"},"price":{"type":"integer"}}}}}
