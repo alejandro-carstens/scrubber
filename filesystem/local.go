@@ -13,8 +13,7 @@ type Local struct {
 	Path string
 }
 
-// Validate implementation of
-// the Configurable interface
+// Validate implementation of the Configurable interface
 func (l *Local) Validate() error {
 	if len(l.Path) == 0 {
 		return errors.New("path cannot be empty")
@@ -23,14 +22,7 @@ func (l *Local) Validate() error {
 	return nil
 }
 
-// FillFromEnvs implementation of
-// the Configurable interface
-func (l *Local) FillFromEnvs() Configurable {
-	return l
-}
-
-// Name implementation of the
-// Configurable interface
+// Name implementation of the Configurable interface
 func (l *Local) Name() string {
 	return "local"
 }
@@ -112,8 +104,7 @@ func (l *local) Stream() error {
 	return nil
 }
 
-// Channel implementation of
-// the Storeable interface
+// Channel implementation of the Storeable interface
 func (l *local) Channel(data string) {
 	l.streamChannel <- data
 }
@@ -123,8 +114,7 @@ func (l *local) Remove(name string) error {
 	return os.Remove(filepath.Join(l.path, filepath.FromSlash(name)))
 }
 
-// Close implementation of
-// the Storeable interface
+// Close implementation of the Storeable interface
 func (l *local) Close() error {
 	if l.streamFile == nil || l.streamChannel == nil {
 		return errors.New("please open a stream")

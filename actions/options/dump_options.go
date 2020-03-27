@@ -15,12 +15,14 @@ const GCS_REPOSITORY string = "gcs"
 
 type DumpOptions struct {
 	defaultOptions
-	Criteria         []*QueryCriteria `json:"criteria"`
-	MaxExecutionTime int              `json:"max_execution_time"`
-	Repository       string           `json:"repository"`
-	Name             string           `json:"name"`
-	Path             string           `json:"path"`
-	Concurrency      int              `json:"concurrency"`
+	Criteria            []*QueryCriteria `json:"criteria"`
+	MaxExecutionTime    int              `json:"max_execution_time"`
+	Repository          string           `json:"repository"`
+	Name                string           `json:"name"`
+	Path                string           `json:"path"`
+	Bucket              string           `json:"bucket"`
+	CredentialsFilePath string           `json:"credentials_file_path"`
+	Concurrency         int              `json:"concurrency"`
 }
 
 func (do *DumpOptions) FillFromContainer(container *gabs.Container) error {

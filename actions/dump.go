@@ -9,11 +9,10 @@ import (
 	"sync/atomic"
 
 	"github.com/Jeffail/gabs"
-	"github.com/ivpusic/grpool"
-
 	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/actions/options"
 	"github.com/alejandro-carstens/scrubber/filesystem"
+	"github.com/ivpusic/grpool"
 )
 
 const CHUNK int = 20
@@ -54,9 +53,9 @@ type dump struct {
 
 // ApplyOptions implementation of the Actionable interface
 func (d *dump) ApplyOptions() Actionable {
+	d.options = d.context.Options().(*options.DumpOptions)
 	d.counter = new(counter)
 	d.semaphore = new(semaphore)
-	d.options = d.context.Options().(*options.DumpOptions)
 
 	d.indexer.SetOptions(&golastic.IndexOptions{Timeout: d.options.TimeoutInSeconds()})
 
@@ -230,6 +229,14 @@ func (d *dump) openStream(fileName string) (filesystem.Storeable, error) {
 }
 
 func (d *dump) filesystemConfig() filesystem.Configurable {
+	if d.options.Repository == "gcs" {
+		return &filesystem.GCS{
+			Bucket:              d.options.Bucket,
+			CredentialsFilePath: d.options.CredentialsFilePath,
+			Context:             d.ctx,
+		}
+	}
+
 	return &filesystem.Local{
 		Path: filepath.Join(d.options.Path, filepath.FromSlash(d.options.Name)),
 	}

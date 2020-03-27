@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/alejandro-carstens/scrubber/actions/contexts"
 	"github.com/alejandro-carstens/scrubber/console"
 	"github.com/alejandro-carstens/scrubber/logger"
@@ -14,5 +16,5 @@ type baseActionCmd struct {
 
 // Handle implementation of the Commandable interface
 func (bac *baseActionCmd) Handle(cmd *cobra.Command, args []string) {
-	console.Execute(bac.context, bac.logger, nil, nil)
+	console.Execute(bac.context, bac.logger, nil, nil, context.Background())
 }

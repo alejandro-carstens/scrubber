@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"context"
+
 	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/actions/contexts"
 	"github.com/alejandro-carstens/scrubber/logger"
@@ -13,7 +15,13 @@ import (
 // of indices or snapshots
 type Actionable interface {
 	// Init prepares an action for execution
-	Init(context contexts.Contextable, logger *logger.Logger, builder *golastic.Connection, queue *notifications.Queue) error
+	Init(
+		context contexts.Contextable,
+		logger *logger.Logger,
+		builder *golastic.Connection,
+		queue *notifications.Queue,
+		ctx context.Context,
+	) error
 
 	// Perform executes the action
 	Perform() Actionable

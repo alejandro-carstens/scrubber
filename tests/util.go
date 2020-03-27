@@ -61,7 +61,7 @@ func config(path string) (*gabs.Container, error) {
 }
 
 func getAction(config *gabs.Container) (actions.Actionable, error) {
-	context, err := contexts.New(config)
+	ctx, err := contexts.New(config)
 
 	if err != nil {
 		return nil, err
@@ -69,7 +69,7 @@ func getAction(config *gabs.Container) (actions.Actionable, error) {
 
 	logger := logger.NewLogger("", true, true, true, true)
 
-	return actions.Create(context, logger, connection(), queue(logger))
+	return actions.Create(ctx, logger, connection(), queue(logger), context.Background())
 }
 
 func takeAction(path string, t *testing.T) actions.Actionable {

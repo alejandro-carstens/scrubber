@@ -12,9 +12,6 @@ type Storeable interface {
 	// Put stores a file with the specified name
 	Put(name string, reader io.Reader) error
 
-	// Remove deletes a file with the specified name
-	Remove(name string) error
-
 	// Stream streams data into a file
 	Stream() error
 
@@ -34,10 +31,6 @@ type Storeable interface {
 type Configurable interface {
 	// Validate validates the configuration for a given channel
 	Validate() error
-
-	// FillFromEnvs is responsible for setting the configuration
-	// for the channel from the respective env variables
-	FillFromEnvs() Configurable
 
 	// Name returns the configuration name
 	Name() string
