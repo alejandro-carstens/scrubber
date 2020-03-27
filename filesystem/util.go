@@ -12,6 +12,8 @@ func Build(config Configurable) (Storeable, error) {
 	switch config.Name() {
 	case "local":
 		return new(local).Init(config)
+	case "gcs":
+		return new(gcs).Init(config)
 	}
 
 	return nil, errors.New("invalid filesystem specified")
