@@ -6,7 +6,7 @@ options:
   path: /usr/share/scrubber
   concurrency: 1
   size: 20
-  keepalive: 1
+  keep_alive: 1
   criteria:
     - clause: where_nested
       key: attributes.color
