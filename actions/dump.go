@@ -15,6 +15,8 @@ import (
 	"github.com/ivpusic/grpool"
 )
 
+// THRESHOLD represents the number of concurrent
+// tasks that need to be executed
 const THRESHOLD int64 = 4
 
 type fetch func(index string) (*gabs.Container, error)
