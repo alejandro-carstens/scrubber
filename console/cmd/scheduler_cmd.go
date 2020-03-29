@@ -78,6 +78,8 @@ func (sc *schedulerCmd) Handle(cmd *cobra.Command, args []string) {
 		healthCheckInterval = int64(value)
 	}
 
+	ctx := context.Background()
+
 	connection := golastic.NewConnection(&golastic.ConnectionContext{
 		Urls:                []string{os.Getenv("ELASTICSEARCH_URI")},
 		Password:            os.Getenv("ELASTICSEARCH_PASSWORD"),
@@ -85,7 +87,7 @@ func (sc *schedulerCmd) Handle(cmd *cobra.Command, args []string) {
 		HealthCheckInterval: healthCheckInterval,
 		ErrorLogPrefix:      os.Getenv("ELASTICSEARCH_ERROR_LOG_PREFIX"),
 		InfoLogPrefix:       os.Getenv("ELASTICSEARCH_INFO_LOG_PREFIX"),
-		Context:             context.Background(),
+		Context:             ctx,
 	})
 
 	if err := connection.Connect(); err != nil {
@@ -116,7 +118,7 @@ func (sc *schedulerCmd) Handle(cmd *cobra.Command, args []string) {
 
 	defer queue.Release()
 
-	if err := console.NewScheduler(sc.path, sc.exclude, sc.logger, connection, queue).Run(); err != nil {
+	if err := console.NewScheduler(sc.path, sc.exclude, sc.logger, connection, queue, ctx).Run(); err != nil {
 		sc.logger.Errorf(err.Error())
 	}
 }

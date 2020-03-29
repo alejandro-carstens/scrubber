@@ -1,6 +1,7 @@
 package console
 
 import (
+	"context"
 	"errors"
 	"os"
 	"path/filepath"
@@ -27,6 +28,7 @@ type configMap struct {
 type scheduler struct {
 	basePath string
 	exclude  []string
+	context  context.Context
 	logger   *logger.Logger
 	builder  *golastic.Connection
 	queue    *notifications.Queue
@@ -62,7 +64,7 @@ func (s *scheduler) Run() error {
 				return err
 			}
 
-			job.Do(Execute, context, s.logger, s.builder, s.queue)
+			job.Do(Execute, context, s.logger, s.builder, s.queue, s.context)
 
 			s.logger.Noticef("Scheduled job for %v", path)
 
@@ -166,7 +168,7 @@ func (s *scheduler) runAsyncActions(contexts []contexts.Contextable) {
 		pool.JobQueue <- func() {
 			defer pool.JobDone()
 
-			Execute(action, s.logger, s.builder, s.queue)
+			Execute(action, s.logger, s.builder, s.queue, s.context)
 		}
 	}
 
@@ -176,7 +178,7 @@ func (s *scheduler) runAsyncActions(contexts []contexts.Contextable) {
 
 func (s *scheduler) runActions(contexts []contexts.Contextable) {
 	for _, context := range contexts {
-		Execute(context, s.logger, s.builder, s.queue)
+		Execute(context, s.logger, s.builder, s.queue, s.context)
 	}
 }
 

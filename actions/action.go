@@ -28,14 +28,16 @@ type action struct {
 	errorContainer *errorContainer
 	connection     *golastic.Connection
 	indexer        *golastic.Indexer
+	ctx            context.Context
 }
 
 // Init initializes an action
 func (a *action) Init(
-	ctx contexts.Contextable,
+	context contexts.Contextable,
 	logger *logger.Logger,
 	connection *golastic.Connection,
 	queue *notifications.Queue,
+	ctx context.Context,
 ) error {
 	if connection == nil {
 		var healthCheckInterval int64 = DEFAULT_HEALTH_CHECK_INTERVAL
@@ -57,7 +59,7 @@ func (a *action) Init(
 			HealthCheckInterval: healthCheckInterval,
 			ErrorLogPrefix:      os.Getenv("ELASTICSEARCH_ERROR_LOG_PREFIX"),
 			InfoLogPrefix:       os.Getenv("ELASTICSEARCH_INFO_LOG_PREFIX"),
-			Context:             context.Background(),
+			Context:             ctx,
 		})
 
 		if err := connection.Connect(); err != nil {
@@ -67,12 +69,13 @@ func (a *action) Init(
 
 	a.connection = connection
 	a.indexer = connection.Indexer(nil)
-	a.context = ctx
-	a.name = ctx.Action()
+	a.context = context
+	a.name = context.Action()
 	a.errorContainer = newErrorContainer()
 	a.reporter = newReporter(logger)
 	a.queue = queue
 	a.notifiableList = []string{}
+	a.ctx = ctx
 
 	return nil
 }

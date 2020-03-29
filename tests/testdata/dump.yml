@@ -1,0 +1,35 @@
+action: dump
+description: Dumps elasticsearch documents to the specified location
+disable_action: true
+options:
+  name: scrubber_test
+  path: /usr/share/scrubber
+  concurrency: 1
+  size: 20
+  keepalive: 1
+  criteria:
+    - clause: where_nested
+      key: attributes.color
+      operator: "="
+      value: Red
+    - clause: filter_nested
+      key: attributes.size
+      operator: "<="
+      value: 31
+    - clause: match_in_nested
+      key: attributes.sku
+      values: [Red-31]
+    - clause: where
+      key: price
+      operator: "<"
+      value: 150
+    - clause: where
+      key: other_key
+      operator: "<>"
+      value: 300
+filters:
+  - filtertype: age
+    source: creation_date
+    direction: older
+    units: seconds
+    unit_count: 1

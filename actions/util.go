@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"strconv"
@@ -67,14 +68,20 @@ var availableNumericTypes []string = []string{
 }
 
 // Create builds an Actionable action
-func Create(context contexts.Contextable, logger *logger.Logger, connection *golastic.Connection, queue *notifications.Queue) (Actionable, error) {
+func Create(
+	context contexts.Contextable,
+	logger *logger.Logger,
+	connection *golastic.Connection,
+	queue *notifications.Queue,
+	ctx context.Context,
+) (Actionable, error) {
 	action, err := build(context.Action())
 
 	if err != nil {
 		return nil, err
 	}
 
-	if err := action.Init(context, logger, connection, queue); err != nil {
+	if err := action.Init(context, logger, connection, queue, ctx); err != nil {
 		return nil, err
 	}
 
@@ -167,6 +174,9 @@ func build(name string) (Actionable, error) {
 		break
 	case "mutate":
 		action = new(mutate)
+		break
+	case "dump":
+		action = new(dump)
 		break
 	default:
 		return nil, errors.New("Invalid action type")

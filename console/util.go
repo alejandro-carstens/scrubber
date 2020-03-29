@@ -1,6 +1,8 @@
 package console
 
 import (
+	"context"
+
 	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/actions"
 	"github.com/alejandro-carstens/scrubber/actions/contexts"
@@ -15,13 +17,27 @@ func NewScheduler(
 	logger *logger.Logger,
 	builder *golastic.Connection,
 	queue *notifications.Queue,
+	context context.Context,
 ) *scheduler {
-	return &scheduler{basePath: basePath, exclude: exclude, logger: logger, builder: builder, queue: queue}
+	return &scheduler{
+		basePath: basePath,
+		exclude:  exclude,
+		logger:   logger,
+		builder:  builder,
+		queue:    queue,
+		context:  context,
+	}
 }
 
 // Execute performs a given action
-func Execute(context contexts.Contextable, logger *logger.Logger, builder *golastic.Connection, queue *notifications.Queue) {
-	action, err := actions.Create(context, logger, builder, queue)
+func Execute(
+	context contexts.Contextable,
+	logger *logger.Logger,
+	builder *golastic.Connection,
+	queue *notifications.Queue,
+	ctx context.Context,
+) {
+	action, err := actions.Create(context, logger, builder, queue, ctx)
 
 	if err != nil {
 		logger.Errorf(err.Error())
