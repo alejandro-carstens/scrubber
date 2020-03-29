@@ -61,12 +61,12 @@ func (do *DumpOptions) Validate() error {
 		return errors.New("name cannot be empty")
 	}
 
-	if len(do.Path) == 0 {
-		return errors.New("path cannot be empty")
-	}
-
 	if !inStringSlice(do.Repository, []string{FS_REPOSITORY, GCS_REPOSITORY}) {
 		return errors.New("invalid repsitory, please select either fs or gcs")
+	}
+
+	if do.Repository == FS_REPOSITORY && len(do.Path) == 0 {
+		return errors.New("path cannot be empty")
 	}
 
 	if do.Concurrency > 10 {
