@@ -8,11 +8,6 @@ import (
 	"github.com/spf13/pflag"
 )
 
-const DEFAULT_DUMP_MAX_EXECUTION_TIME int = 1
-const DEFAULT_DUMP_CONCURRENCY int = 5
-const FS_REPOSITORY string = "fs"
-const GCS_REPOSITORY string = "gcs"
-
 type DumpOptions struct {
 	defaultOptions
 	Criteria            []*QueryCriteria `json:"criteria"`
@@ -22,7 +17,9 @@ type DumpOptions struct {
 	Path                string           `json:"path"`
 	Bucket              string           `json:"bucket"`
 	CredentialsFilePath string           `json:"credentials_file_path"`
+	KeepAlive           int              `json:"keep_alive"`
 	Concurrency         int              `json:"concurrency"`
+	Size                int              `json:"size"`
 }
 
 func (do *DumpOptions) FillFromContainer(container *gabs.Container) error {
@@ -42,6 +39,14 @@ func (do *DumpOptions) FillFromContainer(container *gabs.Container) error {
 
 	if len(do.Repository) == 0 {
 		do.Repository = FS_REPOSITORY
+	}
+
+	if do.KeepAlive <= 0 {
+		do.KeepAlive = DEFAULT_DUMP_KEEP_ALIVE
+	}
+
+	if do.Size == 0 {
+		do.Size = 2500
 	}
 
 	return nil
@@ -66,6 +71,24 @@ func (do *DumpOptions) Validate() error {
 
 	if do.Concurrency > 10 {
 		return errors.New("concurrency cannot be greater than 10")
+	}
+
+	if do.Size <= 0 || do.Size > 10000 {
+		return errors.New("size must be greater than 0 and lesser than or equal to 10000")
+	}
+
+	if do.KeepAlive <= 0 {
+		return errors.New("keep_alive must be greater than 0")
+	}
+
+	if do.Repository == "gcs" {
+		if len(do.Bucket) == 0 {
+			return errors.New("a bucket needs to be specified when using the gcs repository")
+		}
+
+		if len(do.CredentialsFilePath) == 0 {
+			return errors.New("a credentials_file_path needs to be specified when using the gcs repository")
+		}
 	}
 
 	for _, criteria := range do.Criteria {

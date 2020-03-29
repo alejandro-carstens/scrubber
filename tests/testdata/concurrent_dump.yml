@@ -4,7 +4,7 @@ disable_action: true
 options:
   name: scrubber_test
   path: /usr/share/scrubber
-  concurrency: 1
+  concurrency: 3
   size: 20
   keepalive: 1
   criteria:

@@ -1,5 +1,12 @@
 package options
 
+const DEFAULT_DUMP_MAX_EXECUTION_TIME int = 1
+const DEFAULT_DUMP_CONCURRENCY int = 5
+const DEFAULT_DUMP_SIZE int = 2500
+const DEFAULT_DUMP_KEEP_ALIVE int = 5
+const FS_REPOSITORY string = "fs"
+const GCS_REPOSITORY string = "gcs"
+
 var availableThresholdTypes []string = []string{"count", "average_count", "stats"}
 
 var availableAlertChannels []string = []string{"slack", "email", "log", "pager_duty"}

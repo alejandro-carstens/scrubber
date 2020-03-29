@@ -15,49 +15,66 @@ import (
 func TestDump(t *testing.T) {
 	connection := connection()
 
-	if _, err := createTestIndex("/testdata/create_variants_index.yml"); err != nil {
-		t.Fatal(err)
+	for _, data := range dumpDataProvider() {
+		if _, err := createTestIndex("/testdata/create_variants_index.yml"); err != nil {
+			t.Fatal(err)
+		}
+
+		time.Sleep(time.Duration(int64(2)) * time.Second)
+
+		if _, err := connection.Builder("variants-1992.06.02").Insert(makeVariants(1000)...); err != nil {
+			t.Fatal(err)
+		}
+
+		time.Sleep(time.Duration(int64(1)) * time.Second)
+
+		takeAction(data["dump_file_path"].(string), t)
+
+		builder := connection.Builder("variants-1992.06.02")
+
+		builder.WhereNested("attributes.color", "=", "Red").
+			FilterNested("attributes.size", "<=", 31).
+			MatchInNested("attributes.sku", []interface{}{"Red-31"}).
+			Where("price", "<", 150).
+			Where("other_key", "<>", 300)
+
+		count, err := builder.Count()
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		verifyDataFiles(int(count), data["concurrency"].(int), t)
+
+		verifyAliases(t)
+
+		verifyMappings(t)
+
+		verifySettings(t)
+
+		if err := connection.Indexer(nil).DeleteIndex("_all"); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := os.RemoveAll("/usr/share/scrubber/scrubber_test"); err != nil {
+			t.Fatal(err)
+		}
 	}
+}
 
-	time.Sleep(time.Duration(int64(2)) * time.Second)
+func dumpDataProvider() []map[string]interface{} {
+	data := []map[string]interface{}{}
 
-	if _, err := connection.Builder("variants-1992.06.02").Insert(makeVariants(1000)...); err != nil {
-		t.Fatal(err)
-	}
+	data = append(data, map[string]interface{}{
+		"dump_file_path": "/testdata/concurrent_dump.yml",
+		"concurrency":    3,
+	})
+	data = append(data, map[string]interface{}{
+		"dump_file_path": "/testdata/dump.yml",
+		"concurrency":    1,
+	})
 
-	time.Sleep(time.Duration(int64(1)) * time.Second)
-
-	takeAction("/testdata/dump.yml", t)
-
-	builder := connection.Builder("variants-1992.06.02")
-
-	builder.WhereNested("attributes.color", "=", "Red").
-		FilterNested("attributes.size", "<=", 31).
-		MatchInNested("attributes.sku", []interface{}{"Red-31"}).
-		Where("price", "<", 150).
-		Where("other_key", "<>", 300)
-
-	count, err := builder.Count()
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	verifyDataFiles(int(count), 3, t)
-
-	verifyAliases(t)
-
-	verifyMappings(t)
-
-	verifySettings(t)
-
-	if err := connection.Indexer(nil).DeleteIndex("_all"); err != nil {
-		t.Fatal(err)
-	}
-
-	if err := os.RemoveAll("/usr/share/scrubber/scrubber_test"); err != nil {
-		t.Fatal(err)
-	}
+	return data
 }
 
 func verifyDataFiles(expectedCount int, concurrency int, t *testing.T) {

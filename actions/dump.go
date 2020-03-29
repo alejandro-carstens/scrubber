@@ -15,8 +15,7 @@ import (
 	"github.com/ivpusic/grpool"
 )
 
-const CHUNK int = 20
-const KEEP_ALIVE string = "10m"
+const THRESHOLD int64 = 4
 
 type fetch func(index string) (*gabs.Container, error)
 
@@ -26,17 +25,13 @@ func (c *counter) increment() int64 {
 	return atomic.AddInt64((*int64)(c), 1)
 }
 
-func (c *counter) reset() {
-	atomic.StoreInt64((*int64)(c), 0)
-}
-
 func (c *counter) get() int64 {
 	return atomic.LoadInt64((*int64)(c))
 }
 
 type semaphore int32
 
-func (s *semaphore) turnOn() {
+func (s *semaphore) on() {
 	atomic.StoreInt32((*int32)(s), 1)
 }
 
@@ -102,7 +97,7 @@ func (d *dump) Perform() Actionable {
 
 		select {
 		case err := <-failed:
-			d.semaphore.turnOn()
+			d.semaphore.on()
 			d.close(failed, done)
 
 			return err
@@ -131,7 +126,7 @@ func (d *dump) process(index, name string, fs filesystem.Storeable, failed chan 
 		return
 	}
 
-	if d.counter.increment() == 4 {
+	if d.counter.increment() == THRESHOLD {
 		done <- true
 	}
 }
@@ -147,9 +142,9 @@ func (d *dump) scroll(index string, failed chan error, done chan bool) {
 		var builder *golastic.Builder
 
 		if d.options.Concurrency > 1 {
-			builder = d.builder(index).InitSlicedScroller(i, d.options.Concurrency, CHUNK, KEEP_ALIVE)
+			builder = d.builder(index).InitSlicedScroller(i, d.options.Concurrency, d.options.Size, d.keepAlive())
 		} else {
-			builder = d.builder(index).InitScroller(CHUNK, KEEP_ALIVE)
+			builder = d.builder(index).InitScroller(d.options.Size, d.keepAlive())
 		}
 
 		stream, err := d.openStream(fmt.Sprintf("data_%v", i))
@@ -211,7 +206,7 @@ func (d *dump) scroll(index string, failed chan error, done chan bool) {
 
 	pool.WaitAll()
 
-	if d.counter.increment() == 4 {
+	if d.counter.increment() == THRESHOLD {
 		done <- true
 	}
 }
@@ -244,6 +239,10 @@ func (d *dump) filesystemConfig() filesystem.Configurable {
 
 func (d *dump) fileName(name string) string {
 	return fmt.Sprintf("%v.json", name)
+}
+
+func (d *dump) keepAlive() string {
+	return fmt.Sprintf("%vm", d.options.KeepAlive)
 }
 
 func (d *dump) builder(index string) *golastic.Builder {
