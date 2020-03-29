@@ -228,9 +228,10 @@ func (d *dump) openStream(fileName string) (filesystem.Storeable, error) {
 func (d *dump) filesystemConfig() filesystem.Configurable {
 	if d.options.Repository == "gcs" {
 		return &filesystem.GCS{
+			Context:             d.ctx,
 			Bucket:              d.options.Bucket,
 			CredentialsFilePath: d.options.CredentialsFilePath,
-			Context:             d.ctx,
+			Directory:           d.options.Name,
 		}
 	}
 

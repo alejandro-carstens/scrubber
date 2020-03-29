@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"path/filepath"
 
 	"cloud.google.com/go/storage"
 	"google.golang.org/api/option"
@@ -15,6 +16,7 @@ type GCS struct {
 	Bucket              string
 	Context             context.Context
 	CredentialsFilePath string
+	Directory           string
 }
 
 // Validate implementation of the Configurable interface
@@ -43,6 +45,7 @@ type gcs struct {
 	client        *storage.Client
 	writer        *storage.Writer
 	bucket        string
+	directory     string
 	streamChannel chan string
 	context       context.Context
 }
@@ -63,6 +66,7 @@ func (g *gcs) Init(configuration Configurable) (Storeable, error) {
 	g.client = client
 	g.bucket = config.Bucket
 	g.context = config.Context
+	g.directory = config.Directory
 
 	return g, nil
 }
@@ -75,7 +79,7 @@ func (g *gcs) Put(name string, reader io.Reader) error {
 		return err
 	}
 
-	writer := bucket.Object(name).NewWriter(g.context)
+	writer := bucket.Object(g.path(name)).NewWriter(g.context)
 
 	defer writer.Close()
 
@@ -94,7 +98,7 @@ func (g *gcs) OpenStream(name string) error {
 		return err
 	}
 
-	g.writer = bucket.Object(name).NewWriter(g.context)
+	g.writer = bucket.Object(g.path(name)).NewWriter(g.context)
 	g.streamChannel = make(chan string)
 
 	return nil
@@ -135,4 +139,8 @@ func (g *gcs) Close() error {
 	close(g.streamChannel)
 
 	return g.writer.Close()
+}
+
+func (g *gcs) path(name string) string {
+	return filepath.Join(g.directory, name)
 }
