@@ -81,7 +81,7 @@ func verifyDataFiles(expectedCount int, concurrency int, t *testing.T) {
 	counter := 0
 
 	for i := 0; i < concurrency; i++ {
-		file, err := os.Open(fmt.Sprintf("/usr/share/scrubber/scrubber_test/data_%v.json", i))
+		file, err := os.Open(fmt.Sprintf("/usr/share/scrubber/scrubber_test/variants-1992.06.02/data_%v.json", i))
 
 		if err != nil {
 			t.Fatal(err)
@@ -105,7 +105,7 @@ func verifyDataFiles(expectedCount int, concurrency int, t *testing.T) {
 
 func verifyAliases(t *testing.T) {
 	assertion, err := compareFiles(
-		"/usr/share/scrubber/scrubber_test/aliases.json",
+		"/usr/share/scrubber/scrubber_test/variants-1992.06.02/aliases.json",
 		"/go/src/scrubber/tests/testdata/dumpdata/aliases.json",
 	)
 
@@ -118,7 +118,7 @@ func verifyAliases(t *testing.T) {
 
 func verifyMappings(t *testing.T) {
 	assertion, err := compareFiles(
-		"/usr/share/scrubber/scrubber_test/mappings.json",
+		"/usr/share/scrubber/scrubber_test/variants-1992.06.02/mappings.json",
 		"/go/src/scrubber/tests/testdata/dumpdata/mappings.json",
 	)
 
@@ -130,7 +130,7 @@ func verifyMappings(t *testing.T) {
 }
 
 func verifySettings(t *testing.T) {
-	c1, err := ioutil.ReadFile("/usr/share/scrubber/scrubber_test/settings.json")
+	c1, err := ioutil.ReadFile("/usr/share/scrubber/scrubber_test/variants-1992.06.02/settings.json")
 
 	if err != nil {
 		t.Fatal(err)

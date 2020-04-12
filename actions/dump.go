@@ -62,7 +62,7 @@ func (d *dump) ApplyOptions() Actionable {
 // Perform implementation of the Actionable interface
 func (d *dump) Perform() Actionable {
 	d.exec(func(index string) error {
-		fs, err := filesystem.Build(d.filesystemConfig())
+		fs, err := filesystem.Build(d.filesystemConfig(index))
 
 		if err != nil {
 			return err
@@ -149,7 +149,7 @@ func (d *dump) scroll(index string, failed chan error, done chan bool) {
 			builder = d.builder(index).InitScroller(d.options.Size, d.keepAlive())
 		}
 
-		stream, err := d.openStream(fmt.Sprintf("data_%v", i))
+		stream, err := d.openStream(index, fmt.Sprintf("data_%v", i))
 
 		if err != nil {
 			failed <- err
@@ -213,8 +213,8 @@ func (d *dump) scroll(index string, failed chan error, done chan bool) {
 	}
 }
 
-func (d *dump) openStream(fileName string) (filesystem.Storeable, error) {
-	fs, err := filesystem.Build(d.filesystemConfig())
+func (d *dump) openStream(index, fileName string) (filesystem.Storeable, error) {
+	fs, err := filesystem.Build(d.filesystemConfig(index))
 
 	if err != nil {
 		return nil, err
@@ -225,18 +225,18 @@ func (d *dump) openStream(fileName string) (filesystem.Storeable, error) {
 	return fs, err
 }
 
-func (d *dump) filesystemConfig() filesystem.Configurable {
+func (d *dump) filesystemConfig(index string) filesystem.Configurable {
 	if d.options.Repository == "gcs" {
 		return &filesystem.GCS{
 			Context:             d.ctx,
 			Bucket:              d.options.Bucket,
 			CredentialsFilePath: d.options.CredentialsFilePath,
-			Directory:           d.options.Name,
+			Directory:           filepath.FromSlash(fmt.Sprintf("%v/%v", d.options.Name, index)),
 		}
 	}
 
 	return &filesystem.Local{
-		Path: filepath.Join(d.options.Path, filepath.FromSlash(d.options.Name)),
+		Path: filepath.Join(d.options.Path, filepath.FromSlash(fmt.Sprintf("%v/%v", d.options.Name, index))),
 	}
 }
 
