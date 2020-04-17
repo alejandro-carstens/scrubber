@@ -1,9 +1,11 @@
 package actions
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"strconv"
 	"time"
 
@@ -11,6 +13,7 @@ import (
 	"github.com/alejandro-carstens/golastic"
 	"github.com/alejandro-carstens/scrubber/actions/contexts"
 	"github.com/alejandro-carstens/scrubber/actions/options"
+	"github.com/alejandro-carstens/scrubber/filesystem"
 	"github.com/alejandro-carstens/scrubber/logger"
 	"github.com/alejandro-carstens/scrubber/notifications"
 )
@@ -337,4 +340,22 @@ func buildQuery(builder *golastic.Builder, queryCriteria []*options.QueryCriteri
 			break
 		}
 	}
+}
+
+func fileToJSON(fs filesystem.Storeable, path string) (*gabs.Container, error) {
+	f, err := fs.Get(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer f.Close()
+
+	b := bytes.NewBuffer(nil)
+
+	if _, err := io.Copy(b, f); err != nil {
+		return nil, err
+	}
+
+	return gabs.ParseJSON(b.Bytes())
 }

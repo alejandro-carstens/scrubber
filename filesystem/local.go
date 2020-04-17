@@ -3,6 +3,7 @@ package filesystem
 import (
 	"errors"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -61,6 +62,28 @@ func (l *local) Put(name string, reader io.Reader) error {
 	_, err = io.Copy(file, reader)
 
 	return err
+}
+
+// List implementation of the Storeable interface
+func (l *local) List(name string) ([]string, error) {
+	dirs, err := ioutil.ReadDir(filepath.Join(l.path, filepath.FromSlash(name)))
+
+	if err != nil {
+		return nil, err
+	}
+
+	names := []string{}
+
+	for _, dir := range dirs {
+		names = append(names, dir.Name())
+	}
+
+	return names, nil
+}
+
+// Get implementation of the Storeable interface
+func (l *local) Get(name string) (*os.File, error) {
+	return os.Open(filepath.Join(l.path, filepath.FromSlash(name)))
 }
 
 // OpenStream implementation of the Storeable interface

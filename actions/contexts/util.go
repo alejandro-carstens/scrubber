@@ -98,6 +98,9 @@ func build(action string) (Contextable, error) {
 	case "dump":
 		ctx = new(DumpContext)
 		break
+	case "import":
+		ctx = new(ImportContext)
+		break
 	default:
 		return nil, errors.New("Invalid action")
 	}

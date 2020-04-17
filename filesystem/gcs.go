@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"os"
 	"path/filepath"
 
 	"cloud.google.com/go/storage"
@@ -69,6 +70,18 @@ func (g *gcs) Init(configuration Configurable) (Storeable, error) {
 	g.directory = config.Directory
 
 	return g, nil
+}
+
+// List implementation of the Storeable interface
+func (g *gcs) List(name string) ([]string, error) {
+	// Implement
+	return nil, nil
+}
+
+// Get implementation of the Storeable interface
+func (g *gcs) Get(name string) (*os.File, error) {
+	// Implement
+	return nil, nil
 }
 
 // Put implementation of the Storeable interface

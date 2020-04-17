@@ -1,6 +1,9 @@
 package filesystem
 
-import "io"
+import (
+	"io"
+	"os"
+)
 
 // Storeable represents the contract to be implemented by
 // different filesystems in order to store, retrieve,
@@ -23,6 +26,12 @@ type Storeable interface {
 
 	// Close releases the streaming resources
 	Close() error
+
+	// List lists all the file/directory names in a directory
+	List(name string) ([]string, error)
+
+	// Get retrieves a file
+	Get(name string) (*os.File, error)
 }
 
 // Configurable represents the contract to be implemented

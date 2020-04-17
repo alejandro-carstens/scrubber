@@ -18,8 +18,6 @@ type mutate struct {
 func (m *mutate) ApplyOptions() Actionable {
 	m.options = m.context.Options().(*options.MutateOptions)
 
-	m.indexer.SetOptions(&golastic.IndexOptions{Timeout: m.options.TimeoutInSeconds()})
-
 	return m
 }
 
