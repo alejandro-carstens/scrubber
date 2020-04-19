@@ -2,8 +2,10 @@ package actions
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -21,20 +23,20 @@ type indexConfig struct {
 	mappings *gabs.Container
 }
 
-func (ic *indexConfig) format() (string, error) {
-	settings, err := ic.formatSettings()
+func (ic *indexConfig) transform() (string, error) {
+	settings, err := ic.transformSettings()
 
 	if err != nil {
 		return "", err
 	}
 
-	mappings, err := ic.formatMappings()
+	mappings, err := ic.transformMappings()
 
 	if err != nil {
 		return "", err
 	}
 
-	aliases, err := ic.formatAliases()
+	aliases, err := ic.transformAliases()
 
 	if err != nil {
 		return "", err
@@ -47,7 +49,7 @@ func (ic *indexConfig) format() (string, error) {
 	})
 }
 
-func (ic *indexConfig) formatSettings() (map[string]interface{}, error) {
+func (ic *indexConfig) transformSettings() (map[string]interface{}, error) {
 	settings := map[string]map[string]interface{}{}
 
 	if err := json.Unmarshal(ic.settings.Bytes(), &settings); err != nil {
@@ -68,7 +70,7 @@ func (ic *indexConfig) formatSettings() (map[string]interface{}, error) {
 	return indexSettings, nil
 }
 
-func (ic *indexConfig) formatMappings() (map[string]interface{}, error) {
+func (ic *indexConfig) transformMappings() (map[string]interface{}, error) {
 	mappings := map[string]map[string]interface{}{}
 
 	if err := json.Unmarshal(ic.mappings.Bytes(), &mappings); err != nil {
@@ -84,7 +86,7 @@ func (ic *indexConfig) formatMappings() (map[string]interface{}, error) {
 	return indexMappings.(map[string]interface{}), nil
 }
 
-func (ic *indexConfig) formatAliases() (map[string]interface{}, error) {
+func (ic *indexConfig) transformAliases() (map[string]interface{}, error) {
 	aliases, err := ic.aliases.S("Indices", ic.name, "Aliases").Children()
 
 	if err != nil {
@@ -134,23 +136,13 @@ func (id *importDump) Perform() Actionable {
 		return id
 	}
 
-	pool := grpool.NewPool(id.options.Concurrency, len(configs))
-
-	defer pool.Release()
-
-	pool.WaitCount(len(configs))
-
 	for _, config := range configs {
-		pool.JobQueue <- func() {
-			defer pool.JobDone()
+		if err := id.importDump(config); err != nil {
+			id.errorContainer.push(id.name, id.indexName(config.name), err)
 
-			if err := id.importDump(config); err != nil {
-				id.errorContainer.push(id.name, id.indexName(config.name), err)
-			}
+			break
 		}
 	}
-
-	pool.WaitAll()
 
 	return id
 }
@@ -161,7 +153,7 @@ func (id *importDump) ApplyFilters() error {
 }
 
 func (id *importDump) importDump(config *indexConfig) error {
-	schema, err := config.format()
+	schema, err := config.transform()
 
 	if err != nil {
 		return err
@@ -173,8 +165,59 @@ func (id *importDump) importDump(config *indexConfig) error {
 
 	time.Sleep(1)
 
-	// Implement importing the data
+	fs, err := filesystem.Build(id.filesystemConfig())
 
+	if err != nil {
+		return err
+	}
+
+	dataFiles, err := fs.List(config.name)
+
+	if err != nil {
+		return err
+	}
+
+	for i, dataFile := range dataFiles {
+		if strings.Contains(dataFile, "data") {
+			dataFiles[i] = dataFiles[len(dataFiles)-1]
+
+			dataFiles[len(dataFiles)-1] = ""
+
+			dataFiles = dataFiles[:len(dataFiles)-1]
+		}
+	}
+
+	pool := grpool.NewPool(id.options.Concurrency, len(dataFiles))
+
+	defer pool.Release()
+
+	pool.WaitCount(len(dataFiles))
+
+	errs := []error{}
+
+	for _, dataFile := range dataFiles {
+		pool.JobQueue <- func() {
+			defer pool.JobDone()
+
+			if err := id.importData(config.name, dataFile); err != nil {
+				id.errorContainer.push(id.name, id.indexName(config.name), err)
+
+				errs = append(errs, err)
+			}
+		}
+	}
+
+	pool.WaitAll()
+
+	if len(errs) > 0 {
+		return errors.New("an error occurred while importing data")
+	}
+
+	return nil
+}
+
+func (id *importDump) importData(name string, dataFile string) error {
+	// Implement data import
 	return nil
 }
 
