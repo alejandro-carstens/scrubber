@@ -5,22 +5,22 @@ import (
 	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
-type ImportContext struct {
+type ImportDumpContext struct {
 	context
 }
 
-func (ic *ImportContext) Action() string {
-	return "import"
+func (idc *ImportDumpContext) Action() string {
+	return "import_dump"
 }
 
-func (ic *ImportContext) Config(container *gabs.Container) error {
-	return ic.extractConfig(ic.Action(), container, true, func(container *gabs.Container) error {
-		ic.options = new(options.ImportOptions)
+func (idc *ImportDumpContext) Config(container *gabs.Container) error {
+	return idc.extractConfig(idc.Action(), container, true, func(container *gabs.Container) error {
+		idc.options = new(options.ImportDumpOptions)
 
-		if err := ic.options.FillFromContainer(container); err != nil {
+		if err := idc.options.FillFromContainer(container); err != nil {
 			return err
 		}
 
-		return ic.options.Validate()
+		return idc.options.Validate()
 	})
 }

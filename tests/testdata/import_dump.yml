@@ -1,0 +1,8 @@
+action: import_dump
+description: Import dump restores dumped data back into elasticsearch
+disable_action: true
+options:
+  name: scrubber_test
+  path: /go/src/scrubber/tests/testdata/importdumpdata
+  concurrency: 3
+  size: 20

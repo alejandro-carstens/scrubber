@@ -181,6 +181,9 @@ func build(name string) (Actionable, error) {
 	case "dump":
 		action = new(dump)
 		break
+	case "import_dump":
+		action = new(importDump)
+		break
 	default:
 		return nil, errors.New("Invalid action type")
 	}

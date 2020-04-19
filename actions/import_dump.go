@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"encoding/json"
 	"fmt"
 	"path/filepath"
 	"sync"
@@ -20,18 +21,103 @@ type indexConfig struct {
 	mappings *gabs.Container
 }
 
-func (ic *indexConfig) format() (*gabs.Container, error) {
-	return nil, nil
+func (ic *indexConfig) format() (string, error) {
+	settings, err := ic.formatSettings()
+
+	if err != nil {
+		return "", err
+	}
+
+	mappings, err := ic.formatMappings()
+
+	if err != nil {
+		return "", err
+	}
+
+	aliases, err := ic.formatAliases()
+
+	if err != nil {
+		return "", err
+	}
+
+	return mapToString(map[string]interface{}{
+		"settings": settings,
+		"mappings": mappings,
+		"aliases":  aliases,
+	})
+}
+
+func (ic *indexConfig) formatSettings() (map[string]interface{}, error) {
+	settings := map[string]map[string]interface{}{}
+
+	if err := json.Unmarshal(ic.settings.Bytes(), &settings); err != nil {
+		return nil, err
+	}
+
+	indexSettings, valid := settings["index"]
+
+	if !valid {
+		return map[string]interface{}{}, nil
+	}
+
+	delete(indexSettings, "creation_date")
+	delete(indexSettings, "provided_name")
+	delete(indexSettings, "uuid")
+	delete(indexSettings, "version")
+
+	return indexSettings, nil
+}
+
+func (ic *indexConfig) formatMappings() (map[string]interface{}, error) {
+	mappings := map[string]map[string]interface{}{}
+
+	if err := json.Unmarshal(ic.mappings.Bytes(), &mappings); err != nil {
+		return nil, err
+	}
+
+	indexMappings, valid := mappings[ic.name]["mappings"]
+
+	if !valid {
+		return map[string]interface{}{}, nil
+	}
+
+	return indexMappings.(map[string]interface{}), nil
+}
+
+func (ic *indexConfig) formatAliases() (map[string]interface{}, error) {
+	aliases, err := ic.aliases.S("Indices", ic.name, "Aliases").Children()
+
+	if err != nil {
+		return nil, err
+	}
+
+	indexAliases := map[string]interface{}{}
+
+	for _, alias := range aliases {
+		indexAlias := map[string]interface{}{}
+
+		if err := json.Unmarshal(alias.Bytes(), &indexAlias); err != nil {
+			return nil, err
+		}
+
+		delete(indexAlias, "IsWriteIndex")
+
+		for _, name := range indexAlias {
+			indexAliases[name.(string)] = map[string]interface{}{}
+		}
+	}
+
+	return indexAliases, nil
 }
 
 type importDump struct {
 	action
-	options *options.ImportOptions
+	options *options.ImportDumpOptions
 }
 
 // ApplyOptions implementation of the Actionable interface
 func (id *importDump) ApplyOptions() Actionable {
-	id.options = id.context.Options().(*options.ImportOptions)
+	id.options = id.context.Options().(*options.ImportDumpOptions)
 
 	id.indexer.SetOptions(&golastic.IndexOptions{Timeout: id.options.TimeoutInSeconds()})
 
@@ -40,13 +126,6 @@ func (id *importDump) ApplyOptions() Actionable {
 
 // Perform implementation of the Actionable interface
 func (id *importDump) Perform() Actionable {
-	// For each index directory we need to do the following:
-	// - Read the settings.json file, filter out the settings we do not need,
-	//   apply the settings and do the same for mappings and aliases. I believe
-	//   we can do this on the same index creation request.
-	// - Sleep a second
-	// - Start batch inserting the documents onto the new index
-
 	configs, err := id.getIndexConfigs()
 
 	if err != nil {
@@ -59,17 +138,19 @@ func (id *importDump) Perform() Actionable {
 
 	defer pool.Release()
 
+	pool.WaitCount(len(configs))
+
 	for _, config := range configs {
 		pool.JobQueue <- func() {
+			defer pool.JobDone()
+
 			if err := id.importDump(config); err != nil {
 				id.errorContainer.push(id.name, id.indexName(config.name), err)
 			}
-
-			pool.JobDone()
 		}
 	}
 
-	pool.WaitCount(len(configs))
+	pool.WaitAll()
 
 	return id
 }
@@ -86,7 +167,7 @@ func (id *importDump) importDump(config *indexConfig) error {
 		return err
 	}
 
-	if err := id.indexer.CreateIndex(id.indexName(config.name), schema.String()); err != nil {
+	if err := id.indexer.CreateIndex(id.indexName(config.name), schema); err != nil {
 		return err
 	}
 
