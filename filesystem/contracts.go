@@ -30,8 +30,8 @@ type Storeable interface {
 	// List lists all the file/directory names in a directory
 	List(name string) ([]string, error)
 
-	// Get retrieves a file
-	Get(name string) (*os.File, error)
+	// Open retrieves a file
+	Open(name string) (*os.File, error)
 }
 
 // Configurable represents the contract to be implemented

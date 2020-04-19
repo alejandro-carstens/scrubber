@@ -79,7 +79,7 @@ func (g *gcs) List(name string) ([]string, error) {
 }
 
 // Get implementation of the Storeable interface
-func (g *gcs) Get(name string) (*os.File, error) {
+func (g *gcs) Open(name string) (*os.File, error) {
 	// Implement
 	return nil, nil
 }

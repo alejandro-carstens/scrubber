@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -15,6 +16,8 @@ import (
 	"github.com/alejandro-carstens/scrubber/filesystem"
 	"github.com/ivpusic/grpool"
 )
+
+const INSERT_LIMIT int = 250
 
 type indexConfig struct {
 	name     string
@@ -163,7 +166,7 @@ func (id *importDump) importDump(config *indexConfig) error {
 		return err
 	}
 
-	time.Sleep(1)
+	time.Sleep(2 * time.Second)
 
 	fs, err := filesystem.Build(id.filesystemConfig())
 
@@ -171,19 +174,17 @@ func (id *importDump) importDump(config *indexConfig) error {
 		return err
 	}
 
-	dataFiles, err := fs.List(config.name)
+	files, err := fs.List(config.name)
 
 	if err != nil {
 		return err
 	}
 
-	for i, dataFile := range dataFiles {
-		if strings.Contains(dataFile, "data") {
-			dataFiles[i] = dataFiles[len(dataFiles)-1]
+	dataFiles := []string{}
 
-			dataFiles[len(dataFiles)-1] = ""
-
-			dataFiles = dataFiles[:len(dataFiles)-1]
+	for _, file := range files {
+		if strings.Contains(file, "data") {
+			dataFiles = append(dataFiles, file)
 		}
 	}
 
@@ -196,10 +197,12 @@ func (id *importDump) importDump(config *indexConfig) error {
 	errs := []error{}
 
 	for _, dataFile := range dataFiles {
+		file := dataFile
+
 		pool.JobQueue <- func() {
 			defer pool.JobDone()
 
-			if err := id.importData(config.name, dataFile); err != nil {
+			if err := id.importData(config.name, file); err != nil {
 				id.errorContainer.push(id.name, id.indexName(config.name), err)
 
 				errs = append(errs, err)
@@ -217,7 +220,63 @@ func (id *importDump) importDump(config *indexConfig) error {
 }
 
 func (id *importDump) importData(name string, dataFile string) error {
-	// Implement data import
+	fs, err := filesystem.Build(id.filesystemConfig())
+
+	if err != nil {
+		return err
+	}
+
+	f, err := fs.Open(filepath.Join(name, filepath.FromSlash(dataFile)))
+
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+
+	builder := id.connection.Builder(id.indexName(name))
+	inserts := []interface{}{}
+
+	for scanner.Scan() {
+		data, err := extractSource(scanner.Text())
+
+		if err != nil {
+			return err
+		}
+
+		inserts = append(inserts, data)
+
+		if len(inserts) == INSERT_LIMIT {
+			response, err := builder.Insert(inserts...)
+
+			if err != nil {
+				return err
+			}
+
+			id.reporter.logger.Debugf(response.String())
+
+			inserts = []interface{}{}
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+
+	if len(inserts) == 0 {
+		return nil
+	}
+
+	response, err := builder.Insert(inserts...)
+
+	if err != nil {
+		return err
+	}
+
+	id.reporter.logger.Debugf(response.String())
+
 	return nil
 }
 

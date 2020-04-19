@@ -346,7 +346,7 @@ func buildQuery(builder *golastic.Builder, queryCriteria []*options.QueryCriteri
 }
 
 func fileToJSON(fs filesystem.Storeable, path string) (*gabs.Container, error) {
-	f, err := fs.Get(path)
+	f, err := fs.Open(path)
 
 	if err != nil {
 		return nil, err
@@ -361,4 +361,20 @@ func fileToJSON(fs filesystem.Storeable, path string) (*gabs.Container, error) {
 	}
 
 	return gabs.ParseJSON(b.Bytes())
+}
+
+func extractSource(s string) (map[string]interface{}, error) {
+	data := map[string]interface{}{}
+
+	if err := json.Unmarshal([]byte(s), &data); err != nil {
+		return nil, err
+	}
+
+	source, valid := data["_source"].(map[string]interface{})
+
+	if !valid {
+		return nil, errors.New("could not retrive source from document")
+	}
+
+	return source, nil
 }

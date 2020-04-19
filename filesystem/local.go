@@ -81,8 +81,8 @@ func (l *local) List(name string) ([]string, error) {
 	return names, nil
 }
 
-// Get implementation of the Storeable interface
-func (l *local) Get(name string) (*os.File, error) {
+// Open implementation of the Storeable interface
+func (l *local) Open(name string) (*os.File, error) {
 	return os.Open(filepath.Join(l.path, filepath.FromSlash(name)))
 }
 
