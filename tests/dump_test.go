@@ -170,19 +170,3 @@ func verifySettings(t *testing.T) {
 		p2.S("index", "provided_name").Data().(string),
 	)
 }
-
-func compareFiles(f1, f2 string) (bool, error) {
-	c1, err := ioutil.ReadFile(f1)
-
-	if err != nil {
-		return false, err
-	}
-
-	c2, err := ioutil.ReadFile(f2)
-
-	if err != nil {
-		return false, err
-	}
-
-	return string(c1) == string(c2), nil
-}

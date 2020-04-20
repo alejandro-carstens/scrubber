@@ -2,6 +2,7 @@ package tests
 
 import (
 	"context"
+	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
@@ -193,4 +194,20 @@ func seedIndexAsync(index string, count int, connection *golastic.Connection, wa
 	}
 
 	time.Sleep(time.Duration(int64(2)) * time.Second)
+}
+
+func compareFiles(f1, f2 string) (bool, error) {
+	c1, err := ioutil.ReadFile(f1)
+
+	if err != nil {
+		return false, err
+	}
+
+	c2, err := ioutil.ReadFile(f2)
+
+	if err != nil {
+		return false, err
+	}
+
+	return string(c1) == string(c2), nil
 }
