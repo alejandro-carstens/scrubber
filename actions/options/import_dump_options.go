@@ -10,14 +10,20 @@ import (
 
 type ImportDumpOptions struct {
 	defaultOptions
-	MaxExecutionTime    int    `json:"max_execution_time"`
-	Repository          string `json:"repository"`
-	Name                string `json:"name"`
-	Path                string `json:"path"`
-	Bucket              string `json:"bucket"`
-	CredentialsFilePath string `json:"credentials_file_path"`
-	Concurrency         int    `json:"concurrency"`
-	Size                int    `json:"size"`
+	MaxExecutionTime    int                    `json:"max_execution_time"`
+	Repository          string                 `json:"repository"`
+	Name                string                 `json:"name"`
+	Path                string                 `json:"path"`
+	Bucket              string                 `json:"bucket"`
+	CredentialsFilePath string                 `json:"credentials_file_path"`
+	Concurrency         int                    `json:"concurrency"`
+	Size                int                    `json:"size"`
+	ExtraSettings       map[string]interface{} `json:"extra_settings"`
+	RemoveSettings      []string               `json:"remove_settings"`
+	ExtraMappings       map[string]interface{} `json:"extra_mappings"`
+	RemoveMappings      []string               `json:"remove_mappings"`
+	ExtraAliases        map[string]interface{} `json:"extra_aliases"`
+	RemoveAliases       []string               `json:"remove_aliases"`
 }
 
 func (ido *ImportDumpOptions) FillFromContainer(container *gabs.Container) error {
@@ -41,6 +47,30 @@ func (ido *ImportDumpOptions) FillFromContainer(container *gabs.Container) error
 
 	if ido.Size == 0 {
 		ido.Size = 2500
+	}
+
+	if ido.ExtraAliases == nil {
+		ido.ExtraAliases = map[string]interface{}{}
+	}
+
+	if ido.ExtraSettings == nil {
+		ido.ExtraSettings = map[string]interface{}{}
+	}
+
+	if ido.ExtraMappings == nil {
+		ido.ExtraMappings = map[string]interface{}{}
+	}
+
+	if ido.RemoveAliases == nil {
+		ido.RemoveAliases = []string{}
+	}
+
+	if ido.RemoveSettings == nil {
+		ido.RemoveSettings = []string{}
+	}
+
+	if ido.RemoveMappings == nil {
+		ido.RemoveMappings = []string{}
 	}
 
 	return nil

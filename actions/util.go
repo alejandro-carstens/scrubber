@@ -378,3 +378,19 @@ func extractSource(s string) (map[string]interface{}, error) {
 
 	return source, nil
 }
+
+func addToMap(m1 map[string]interface{}, m2 map[string]interface{}) map[string]interface{} {
+	for key, value := range m2 {
+		m1[key] = value
+	}
+
+	return m1
+}
+
+func removeFromMap(m map[string]interface{}, keys ...string) map[string]interface{} {
+	for _, key := range keys {
+		delete(m, key)
+	}
+
+	return m
+}

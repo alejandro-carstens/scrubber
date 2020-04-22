@@ -19,102 +19,6 @@ import (
 
 const INSERT_LIMIT int = 250
 
-type indexConfig struct {
-	name     string
-	settings *gabs.Container
-	aliases  *gabs.Container
-	mappings *gabs.Container
-}
-
-func (ic *indexConfig) transform() (string, error) {
-	settings, err := ic.transformSettings()
-
-	if err != nil {
-		return "", err
-	}
-
-	mappings, err := ic.transformMappings()
-
-	if err != nil {
-		return "", err
-	}
-
-	aliases, err := ic.transformAliases()
-
-	if err != nil {
-		return "", err
-	}
-
-	return mapToString(map[string]interface{}{
-		"settings": settings,
-		"mappings": mappings,
-		"aliases":  aliases,
-	})
-}
-
-func (ic *indexConfig) transformSettings() (map[string]interface{}, error) {
-	settings := map[string]map[string]interface{}{}
-
-	if err := json.Unmarshal(ic.settings.Bytes(), &settings); err != nil {
-		return nil, err
-	}
-
-	indexSettings, valid := settings["index"]
-
-	if !valid {
-		return map[string]interface{}{}, nil
-	}
-
-	delete(indexSettings, "creation_date")
-	delete(indexSettings, "provided_name")
-	delete(indexSettings, "uuid")
-	delete(indexSettings, "version")
-
-	return indexSettings, nil
-}
-
-func (ic *indexConfig) transformMappings() (map[string]interface{}, error) {
-	mappings := map[string]map[string]interface{}{}
-
-	if err := json.Unmarshal(ic.mappings.Bytes(), &mappings); err != nil {
-		return nil, err
-	}
-
-	indexMappings, valid := mappings[ic.name]["mappings"]
-
-	if !valid {
-		return map[string]interface{}{}, nil
-	}
-
-	return indexMappings.(map[string]interface{}), nil
-}
-
-func (ic *indexConfig) transformAliases() (map[string]interface{}, error) {
-	aliases, err := ic.aliases.S("Indices", ic.name, "Aliases").Children()
-
-	if err != nil {
-		return nil, err
-	}
-
-	indexAliases := map[string]interface{}{}
-
-	for _, alias := range aliases {
-		indexAlias := map[string]interface{}{}
-
-		if err := json.Unmarshal(alias.Bytes(), &indexAlias); err != nil {
-			return nil, err
-		}
-
-		delete(indexAlias, "IsWriteIndex")
-
-		for _, name := range indexAlias {
-			indexAliases[name.(string)] = map[string]interface{}{}
-		}
-	}
-
-	return indexAliases, nil
-}
-
 type importDump struct {
 	action
 	options *options.ImportDumpOptions
@@ -356,10 +260,16 @@ func (id *importDump) extractIndexConfig(index string) (*indexConfig, error) {
 	}
 
 	return &indexConfig{
-		name:     index,
-		settings: settings,
-		aliases:  aliases,
-		mappings: mappings,
+		name:           index,
+		settings:       settings,
+		aliases:        aliases,
+		mappings:       mappings,
+		extraSettings:  id.options.ExtraSettings,
+		extraAliases:   id.options.ExtraAliases,
+		extraMappings:  id.options.ExtraMappings,
+		removeSettings: id.options.RemoveSettings,
+		removeAliases:  id.options.RemoveAliases,
+		removeMappings: id.options.RemoveMappings,
 	}, nil
 }
 
@@ -380,4 +290,112 @@ func (id *importDump) filesystemConfig() filesystem.Configurable {
 
 func (id *importDump) indexName(index string) string {
 	return fmt.Sprintf("import-%v-%v", id.options.Name, index)
+}
+
+type indexConfig struct {
+	name           string
+	removeSettings []string
+	removeAliases  []string
+	removeMappings []string
+	extraSettings  map[string]interface{}
+	extraAliases   map[string]interface{}
+	extraMappings  map[string]interface{}
+	settings       *gabs.Container
+	aliases        *gabs.Container
+	mappings       *gabs.Container
+}
+
+func (ic *indexConfig) transform() (string, error) {
+	settings, err := ic.transformSettings()
+
+	if err != nil {
+		return "", err
+	}
+
+	mappings, err := ic.transformMappings()
+
+	if err != nil {
+		return "", err
+	}
+
+	aliases, err := ic.transformAliases()
+
+	if err != nil {
+		return "", err
+	}
+
+	return mapToString(map[string]interface{}{
+		"settings": settings,
+		"mappings": mappings,
+		"aliases":  aliases,
+	})
+}
+
+func (ic *indexConfig) transformSettings() (map[string]interface{}, error) {
+	settings := map[string]map[string]interface{}{}
+
+	if err := json.Unmarshal(ic.settings.Bytes(), &settings); err != nil {
+		return nil, err
+	}
+
+	indexSettings, valid := settings["index"]
+
+	if !valid {
+		return map[string]interface{}{}, nil
+	}
+
+	delete(indexSettings, "creation_date")
+	delete(indexSettings, "provided_name")
+	delete(indexSettings, "uuid")
+	delete(indexSettings, "version")
+
+	indexSettings = removeFromMap(indexSettings, ic.removeSettings...)
+
+	return addToMap(indexSettings, ic.extraSettings), nil
+}
+
+func (ic *indexConfig) transformMappings() (map[string]interface{}, error) {
+	mappings := map[string]map[string]interface{}{}
+
+	if err := json.Unmarshal(ic.mappings.Bytes(), &mappings); err != nil {
+		return nil, err
+	}
+
+	indexMappings, valid := mappings[ic.name]["mappings"]
+
+	if !valid {
+		return map[string]interface{}{}, nil
+	}
+
+	indexMappings = removeFromMap(indexMappings.(map[string]interface{}), ic.removeMappings...)
+
+	return addToMap(indexMappings.(map[string]interface{}), ic.extraMappings), nil
+}
+
+func (ic *indexConfig) transformAliases() (map[string]interface{}, error) {
+	aliases, err := ic.aliases.S("Indices", ic.name, "Aliases").Children()
+
+	if err != nil {
+		return nil, err
+	}
+
+	indexAliases := map[string]interface{}{}
+
+	for _, alias := range aliases {
+		indexAlias := map[string]interface{}{}
+
+		if err := json.Unmarshal(alias.Bytes(), &indexAlias); err != nil {
+			return nil, err
+		}
+
+		delete(indexAlias, "IsWriteIndex")
+
+		for _, name := range indexAlias {
+			indexAliases[name.(string)] = map[string]interface{}{}
+		}
+	}
+
+	indexAliases = removeFromMap(indexAliases, ic.removeAliases...)
+
+	return addToMap(indexAliases, ic.extraAliases), nil
 }
