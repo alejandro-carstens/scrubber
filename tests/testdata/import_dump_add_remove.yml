@@ -6,6 +6,7 @@ options:
   path: /go/src/scrubber/tests/testdata/importdumpdata
   concurrency: 3
   size: 20
+  create_index_wait_time: 1
   extra_settings:
     max_result_window: 1000
   remove_settings: ["number_of_shards"]

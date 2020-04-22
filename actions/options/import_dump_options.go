@@ -18,6 +18,7 @@ type ImportDumpOptions struct {
 	CredentialsFilePath string                 `json:"credentials_file_path"`
 	Concurrency         int                    `json:"concurrency"`
 	Size                int                    `json:"size"`
+	CreateIndexWaitTime int64                  `json:"create_index_wait_time"`
 	RemoveSettings      []string               `json:"remove_settings"`
 	RemoveMappings      []string               `json:"remove_mappings"`
 	RemoveAliases       []string               `json:"remove_aliases"`
@@ -49,6 +50,10 @@ func (ido *ImportDumpOptions) FillFromContainer(container *gabs.Container) error
 
 	if ido.Size == 0 {
 		ido.Size = 2500
+	}
+
+	if ido.CreateIndexWaitTime == 0 {
+		ido.CreateIndexWaitTime = int64(3)
 	}
 
 	if ido.ExtraAliases == nil {

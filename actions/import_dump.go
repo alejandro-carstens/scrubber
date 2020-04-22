@@ -70,7 +70,7 @@ func (id *importDump) importDump(config *indexConfig) error {
 		return err
 	}
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(time.Duration(id.options.CreateIndexWaitTime) * time.Second)
 
 	fs, err := filesystem.Build(id.filesystemConfig())
 
