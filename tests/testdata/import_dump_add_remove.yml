@@ -1,0 +1,21 @@
+action: import_dump
+description: Import dump restores dumped data back into elasticsearch
+disable_action: true
+options:
+  name: scrubber_test
+  path: /go/src/scrubber/tests/testdata/importdumpdata
+  concurrency: 3
+  size: 20
+  extra_settings:
+    max_result_window: 1000
+  remove_settings: ["number_of_shards"]
+  extra_aliases:
+    alejandro:
+  remove_aliases: ["searchlogs"]
+  extra_mappings:
+    alejandros_price:
+      type: integer
+  remove_mappings: ["price"]
+  extra_fields:
+    alejandros_price: 100
+  remove_fields: ["price"]

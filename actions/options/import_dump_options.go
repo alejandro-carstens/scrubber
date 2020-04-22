@@ -18,12 +18,14 @@ type ImportDumpOptions struct {
 	CredentialsFilePath string                 `json:"credentials_file_path"`
 	Concurrency         int                    `json:"concurrency"`
 	Size                int                    `json:"size"`
-	ExtraSettings       map[string]interface{} `json:"extra_settings"`
 	RemoveSettings      []string               `json:"remove_settings"`
-	ExtraMappings       map[string]interface{} `json:"extra_mappings"`
 	RemoveMappings      []string               `json:"remove_mappings"`
-	ExtraAliases        map[string]interface{} `json:"extra_aliases"`
 	RemoveAliases       []string               `json:"remove_aliases"`
+	RemoveFields        []string               `json:"remove_fields"`
+	ExtraSettings       map[string]interface{} `json:"extra_settings"`
+	ExtraMappings       map[string]interface{} `json:"extra_mappings"`
+	ExtraAliases        map[string]interface{} `json:"extra_aliases"`
+	ExtraFields         map[string]interface{} `json:"extra_fields"`
 }
 
 func (ido *ImportDumpOptions) FillFromContainer(container *gabs.Container) error {
@@ -61,6 +63,10 @@ func (ido *ImportDumpOptions) FillFromContainer(container *gabs.Container) error
 		ido.ExtraMappings = map[string]interface{}{}
 	}
 
+	if ido.ExtraFields == nil {
+		ido.ExtraFields = map[string]interface{}{}
+	}
+
 	if ido.RemoveAliases == nil {
 		ido.RemoveAliases = []string{}
 	}
@@ -71,6 +77,10 @@ func (ido *ImportDumpOptions) FillFromContainer(container *gabs.Container) error
 
 	if ido.RemoveMappings == nil {
 		ido.RemoveMappings = []string{}
+	}
+
+	if ido.RemoveFields == nil {
+		ido.RemoveFields = []string{}
 	}
 
 	return nil

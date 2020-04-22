@@ -381,6 +381,12 @@ func extractSource(s string) (map[string]interface{}, error) {
 
 func addToMap(m1 map[string]interface{}, m2 map[string]interface{}) map[string]interface{} {
 	for key, value := range m2 {
+		if value == nil {
+			m1[key] = map[string]interface{}{}
+
+			continue
+		}
+
 		m1[key] = value
 	}
 

@@ -24,7 +24,7 @@ func TestImportDump(t *testing.T) {
 		builder.WhereNested("attributes.color", "=", "Red").
 			FilterNested("attributes.size", "<=", 31).
 			MatchInNested("attributes.sku", []interface{}{"Red-31"}).
-			Where("price", "<", 150).
+			Where(data["price_key"].(string), "<", 150).
 			Where("other_key", "<>", 300)
 
 		count, err := builder.Count()
@@ -50,9 +50,23 @@ func importDumpDataProvider() []map[string]interface{} {
 		"expected_count":        int64(148),
 		"mappings_file_path":    "/go/src/scrubber/tests/testdata/importdumpdata/responses/mappings.json",
 		"aliases_file_path":     "/go/src/scrubber/tests/testdata/importdumpdata/responses/aliases.json",
+		"price_key":             "price",
 		"expected_settings": map[string]string{
 			"number_of_replicas": "0",
 			"number_of_shards":   "2",
+			"provided_name":      "import-scrubber_test-variants-1992.06.02",
+		},
+	})
+	data = append(data, map[string]interface{}{
+		"import_dump_file_path": "/testdata/import_dump_add_remove.yml",
+		"index":                 "import-scrubber_test-variants-1992.06.02",
+		"expected_count":        int64(148),
+		"mappings_file_path":    "/go/src/scrubber/tests/testdata/importdumpdata/responses/add_remove_mappings.json",
+		"aliases_file_path":     "/go/src/scrubber/tests/testdata/importdumpdata/responses/add_remove_aliases.json",
+		"price_key":             "alejandros_price",
+		"expected_settings": map[string]string{
+			"number_of_replicas": "0",
+			"max_result_window":  "1000",
 			"provided_name":      "import-scrubber_test-variants-1992.06.02",
 		},
 	})
@@ -105,7 +119,7 @@ func verifyImportDumpSettings(t *testing.T, connection *golastic.Connection, ind
 		t.Fatal(fmt.Sprintf("no settings found for index: %v", index))
 	}
 
-	assert.Equal(t, expectedSettings["number_of_replicas"], settings.S("index", "number_of_replicas").Data().(string))
-	assert.Equal(t, expectedSettings["number_of_shards"], settings.S("index", "number_of_shards").Data().(string))
-	assert.Equal(t, expectedSettings["provided_name"], settings.S("index", "provided_name").Data().(string))
+	for key, value := range expectedSettings {
+		assert.Equal(t, value, settings.S("index", key).Data().(string))
+	}
 }

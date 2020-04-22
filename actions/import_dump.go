@@ -150,6 +150,8 @@ func (id *importDump) importData(name string, dataFile string) error {
 			return err
 		}
 
+		data = addToMap(removeFromMap(data, id.options.RemoveFields...), id.options.ExtraFields)
+
 		inserts = append(inserts, data)
 
 		if len(inserts) == INSERT_LIMIT {
@@ -361,15 +363,30 @@ func (ic *indexConfig) transformMappings() (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	indexMappings, valid := mappings[ic.name]["mappings"]
+	tempMappings, valid := mappings[ic.name]["mappings"]
 
 	if !valid {
 		return map[string]interface{}{}, nil
 	}
 
-	indexMappings = removeFromMap(indexMappings.(map[string]interface{}), ic.removeMappings...)
+	indexMappings, valid := tempMappings.(map[string]interface{})
 
-	return addToMap(indexMappings.(map[string]interface{}), ic.extraMappings), nil
+	if !valid {
+		return map[string]interface{}{}, nil
+	}
+
+	properties, valid := indexMappings["properties"]
+
+	if !valid {
+		return map[string]interface{}{}, nil
+	}
+
+	indexMappings["properties"] = addToMap(
+		removeFromMap(properties.(map[string]interface{}), ic.removeMappings...),
+		ic.extraMappings,
+	)
+
+	return indexMappings, nil
 }
 
 func (ic *indexConfig) transformAliases() (map[string]interface{}, error) {
