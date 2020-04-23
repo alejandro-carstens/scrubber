@@ -286,7 +286,6 @@ func (id *importDump) filesystemConfig() filesystem.Configurable {
 			Context:             id.ctx,
 			Bucket:              id.options.Bucket,
 			CredentialsFilePath: id.options.CredentialsFilePath,
-			Directory:           id.options.Name,
 		}
 	}
 

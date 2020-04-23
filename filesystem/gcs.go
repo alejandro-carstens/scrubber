@@ -120,7 +120,7 @@ func (g *gcs) Open(name string) (io.Reader, error) {
 		return nil, err
 	}
 
-	return bucket.Object(g.path(name)).NewReader(g.context)
+	return bucket.Object(name).NewReader(g.context)
 }
 
 // Put implementation of the Storeable interface
