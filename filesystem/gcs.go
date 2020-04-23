@@ -3,8 +3,10 @@ package filesystem
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"path/filepath"
+	"strings"
 
 	"cloud.google.com/go/storage"
 	"google.golang.org/api/iterator"
@@ -74,7 +76,7 @@ func (g *gcs) Init(configuration Configurable) (Storeable, error) {
 
 // List implementation of the Storeable interface
 func (g *gcs) List(name string) ([]string, error) {
-	list := []string{}
+	dirs := map[string]bool{}
 
 	it := g.client.Bucket(g.bucket).Objects(g.context, &storage.Query{
 		Prefix: name,
@@ -91,7 +93,20 @@ func (g *gcs) List(name string) ([]string, error) {
 			return nil, err
 		}
 
-		list = append(list, attributes.Name)
+		parts := strings.Split(
+			strings.Replace(attributes.Name, fmt.Sprintf("%v/", name), "", -1),
+			"/",
+		)
+
+		if len(parts) > 0 {
+			dirs[parts[0]] = true
+		}
+	}
+
+	list := []string{}
+
+	for dir, _ := range dirs {
+		list = append(list, dir)
 	}
 
 	return list, nil
