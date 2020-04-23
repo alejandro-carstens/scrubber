@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"io"
-	"os"
 	"path/filepath"
 
 	"cloud.google.com/go/storage"
+	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
 
@@ -74,14 +74,38 @@ func (g *gcs) Init(configuration Configurable) (Storeable, error) {
 
 // List implementation of the Storeable interface
 func (g *gcs) List(name string) ([]string, error) {
-	// Implement
-	return nil, nil
+	list := []string{}
+
+	it := g.client.Bucket(g.bucket).Objects(g.context, &storage.Query{
+		Prefix: name,
+	})
+
+	for {
+		attributes, err := it.Next()
+
+		if err == iterator.Done {
+			break
+		}
+
+		if err != nil {
+			return nil, err
+		}
+
+		list = append(list, attributes.Name)
+	}
+
+	return list, nil
 }
 
 // Get implementation of the Storeable interface
-func (g *gcs) Open(name string) (*os.File, error) {
-	// Implement
-	return nil, nil
+func (g *gcs) Open(name string) (io.Reader, error) {
+	bucket := g.client.Bucket(g.bucket)
+
+	if _, err := bucket.Attrs(g.context); err != nil {
+		return nil, err
+	}
+
+	return bucket.Object(g.path(name)).NewReader(g.context)
 }
 
 // Put implementation of the Storeable interface

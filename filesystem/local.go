@@ -82,7 +82,7 @@ func (l *local) List(name string) ([]string, error) {
 }
 
 // Open implementation of the Storeable interface
-func (l *local) Open(name string) (*os.File, error) {
+func (l *local) Open(name string) (io.Reader, error) {
 	return os.Open(filepath.Join(l.path, filepath.FromSlash(name)))
 }
 

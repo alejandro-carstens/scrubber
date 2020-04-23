@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"os"
 	"strconv"
 	"time"
 
@@ -346,17 +347,19 @@ func buildQuery(builder *golastic.Builder, queryCriteria []*options.QueryCriteri
 }
 
 func fileToJSON(fs filesystem.Storeable, path string) (*gabs.Container, error) {
-	f, err := fs.Open(path)
+	r, err := fs.Open(path)
 
 	if err != nil {
 		return nil, err
 	}
 
-	defer f.Close()
+	if _, isFile := r.(*os.File); isFile {
+		defer r.(*os.File).Close()
+	}
 
 	b := bytes.NewBuffer(nil)
 
-	if _, err := io.Copy(b, f); err != nil {
+	if _, err := io.Copy(b, r); err != nil {
 		return nil, err
 	}
 

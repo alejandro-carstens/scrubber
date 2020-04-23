@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -130,15 +131,17 @@ func (id *importDump) importData(name string, dataFile string) error {
 		return err
 	}
 
-	f, err := fs.Open(filepath.Join(name, filepath.FromSlash(dataFile)))
+	r, err := fs.Open(filepath.Join(name, filepath.FromSlash(dataFile)))
+
+	if _, isFile := r.(*os.File); isFile {
+		defer r.(*os.File).Close()
+	}
 
 	if err != nil {
 		return err
 	}
 
-	defer f.Close()
-
-	scanner := bufio.NewScanner(f)
+	scanner := bufio.NewScanner(r)
 
 	builder := id.connection.Builder(id.indexName(name))
 	inserts := []interface{}{}

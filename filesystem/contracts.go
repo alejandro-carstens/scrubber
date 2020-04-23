@@ -2,7 +2,6 @@ package filesystem
 
 import (
 	"io"
-	"os"
 )
 
 // Storeable represents the contract to be implemented by
@@ -31,7 +30,7 @@ type Storeable interface {
 	List(name string) ([]string, error)
 
 	// Open retrieves a file
-	Open(name string) (*os.File, error)
+	Open(name string) (io.Reader, error)
 }
 
 // Configurable represents the contract to be implemented
