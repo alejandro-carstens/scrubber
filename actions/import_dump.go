@@ -79,7 +79,7 @@ func (id *importDump) importDump(config *indexConfig) error {
 		return err
 	}
 
-	files, err := fs.List(filepath.Join(id.options.Name, filepath.FromSlash(config.name)))
+	files, err := fs.List(config.name)
 
 	if err != nil {
 		return err
@@ -131,7 +131,7 @@ func (id *importDump) importData(name string, dataFile string) error {
 		return err
 	}
 
-	r, err := fs.Open(filepath.Join(id.options.Name, filepath.FromSlash(name), filepath.FromSlash(dataFile)))
+	r, err := fs.Open(filepath.Join(name, filepath.FromSlash(dataFile)))
 
 	if _, isFile := r.(*os.File); isFile {
 		defer r.(*os.File).Close()
@@ -196,7 +196,7 @@ func (id *importDump) getIndexConfigs() ([]*indexConfig, error) {
 		return nil, err
 	}
 
-	list, err := fs.List(id.options.Name)
+	list, err := fs.List("")
 
 	if err != nil {
 		return nil, err
@@ -246,21 +246,19 @@ func (id *importDump) extractIndexConfig(index string) (*indexConfig, error) {
 		return nil, err
 	}
 
-	path := filepath.Join(id.options.Name, filepath.FromSlash(index))
-
-	settings, err := fileToJSON(fs, filepath.Join(path, filepath.FromSlash("settings.json")))
+	settings, err := fileToJSON(fs, filepath.Join(index, filepath.FromSlash("settings.json")))
 
 	if err != nil {
 		return nil, err
 	}
 
-	aliases, err := fileToJSON(fs, filepath.Join(path, filepath.FromSlash("aliases.json")))
+	aliases, err := fileToJSON(fs, filepath.Join(index, filepath.FromSlash("aliases.json")))
 
 	if err != nil {
 		return nil, err
 	}
 
-	mappings, err := fileToJSON(fs, filepath.Join(path, filepath.FromSlash("mappings.json")))
+	mappings, err := fileToJSON(fs, filepath.Join(index, filepath.FromSlash("mappings.json")))
 
 	if err != nil {
 		return nil, err
@@ -286,10 +284,13 @@ func (id *importDump) filesystemConfig() filesystem.Configurable {
 			Context:             id.ctx,
 			Bucket:              id.options.Bucket,
 			CredentialsFilePath: id.options.CredentialsFilePath,
+			Directory:           id.options.Name,
 		}
 	}
 
-	return &filesystem.Local{Path: id.options.Path}
+	return &filesystem.Local{
+		Path: filepath.Join(id.options.Path, filepath.FromSlash(id.options.Name)),
+	}
 }
 
 func (id *importDump) indexName(index string) string {

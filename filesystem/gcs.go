@@ -79,7 +79,7 @@ func (g *gcs) List(name string) ([]string, error) {
 	dirs := map[string]bool{}
 
 	it := g.client.Bucket(g.bucket).Objects(g.context, &storage.Query{
-		Prefix: name,
+		Prefix: g.path(name),
 	})
 
 	for {
@@ -94,7 +94,7 @@ func (g *gcs) List(name string) ([]string, error) {
 		}
 
 		parts := strings.Split(
-			strings.Replace(attributes.Name, fmt.Sprintf("%v/", name), "", -1),
+			strings.Replace(attributes.Name, fmt.Sprintf("%v/", g.path(name)), "", -1),
 			"/",
 		)
 
@@ -120,7 +120,7 @@ func (g *gcs) Open(name string) (io.Reader, error) {
 		return nil, err
 	}
 
-	return bucket.Object(name).NewReader(g.context)
+	return bucket.Object(g.path(name)).NewReader(g.context)
 }
 
 // Put implementation of the Storeable interface
