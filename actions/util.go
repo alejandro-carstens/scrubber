@@ -373,10 +373,20 @@ func extractSource(s string) (map[string]interface{}, error) {
 		return nil, err
 	}
 
+	id, valid := data["_id"].(string)
+
+	if !valid {
+		return nil, errors.New("could not extract id from document.")
+	}
+
 	source, valid := data["_source"].(map[string]interface{})
 
 	if !valid {
 		return nil, errors.New("could not retrive source from document")
+	}
+
+	if _, valid := source["id"].(string); !valid {
+		source["id"] = id
 	}
 
 	return source, nil
