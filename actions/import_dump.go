@@ -144,21 +144,21 @@ func (id *importDump) importData(name string, dataFile string) error {
 	scanner := bufio.NewScanner(r)
 
 	builder := id.connection.Builder(id.indexName(name))
-	inserts := []interface{}{}
+	inserts := map[string]interface{}{}
 
 	for scanner.Scan() {
-		data, err := extractSource(scanner.Text())
+		docId, doc, err := extractSource(scanner.Text())
 
 		if err != nil {
 			return err
 		}
 
-		data = addToMap(removeFromMap(data, id.options.RemoveFields...), id.options.ExtraFields)
+		doc = addToMap(removeFromMap(doc, id.options.RemoveFields...), id.options.ExtraFields)
 
-		inserts = append(inserts, data)
+		inserts[docId] = doc
 
 		if len(inserts) == INSERT_LIMIT {
-			response, err := builder.Insert(inserts...)
+			response, err := builder.InsertWithOverwrittenId(inserts)
 
 			if err != nil {
 				return err
@@ -166,7 +166,7 @@ func (id *importDump) importData(name string, dataFile string) error {
 
 			id.reporter.logger.Debugf(response.String())
 
-			inserts = []interface{}{}
+			inserts = map[string]interface{}{}
 		}
 	}
 
@@ -178,7 +178,7 @@ func (id *importDump) importData(name string, dataFile string) error {
 		return nil
 	}
 
-	response, err := builder.Insert(inserts...)
+	response, err := builder.InsertWithOverwrittenId(inserts)
 
 	if err != nil {
 		return err

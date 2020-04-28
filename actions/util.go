@@ -366,30 +366,26 @@ func fileToJSON(fs filesystem.Storeable, path string) (*gabs.Container, error) {
 	return gabs.ParseJSON(b.Bytes())
 }
 
-func extractSource(s string) (map[string]interface{}, error) {
+func extractSource(s string) (string, map[string]interface{}, error) {
 	data := map[string]interface{}{}
 
 	if err := json.Unmarshal([]byte(s), &data); err != nil {
-		return nil, err
+		return "", nil, err
 	}
 
 	id, valid := data["_id"].(string)
 
 	if !valid {
-		return nil, errors.New("could not extract id from document.")
+		return "", nil, errors.New("could not extract id from document.")
 	}
 
 	source, valid := data["_source"].(map[string]interface{})
 
 	if !valid {
-		return nil, errors.New("could not retrive source from document")
+		return "", nil, errors.New("could not retrive source from document")
 	}
 
-	if _, valid := source["id"].(string); !valid {
-		source["id"] = id
-	}
-
-	return source, nil
+	return id, source, nil
 }
 
 func addToMap(m1 map[string]interface{}, m2 map[string]interface{}) map[string]interface{} {
