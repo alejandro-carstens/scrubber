@@ -23,7 +23,7 @@ type Repositoryable interface {
 
 	Insert(inserts ...interface{}) error
 
-	Update(accountId uint64, model models.Modelable) error
+	Update(model models.Modelable) error
 
 	UpdateWhere(params map[string]interface{}, updates map[string]interface{}) (int64, error)
 

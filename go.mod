@@ -18,6 +18,7 @@ require (
 	github.com/jasonlvhit/gocron v0.0.0-20191216013803-9b1e2c8fb35c
 	github.com/jinzhu/gorm v1.9.12
 	github.com/jinzhu/now v1.1.1 // indirect
+	github.com/labstack/echo/v4 v4.1.16
 	github.com/lib/pq v1.5.2 // indirect
 	github.com/mailru/easyjson v0.7.1 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
@@ -29,7 +30,6 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.5.1
 	github.com/t-tiger/gorm-bulk-insert v1.3.0
-	github.com/yuin/goldmark v1.1.30 // indirect
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
 	golang.org/x/mod v0.3.0 // indirect
 	golang.org/x/net v0.0.0-20200520182314-0ba52f642ac2 // indirect

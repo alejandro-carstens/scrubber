@@ -119,7 +119,7 @@ func (r *repository) UpdateWhere(params map[string]interface{}, updates map[stri
 	return res.RowsAffected, res.Error
 }
 
-func (r *repository) Update(accountId uint64, model models.Modelable) error {
+func (r *repository) Update(model models.Modelable) error {
 	res := r.connection().Table(r.model.Table()).LogMode(true).Save(model)
 
 	return res.Error
