@@ -1,8 +1,9 @@
 package reports
 
 import (
+	"scrubber/actions/criterias"
+
 	"github.com/Jeffail/gabs"
-	"github.com/alejandro-carstens/scrubber/actions/criterias"
 )
 
 // Reportable is a contract implemented by structs that report

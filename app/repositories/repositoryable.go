@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"doclobster/models"
+	"scrubber/app/models"
 
 	"github.com/jinzhu/gorm"
 )

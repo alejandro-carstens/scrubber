@@ -7,12 +7,13 @@ import (
 	"path/filepath"
 	"strings"
 
+	"scrubber/actions/contexts"
+	"scrubber/logger"
+	"scrubber/notifications"
+	"scrubber/ymlparser"
+
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/logger"
-	"github.com/alejandro-carstens/scrubber/notifications"
-	"github.com/alejandro-carstens/scrubber/ymlparser"
 	"github.com/ivpusic/grpool"
 	"github.com/jasonlvhit/gocron"
 )
@@ -26,12 +27,12 @@ type configMap struct {
 }
 
 type scheduler struct {
-	basePath string
-	exclude  []string
-	context  context.Context
-	logger   *logger.Logger
-	builder  *golastic.Connection
-	queue    *notifications.Queue
+	basePath   string
+	exclude    []string
+	context    context.Context
+	logger     *logger.Logger
+	connection *golastic.Connection
+	queue      *notifications.Queue
 }
 
 // Run executes the scheduled actions
@@ -64,7 +65,7 @@ func (s *scheduler) Run() error {
 				return err
 			}
 
-			job.Do(Execute, context, s.logger, s.builder, s.queue, s.context)
+			job.Do(Execute, context, s.logger, s.connection, s.queue, s.context)
 
 			s.logger.Noticef("Scheduled job for %v", path)
 
@@ -168,7 +169,7 @@ func (s *scheduler) runAsyncActions(contexts []contexts.Contextable) {
 		pool.JobQueue <- func() {
 			defer pool.JobDone()
 
-			Execute(action, s.logger, s.builder, s.queue, s.context)
+			Execute(action, s.logger, s.connection, s.queue, s.context)
 		}
 	}
 
@@ -178,7 +179,7 @@ func (s *scheduler) runAsyncActions(contexts []contexts.Contextable) {
 
 func (s *scheduler) runActions(contexts []contexts.Contextable) {
 	for _, context := range contexts {
-		Execute(context, s.logger, s.builder, s.queue, s.context)
+		Execute(context, s.logger, s.connection, s.queue, s.context)
 	}
 }
 

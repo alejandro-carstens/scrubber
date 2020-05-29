@@ -1,8 +1,8 @@
 package channels
 
 import (
-	"github.com/alejandro-carstens/scrubber/notifications/configurations"
-	"github.com/alejandro-carstens/scrubber/notifications/messages"
+	"scrubber/notifications/configurations"
+	"scrubber/notifications/messages"
 )
 
 // Notify sends a notification over a Notifiable channel

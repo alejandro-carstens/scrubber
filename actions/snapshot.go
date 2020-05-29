@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"time"
 
+	"scrubber/actions/options"
+
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
 // DEFAULT_WAIT_FOR_COMPLETION default
@@ -42,7 +43,7 @@ func (s *snapshot) ApplyOptions() Actionable {
 	s.options = s.context.Options().(*options.SnapshotOptions)
 
 	if len(s.options.Name) == 0 {
-		s.options.Name = "github.com/alejandro-carstens/scrubber-" + time.Now().Format("1992-06-02")
+		s.options.Name = "scrubber-" + time.Now().Format("1992-06-02")
 	}
 
 	if !s.options.Exists("wait_for_completion") {

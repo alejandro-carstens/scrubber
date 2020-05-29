@@ -3,9 +3,10 @@ package cmd
 import (
 	"errors"
 
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/actions/contexts"
+	"scrubber/actions/options"
+	rp "scrubber/resourcepool"
+
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +14,7 @@ type deleteSnaphotsCmd struct {
 	baseActionCmd
 }
 
-func (dsc *deleteSnaphotsCmd) new(logger *logger.Logger) *cobra.Command {
+func (dsc *deleteSnaphotsCmd) new() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "delete-snapshots",
 		Short: "delete the specified snapshots",
@@ -26,7 +27,7 @@ func (dsc *deleteSnaphotsCmd) new(logger *logger.Logger) *cobra.Command {
 	command.Flags().Int("retry_count", 0, "number of times the delete call should happen if it fails")
 	command.Flags().Int("retry_interval", 0, "number of seconds the delete call should wait before it is retried")
 
-	dsc.logger = logger
+	dsc.logger = rp.Logger()
 
 	return command
 }

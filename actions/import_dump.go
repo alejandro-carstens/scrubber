@@ -11,10 +11,11 @@ import (
 	"sync"
 	"time"
 
+	"scrubber/actions/options"
+	"scrubber/filesystem"
+
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/filesystem"
 	"github.com/ivpusic/grpool"
 )
 
@@ -210,7 +211,9 @@ func (id *importDump) getIndexConfigs() ([]*indexConfig, error) {
 
 	wg.Add(len(list))
 
-	for _, index := range list {
+	for _, element := range list {
+		index := element
+
 		go func() {
 			defer wg.Done()
 

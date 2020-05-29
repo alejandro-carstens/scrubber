@@ -1,8 +1,8 @@
 package filters
 
 import (
-	"github.com/alejandro-carstens/scrubber/actions/filters/runners"
-	"github.com/alejandro-carstens/scrubber/actions/infos"
+	"scrubber/actions/filters/runners"
+	"scrubber/actions/infos"
 )
 
 type AggregateFilterRunner struct {

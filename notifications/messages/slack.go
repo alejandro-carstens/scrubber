@@ -45,7 +45,7 @@ func (s *Slack) Format() error {
 	}
 
 	if len(attachment.AuthorName) == 0 {
-		attachment.AuthorName = "github.com/alejandro-carstens/scrubber"
+		attachment.AuthorName = "scrubber"
 	}
 
 	templ, err := template.New("text").Parse(attachment.Text)

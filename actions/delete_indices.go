@@ -2,7 +2,7 @@ package actions
 
 import (
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/options"
+	"scrubber/actions/options"
 )
 
 type deleteIndices struct {

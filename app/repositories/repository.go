@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"github.com/alejandro-carstens/scrubber/app/models"
+	"scrubber/app/models"
 
 	"github.com/jinzhu/gorm"
 	gormbulk "github.com/t-tiger/gorm-bulk-insert"

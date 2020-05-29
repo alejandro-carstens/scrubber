@@ -10,8 +10,8 @@ import (
 
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/filesystem"
+	"scrubber/actions/options"
+	"scrubber/filesystem"
 	"github.com/ivpusic/grpool"
 )
 

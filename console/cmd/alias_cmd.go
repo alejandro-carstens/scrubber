@@ -3,9 +3,10 @@ package cmd
 import (
 	"errors"
 
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/actions/contexts"
+	"scrubber/actions/options"
+	rp "scrubber/resourcepool"
+
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +14,7 @@ type aliasCmd struct {
 	baseActionCmd
 }
 
-func (ac *aliasCmd) new(logger *logger.Logger) *cobra.Command {
+func (ac *aliasCmd) new() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "alias",
 		Short: "add or remove indices from an alias",
@@ -28,7 +29,7 @@ func (ac *aliasCmd) new(logger *logger.Logger) *cobra.Command {
 	command.Flags().String("routing", "", "alias routing extra setting")
 	command.Flags().String("search_routing", "", "alias search routing extra setting")
 
-	ac.logger = logger
+	ac.logger = rp.Logger()
 
 	return command
 }

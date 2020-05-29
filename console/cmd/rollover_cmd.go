@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/actions/contexts"
+	"scrubber/actions/options"
+	rp "scrubber/resourcepool"
+
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +12,7 @@ type rolloverCmd struct {
 	baseActionCmd
 }
 
-func (rc *rolloverCmd) new(logger *logger.Logger) *cobra.Command {
+func (rc *rolloverCmd) new() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "rollover",
 		Short: "rollover the specified index alias",
@@ -26,7 +27,7 @@ func (rc *rolloverCmd) new(logger *logger.Logger) *cobra.Command {
 	command.Flags().String("new_index", "", "the name to be given to the new index")
 	command.Flags().String("index_settings", "", "the settings to be provided when creating the new index")
 
-	rc.logger = logger
+	rc.logger = rp.Logger()
 
 	return command
 }

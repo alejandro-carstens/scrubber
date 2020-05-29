@@ -3,9 +3,10 @@ package cmd
 import (
 	"errors"
 
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/actions/contexts"
+	"scrubber/actions/options"
+	rp "scrubber/resourcepool"
+
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +14,7 @@ type openIndicesCmd struct {
 	baseActionCmd
 }
 
-func (oic *openIndicesCmd) new(logger *logger.Logger) *cobra.Command {
+func (oic *openIndicesCmd) new() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "open-indices",
 		Short: "open the specified list of indices",
@@ -23,7 +24,7 @@ func (oic *openIndicesCmd) new(logger *logger.Logger) *cobra.Command {
 
 	command.Flags().StringSlice("indices", []string{}, "indices to be openned")
 
-	oic.logger = logger
+	oic.logger = rp.Logger()
 
 	return command
 }

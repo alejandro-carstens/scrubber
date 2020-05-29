@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/actions/contexts"
+	"scrubber/actions/options"
+	rp "scrubber/resourcepool"
+
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +12,7 @@ type listSnapshotsCmd struct {
 	baseActionCmd
 }
 
-func (lsc *listSnapshotsCmd) new(logger *logger.Logger) *cobra.Command {
+func (lsc *listSnapshotsCmd) new() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "list-snapshots",
 		Short: "list all snapshots for the given repository",
@@ -21,7 +22,7 @@ func (lsc *listSnapshotsCmd) new(logger *logger.Logger) *cobra.Command {
 
 	command.Flags().String("repository", "", "the snapshots repository, this field is required")
 
-	lsc.logger = logger
+	lsc.logger = rp.Logger()
 
 	return command
 }

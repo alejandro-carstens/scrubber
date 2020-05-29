@@ -1,9 +1,9 @@
 package filters
 
 import (
-	"github.com/alejandro-carstens/scrubber/actions/filters/runners"
-	"github.com/alejandro-carstens/scrubber/actions/filters/runners/reports"
-	"github.com/alejandro-carstens/scrubber/actions/infos"
+	"scrubber/actions/filters/runners"
+	"scrubber/actions/filters/runners/reports"
+	"scrubber/actions/infos"
 )
 
 type FilterRunner struct {
@@ -14,7 +14,7 @@ type FilterRunner struct {
 func (fr *FilterRunner) ApplyFilters() (bool, error) {
 	channel := make(chan *runners.FilterResponse, len(fr.builder.Criteria()))
 
-	for criteria := range fr.builder.Criteria() {
+	for _, criteria := range fr.builder.Criteria() {
 		runner, err := runners.NewRunner(criteria, fr.connection, fr.info)
 
 		if err != nil {

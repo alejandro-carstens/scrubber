@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"context"
 	"io/ioutil"
 	"log"
 	"os"
@@ -10,13 +9,15 @@ import (
 	"testing"
 	"time"
 
+	"scrubber/actions"
+	"scrubber/actions/contexts"
+	"scrubber/logger"
+	"scrubber/notifications"
+	rp "scrubber/resourcepool"
+	"scrubber/ymlparser"
+
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions"
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/logger"
-	"github.com/alejandro-carstens/scrubber/notifications"
-	"github.com/alejandro-carstens/scrubber/ymlparser"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -68,9 +69,9 @@ func getAction(config *gabs.Container) (actions.Actionable, error) {
 		return nil, err
 	}
 
-	logger := logger.NewLogger("", true, true, true, true)
+	conn := connection()
 
-	return actions.Create(ctx, logger, connection(), queue(logger), context.Background())
+	return actions.Create(ctx, rp.Logger(), conn, queue(rp.Logger()), rp.Context())
 }
 
 func takeAction(path string, t *testing.T) actions.Actionable {
@@ -124,19 +125,13 @@ func takeActionAsync(path string, t *testing.T, waitGroup *sync.WaitGroup) {
 }
 
 func connection() *golastic.Connection {
-	connection := golastic.NewConnection(&golastic.ConnectionContext{
-		Urls:                []string{os.Getenv("ELASTICSEARCH_URI")},
-		Password:            os.Getenv("ELASTICSEARCH_PASSWORD"),
-		Username:            os.Getenv("ELASTICSEARCH_USERNAME"),
-		HealthCheckInterval: 30,
-		Context:             context.Background(),
-	})
-
-	if err := connection.Connect(); err != nil {
-		panic(err)
+	if rp.IsBooted() {
+		return rp.Elasticsearch()
 	}
 
-	return connection
+	rp.Boot("mysql")
+
+	return rp.Elasticsearch()
 }
 
 func queue(logger *logger.Logger) *notifications.Queue {

@@ -13,6 +13,12 @@ func GetFromEnvVars(store string) (Configurable, error) {
 	case "mysql":
 		config = &MySQL{}
 		break
+	case "elasticsearch":
+		config = &Elasticsearch{}
+		break
+	case "logger":
+		config = &Logger{}
+		break
 	default:
 		return nil, errors.New("invalid store specified")
 	}

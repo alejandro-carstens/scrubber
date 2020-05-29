@@ -4,9 +4,10 @@ import (
 	"regexp"
 	"sort"
 
+	"scrubber/actions/criterias"
+	"scrubber/actions/infos"
+
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/criterias"
-	"github.com/alejandro-carstens/scrubber/actions/infos"
 )
 
 type countFilterRunner struct {

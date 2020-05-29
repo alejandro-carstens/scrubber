@@ -6,8 +6,9 @@ import (
 	"sort"
 	"time"
 
-	"github.com/alejandro-carstens/scrubber/actions/criterias"
-	"github.com/alejandro-carstens/scrubber/actions/infos"
+	"scrubber/actions/criterias"
+	"scrubber/actions/infos"
+
 	"github.com/araddon/dateparse"
 )
 

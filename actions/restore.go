@@ -6,9 +6,10 @@ import (
 	"strings"
 	"time"
 
+	"scrubber/actions/infos"
+	"scrubber/actions/options"
+
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/infos"
-	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
 type restore struct {

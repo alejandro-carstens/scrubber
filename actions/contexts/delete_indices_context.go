@@ -1,8 +1,9 @@
 package contexts
 
 import (
+	"scrubber/actions/options"
+
 	"github.com/Jeffail/gabs"
-	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
 type DeleteIndicesContext struct {

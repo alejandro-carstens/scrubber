@@ -3,29 +3,28 @@ package console
 import (
 	"context"
 
+	"scrubber/actions"
+	"scrubber/actions/contexts"
+	"scrubber/logger"
+	"scrubber/notifications"
+	rp "scrubber/resourcepool"
+
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions"
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/logger"
-	"github.com/alejandro-carstens/scrubber/notifications"
 )
 
 // NewScheduler instantiates a scheduler
 func NewScheduler(
 	basePath string,
 	exclude []string,
-	logger *logger.Logger,
-	builder *golastic.Connection,
 	queue *notifications.Queue,
-	context context.Context,
 ) *scheduler {
 	return &scheduler{
-		basePath: basePath,
-		exclude:  exclude,
-		logger:   logger,
-		builder:  builder,
-		queue:    queue,
-		context:  context,
+		basePath:   basePath,
+		exclude:    exclude,
+		logger:     rp.Logger(),
+		connection: rp.Elasticsearch(),
+		queue:      queue,
+		context:    rp.Context(),
 	}
 }
 
@@ -33,11 +32,11 @@ func NewScheduler(
 func Execute(
 	context contexts.Contextable,
 	logger *logger.Logger,
-	builder *golastic.Connection,
+	connection *golastic.Connection,
 	queue *notifications.Queue,
 	ctx context.Context,
 ) {
-	action, err := actions.Create(context, logger, builder, queue, ctx)
+	action, err := actions.Create(context, logger, connection, queue, ctx)
 
 	if err != nil {
 		logger.Errorf(err.Error())

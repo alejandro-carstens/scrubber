@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/actions/contexts"
+	"scrubber/actions/options"
+	rp "scrubber/resourcepool"
+
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +12,7 @@ type createRepositoryCmd struct {
 	baseActionCmd
 }
 
-func (crc *createRepositoryCmd) new(logger *logger.Logger) *cobra.Command {
+func (crc *createRepositoryCmd) new() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "create-repository",
 		Short: "create repository for storing snapshots",
@@ -19,7 +20,7 @@ func (crc *createRepositoryCmd) new(logger *logger.Logger) *cobra.Command {
 		Run:   crc.Handle,
 	}
 
-	crc.logger = logger
+	crc.logger = rp.Logger()
 
 	command.Flags().String("chunk_size", "", "big files can be broken down into chunks for snapshotting if needed")
 	command.Flags().String("max_restore_bytes_per_sec", "40mb", "throttles per node restore rate")

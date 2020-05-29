@@ -1,12 +1,11 @@
 package tests
 
 import (
-	"context"
 	"os"
 	"testing"
 
-	"github.com/alejandro-carstens/scrubber/console"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/console"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,9 +17,8 @@ func TestSchedulerRunActionImmidiately(t *testing.T) {
 	}
 
 	filePath := currentPath + "/testdata/schedulerdata/createactions"
-	logger := logger.NewLogger("", true, true, true, true)
 	connection := connection()
-	scheduler := console.NewScheduler(filePath, []string{}, logger, connection, nil, context.Background())
+	scheduler := console.NewScheduler(filePath, []string{}, nil)
 
 	if err := scheduler.Run(); err != nil {
 		t.Error(err)

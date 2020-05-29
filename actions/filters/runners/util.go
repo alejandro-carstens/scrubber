@@ -4,9 +4,10 @@ import (
 	"errors"
 	"time"
 
+	"scrubber/actions/criterias"
+	"scrubber/actions/infos"
+
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/criterias"
-	"github.com/alejandro-carstens/scrubber/actions/infos"
 )
 
 const SECONDS_PER_DAY float64 = 86400

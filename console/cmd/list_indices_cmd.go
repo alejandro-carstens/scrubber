@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/actions/contexts"
+	"scrubber/actions/options"
+	rp "scrubber/resourcepool"
+
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +12,7 @@ type listIndicesCmd struct {
 	baseActionCmd
 }
 
-func (lic *listIndicesCmd) new(logger *logger.Logger) *cobra.Command {
+func (lic *listIndicesCmd) new() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "list-indices",
 		Short: "list all indices",
@@ -19,7 +20,7 @@ func (lic *listIndicesCmd) new(logger *logger.Logger) *cobra.Command {
 		Run:   lic.Handle,
 	}
 
-	lic.logger = logger
+	lic.logger = rp.Logger()
 
 	return command
 }

@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/actions/contexts"
+	"scrubber/actions/options"
+	rp "scrubber/resourcepool"
+
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +12,7 @@ type createIndexCmd struct {
 	baseActionCmd
 }
 
-func (cic *createIndexCmd) new(logger *logger.Logger) *cobra.Command {
+func (cic *createIndexCmd) new() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "create-index",
 		Short: "creates an index",
@@ -22,7 +23,7 @@ func (cic *createIndexCmd) new(logger *logger.Logger) *cobra.Command {
 	command.Flags().String("name", "", "name of the index to be created")
 	command.Flags().String("extra_settings", "", "index settings and mappings as JSON")
 
-	cic.logger = logger
+	cic.logger = rp.Logger()
 
 	return command
 }

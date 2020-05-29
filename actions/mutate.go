@@ -4,9 +4,10 @@ import (
 	"errors"
 	"time"
 
+	"scrubber/actions/options"
+
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
 type mutate struct {

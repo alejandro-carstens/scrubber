@@ -1,38 +1,39 @@
 package cmd
 
 import (
-	"os"
+	rp "scrubber/resourcepool"
 
-	"github.com/alejandro-carstens/scrubber/logger"
 	"github.com/spf13/cobra"
 )
 
 func Run() error {
-	return boot(logger.NewLogger(os.Getenv("LOG_FILE"), true, true, true, true)).Execute()
+	return boot().Execute()
 }
 
-func boot(logger *logger.Logger) *cobra.Command {
+func boot() *cobra.Command {
+	rp.Boot("mysql")
+
 	scrubber := &cobra.Command{Use: "scrubber"}
 
 	scrubber.PersistentFlags().Int("timeout", 300, "elasticsearch operation timeout")
 	scrubber.PersistentFlags().Bool("disable_action", false, "flag for preventing the action to be ran")
 
-	scrubber.AddCommand(new(createIndexCmd).new(logger))
-	scrubber.AddCommand(new(deleteIndicesCmd).new(logger))
-	scrubber.AddCommand(new(closeIndicesCmd).new(logger))
-	scrubber.AddCommand(new(openIndicesCmd).new(logger))
-	scrubber.AddCommand(new(aliasCmd).new(logger))
-	scrubber.AddCommand(new(createRepositoryCmd).new(logger))
-	scrubber.AddCommand(new(snapshotCmd).new(logger))
-	scrubber.AddCommand(new(deleteSnaphotsCmd).new(logger))
-	scrubber.AddCommand(new(restoreCmd).new(logger))
-	scrubber.AddCommand(new(indexSettingsCmd).new(logger))
-	scrubber.AddCommand(new(runActionCmd).new(logger))
-	scrubber.AddCommand(new(listIndicesCmd).new(logger))
-	scrubber.AddCommand(new(listSnapshotsCmd).new(logger))
-	scrubber.AddCommand(new(schedulerCmd).new(logger))
-	scrubber.AddCommand(new(deleteRepositoriesCmd).new(logger))
-	scrubber.AddCommand(new(rolloverCmd).new(logger))
+	scrubber.AddCommand(new(createIndexCmd).new())
+	scrubber.AddCommand(new(deleteIndicesCmd).new())
+	scrubber.AddCommand(new(closeIndicesCmd).new())
+	scrubber.AddCommand(new(openIndicesCmd).new())
+	scrubber.AddCommand(new(aliasCmd).new())
+	scrubber.AddCommand(new(createRepositoryCmd).new())
+	scrubber.AddCommand(new(snapshotCmd).new())
+	scrubber.AddCommand(new(deleteSnaphotsCmd).new())
+	scrubber.AddCommand(new(restoreCmd).new())
+	scrubber.AddCommand(new(indexSettingsCmd).new())
+	scrubber.AddCommand(new(runActionCmd).new())
+	scrubber.AddCommand(new(listIndicesCmd).new())
+	scrubber.AddCommand(new(listSnapshotsCmd).new())
+	scrubber.AddCommand(new(schedulerCmd).new())
+	scrubber.AddCommand(new(deleteRepositoriesCmd).new())
+	scrubber.AddCommand(new(rolloverCmd).new())
 
 	return scrubber
 }

@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"github.com/alejandro-carstens/scrubber/app/models"
-	rp "github.com/alejandro-carstens/scrubber/resourcepool"
+	"scrubber/app/models"
+	rp "scrubber/resourcepool"
 )
 
 func repo(model models.Modelable) Repositoryable {

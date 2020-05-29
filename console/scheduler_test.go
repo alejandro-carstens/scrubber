@@ -1,16 +1,17 @@
 package console
 
 import (
-	"context"
 	"os"
+	rp "scrubber/resourcepool"
 	"strings"
 	"testing"
 
-	"github.com/alejandro-carstens/scrubber/logger"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSchedulerExtractFiles(t *testing.T) {
+	rp.Boot("mysql")
+
 	currentPath, err := os.Getwd()
 
 	if err != nil {
@@ -18,9 +19,8 @@ func TestSchedulerExtractFiles(t *testing.T) {
 	}
 
 	filePath := currentPath + "/../tests/testdata/schedulerdata"
-	logger := logger.NewLogger("", true, true, true, true)
 
-	configs, err := NewScheduler(filePath, []string{}, logger, nil, nil, context.Background()).extractConfigs()
+	configs, err := NewScheduler(filePath, []string{}, nil).extractConfigs()
 
 	if err != nil {
 		t.Error(err)
@@ -44,6 +44,8 @@ func TestSchedulerExtractFiles(t *testing.T) {
 }
 
 func TestSchedulerSchedule(t *testing.T) {
+	rp.Boot("mysql")
+
 	currentPath, err := os.Getwd()
 
 	if err != nil {
@@ -51,9 +53,8 @@ func TestSchedulerSchedule(t *testing.T) {
 	}
 
 	filePath := currentPath + "/../tests/testdata/schedulerdata/deleteactions/aggregate"
-	logger := logger.NewLogger("", true, true, true, true)
 
-	scheduler := NewScheduler(filePath, []string{}, logger, nil, nil, context.Background())
+	scheduler := NewScheduler(filePath, []string{}, nil)
 
 	configs, err := scheduler.extractConfigs()
 

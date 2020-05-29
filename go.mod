@@ -1,4 +1,4 @@
-module github.com/alejandro-carstens/scrubber
+module scrubber
 
 go 1.12
 

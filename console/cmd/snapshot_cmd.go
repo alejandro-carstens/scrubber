@@ -3,9 +3,10 @@ package cmd
 import (
 	"errors"
 
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/actions/contexts"
+	"scrubber/actions/options"
+	rp "scrubber/resourcepool"
+
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +14,7 @@ type snapshotCmd struct {
 	baseActionCmd
 }
 
-func (sc *snapshotCmd) new(logger *logger.Logger) *cobra.Command {
+func (sc *snapshotCmd) new() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "snapshot",
 		Short: "take a snapshot of the specified list of indices",
@@ -31,7 +32,7 @@ func (sc *snapshotCmd) new(logger *logger.Logger) *cobra.Command {
 	command.Flags().Int("max_wait", 0, "specifies how long in seconds to wait to see if the action has completed before giving up")
 	command.Flags().Int("wait_interval", 0, "specifies how long in seconds to wait to see if the action has completed before giving up")
 
-	sc.logger = logger
+	sc.logger = rp.Logger()
 
 	return command
 }

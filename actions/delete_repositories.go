@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/options"
+	"scrubber/actions/options"
 )
 
 type deleteRepositories struct {

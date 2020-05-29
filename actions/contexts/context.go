@@ -4,9 +4,10 @@ import (
 	"errors"
 	"fmt"
 
+	"scrubber/actions/criterias"
+	"scrubber/actions/options"
+
 	"github.com/Jeffail/gabs"
-	"github.com/alejandro-carstens/scrubber/actions/criterias"
-	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
 type extractOptions func(options *gabs.Container) error

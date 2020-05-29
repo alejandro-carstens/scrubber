@@ -4,6 +4,9 @@ import (
 	"context"
 	"sync"
 
+	logs "scrubber/logger"
+
+	"github.com/alejandro-carstens/golastic"
 	"github.com/jinzhu/gorm"
 )
 
@@ -14,8 +17,14 @@ var (
 
 func register() map[string]bootable {
 	return map[string]bootable{
-		"mysql": &mysql{},
+		"mysql":         &mysql{},
+		"elasticsearch": &elasticsearch{},
+		"logger":        &logger{},
 	}
+}
+
+func IsBooted() bool {
+	return rPool != nil
 }
 
 // Boot bootstraps the resources used by the application
@@ -64,11 +73,22 @@ func MySQL() *gorm.DB {
 	return rPool.MySQL()
 }
 
+// Elasticsearch returns an Elasticsearch connection
+func Elasticsearch() *golastic.Connection {
+	return rPool.Elasticsearch()
+}
+
+func Logger() *logs.Logger {
+	return rPool.Logger()
+}
+
 // ResourcePool represents the resources
 // used by the application
 type ResourcePool struct {
-	context context.Context
-	mysql   *gorm.DB
+	context       context.Context
+	mysql         *gorm.DB
+	elasticsearch *golastic.Connection
+	logger        *logs.Logger
 }
 
 // Context returns a context.Context
@@ -79,4 +99,13 @@ func (rp *ResourcePool) Context() context.Context {
 // MySQL returns a GORM MySQL database
 func (rp *ResourcePool) MySQL() *gorm.DB {
 	return rp.mysql
+}
+
+// Elasticsearch returns an Elasticsearch connection
+func (rp *ResourcePool) Elasticsearch() *golastic.Connection {
+	return rp.elasticsearch
+}
+
+func (rp *ResourcePool) Logger() *logs.Logger {
+	return rp.logger
 }

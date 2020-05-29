@@ -1,9 +1,9 @@
 package notifications
 
 import (
-	"github.com/alejandro-carstens/scrubber/logger"
-	"github.com/alejandro-carstens/scrubber/notifications/channels"
-	"github.com/alejandro-carstens/scrubber/notifications/messages"
+	"scrubber/logger"
+	"scrubber/notifications/channels"
+	"scrubber/notifications/messages"
 
 	"github.com/panjf2000/ants/v2"
 )

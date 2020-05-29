@@ -44,7 +44,7 @@ func TestEmailMessage(t *testing.T) {
 func TestPagerDutyMessage(t *testing.T) {
 	b, err := json.Marshal(map[string]interface{}{
 		"notification_channel": "pager_duty",
-		"source":               "github.com/alejandro-carstens/scrubber",
+		"source":               "scrubber",
 		"severity":             "info",
 		"component":            "application",
 		"group":                "application",
@@ -67,7 +67,7 @@ func TestPagerDutyMessage(t *testing.T) {
 	assert.True(t, valid)
 	assert.Equal(t, "trigger", message.Event.EventAction)
 	assert.Equal(t, "random_dedup_key", message.Event.DedupKey)
-	assert.Equal(t, "github.com/alejandro-carstens/scrubber", message.Event.Payload.Source)
+	assert.Equal(t, "scrubber", message.Event.Payload.Source)
 	assert.Equal(t, "info", message.Event.Payload.Severity)
 	assert.Equal(t, "application", message.Event.Payload.Component)
 	assert.Equal(t, "application", message.Event.Payload.Group)

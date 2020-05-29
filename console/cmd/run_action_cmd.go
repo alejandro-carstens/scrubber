@@ -4,9 +4,10 @@ import (
 	"errors"
 	"os"
 
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/logger"
-	"github.com/alejandro-carstens/scrubber/ymlparser"
+	"scrubber/actions/contexts"
+	rp "scrubber/resourcepool"
+	"scrubber/ymlparser"
+
 	"github.com/spf13/cobra"
 )
 
@@ -14,7 +15,7 @@ type runActionCmd struct {
 	baseActionCmd
 }
 
-func (rac *runActionCmd) new(logger *logger.Logger) *cobra.Command {
+func (rac *runActionCmd) new() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "run-action",
 		Short: "runs an action from the specified action file",
@@ -24,7 +25,7 @@ func (rac *runActionCmd) new(logger *logger.Logger) *cobra.Command {
 
 	command.Flags().String("file_path", "", "file path relative to scrubber's root path")
 
-	rac.logger = logger
+	rac.logger = rp.Logger()
 
 	return command
 }

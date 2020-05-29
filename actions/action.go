@@ -10,10 +10,10 @@ import (
 	"strings"
 
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/logger"
-	"github.com/alejandro-carstens/scrubber/notifications"
-	"github.com/alejandro-carstens/scrubber/notifications/messages"
+	"scrubber/actions/contexts"
+	"scrubber/logger"
+	"scrubber/notifications"
+	"scrubber/notifications/messages"
 )
 
 const DEFAULT_HEALTH_CHECK_INTERVAL int64 = 30

@@ -3,8 +3,9 @@ package actions
 import (
 	"errors"
 
+	"scrubber/actions/options"
+
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
 // DEFAULT_MAX_SNAPSHOT_BYTES_PER_SECOND is the default

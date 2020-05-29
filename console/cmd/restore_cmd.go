@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/actions/contexts"
+	"scrubber/actions/options"
+	rp "scrubber/resourcepool"
+
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +12,7 @@ type restoreCmd struct {
 	baseActionCmd
 }
 
-func (rc *restoreCmd) new(logger *logger.Logger) *cobra.Command {
+func (rc *restoreCmd) new() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "restore",
 		Short: "restore indices for a specifc snapshot",
@@ -33,7 +34,7 @@ func (rc *restoreCmd) new(logger *logger.Logger) *cobra.Command {
 	command.Flags().Bool("wait_for_completion", false, "whether or not the request should return immediately or wait for the operation to complete before returning")
 	command.Flags().Bool("include_aliases", false, "")
 
-	rc.logger = logger
+	rc.logger = rp.Logger()
 
 	return command
 }

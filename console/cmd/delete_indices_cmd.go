@@ -3,9 +3,10 @@ package cmd
 import (
 	"errors"
 
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/actions/contexts"
+	"scrubber/actions/options"
+	rp "scrubber/resourcepool"
+
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +14,7 @@ type deleteIndicesCmd struct {
 	baseActionCmd
 }
 
-func (dic *deleteIndicesCmd) new(logger *logger.Logger) *cobra.Command {
+func (dic *deleteIndicesCmd) new() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "delete-indices",
 		Short: "deletes the specified list of indices",
@@ -23,7 +24,7 @@ func (dic *deleteIndicesCmd) new(logger *logger.Logger) *cobra.Command {
 
 	command.Flags().StringSlice("indices", []string{}, "indices to be deleted")
 
-	dic.logger = logger
+	dic.logger = rp.Logger()
 
 	return command
 }

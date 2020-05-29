@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/alejandro-carstens/scrubber/logger"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestActionCommands(t *testing.T) {
 	for _, data := range cmdParamsDataProvider() {
-		rootCmd := boot(logger.NewLogger("", true, true, true, true))
+		rootCmd := boot()
 
 		if len(data["error_params"]) > 0 {
 			_, err := executeCommand(rootCmd, data["error_params"]...)

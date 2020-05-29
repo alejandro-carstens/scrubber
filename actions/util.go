@@ -10,13 +10,14 @@ import (
 	"strconv"
 	"time"
 
+	"scrubber/actions/contexts"
+	"scrubber/actions/options"
+	"scrubber/filesystem"
+	"scrubber/logger"
+	"scrubber/notifications"
+
 	"github.com/Jeffail/gabs"
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/filesystem"
-	"github.com/alejandro-carstens/scrubber/logger"
-	"github.com/alejandro-carstens/scrubber/notifications"
 )
 
 type timer struct {

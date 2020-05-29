@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"time"
 
+	"scrubber/actions/criterias"
+
 	"github.com/Jeffail/gabs"
-	"github.com/alejandro-carstens/scrubber/actions/criterias"
 )
 
 type baseReport struct {

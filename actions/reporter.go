@@ -1,8 +1,8 @@
 package actions
 
 import (
-	"github.com/alejandro-carstens/scrubber/actions/filters/runners/reports"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/actions/filters/runners/reports"
+	"scrubber/logger"
 )
 
 type reporter struct {

@@ -1,8 +1,9 @@
 package actions
 
 import (
+	"scrubber/actions/options"
+
 	"github.com/alejandro-carstens/golastic"
-	"github.com/alejandro-carstens/scrubber/actions/options"
 )
 
 type listSnapshots struct {

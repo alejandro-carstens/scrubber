@@ -3,9 +3,10 @@ package cmd
 import (
 	"errors"
 
-	"github.com/alejandro-carstens/scrubber/actions/contexts"
-	"github.com/alejandro-carstens/scrubber/actions/options"
-	"github.com/alejandro-carstens/scrubber/logger"
+	"scrubber/actions/contexts"
+	"scrubber/actions/options"
+	rp "scrubber/resourcepool"
+
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +14,7 @@ type indexSettingsCmd struct {
 	baseActionCmd
 }
 
-func (isc *indexSettingsCmd) new(logger *logger.Logger) *cobra.Command {
+func (isc *indexSettingsCmd) new() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "index-settings",
 		Short: "updates the index settings for the indices in the actionable list",
@@ -21,7 +22,7 @@ func (isc *indexSettingsCmd) new(logger *logger.Logger) *cobra.Command {
 		Run:   isc.Handle,
 	}
 
-	isc.logger = logger
+	isc.logger = rp.Logger()
 
 	command.Flags().StringSlice("indices", []string{}, "list of indices whose settings need to be updated")
 	command.Flags().String("index_settings", "", "index settings to be applied as JSON")

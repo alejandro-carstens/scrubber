@@ -7,8 +7,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/alejandro-carstens/scrubber/notifications/configurations"
-	"github.com/alejandro-carstens/scrubber/notifications/messages"
+	"scrubber/notifications/configurations"
+	"scrubber/notifications/messages"
+
 	"github.com/cenkalti/backoff"
 )
 

@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/alejandro-carstens/scrubber/console/cmd"
+	"scrubber/console/cmd"
 )
 
 func main() {

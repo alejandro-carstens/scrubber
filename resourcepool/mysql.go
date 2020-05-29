@@ -2,8 +2,8 @@ package resourcepool
 
 import (
 	"fmt"
-	"scrubber/config"
 
+	"scrubber/config"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
