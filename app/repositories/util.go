@@ -11,6 +11,8 @@ func repo(model models.Modelable) Repositoryable {
 	switch model.Table() {
 	case "users":
 		repo = new(UserRepository)
+	case "access_controls":
+		repo = new(AccessControlRepository)
 	}
 
 	repo.Init(model, rp.MySQL())

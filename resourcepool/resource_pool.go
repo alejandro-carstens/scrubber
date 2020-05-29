@@ -2,6 +2,7 @@ package resourcepool
 
 import (
 	"context"
+	"errors"
 	"sync"
 
 	logs "scrubber/logger"
@@ -56,6 +57,20 @@ func Boot(exclude ...string) error {
 	})
 
 	return err
+}
+
+func BootResource(name string) error {
+	if !IsBooted() {
+		return errors.New("a resource pool needs to be booted")
+	}
+
+	resource, valid := register()[name]
+
+	if !valid {
+		return errors.New("invalid resource specified")
+	}
+
+	return resource.boot(rPool)
 }
 
 // RPool returns an instance of *ResourcePool

@@ -15,7 +15,7 @@ type Repositoryable interface {
 
 	Preload(relation string, conditions ...interface{}) Repositoryable
 
-	Find(id uint64, accountId uint64, dest interface{}) error
+	Find(id uint64, dest interface{}) error
 
 	FindWhere(params map[string]interface{}, dest interface{}) error
 
