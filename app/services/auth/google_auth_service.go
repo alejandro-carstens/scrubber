@@ -3,6 +3,7 @@ package auth
 import (
 	"io/ioutil"
 	"os"
+
 	"scrubber/app/models"
 	"scrubber/app/repositories"
 	"scrubber/app/services/auth/contexts"

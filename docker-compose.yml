@@ -23,6 +23,7 @@ services:
       dockerfile: Dockerfile.dev
     depends_on:
       - elasticsearch
+      - mysql
     environment:
       - "ELASTICSEARCH_URI=${ELASTICSEARCH_URI}"
       - "ELASTIC_USERNAME=${ELASTIC_USERNAME}"
@@ -33,12 +34,36 @@ services:
       - "SMTP_PORT=${SMTP_PORT}"
       - "SMTP_HOST=${SMTP_HOST}"
       - "EMAIL_USERNAME=${EMAIL_USERNAME}"
-      - "EMAIL_PASSWORD=${EMAIL_PASSWORD}" 
+      - "EMAIL_PASSWORD=${EMAIL_PASSWORD}"
+      - "MYSQL_HOST=${MYSQL_HOST}"
+      - "MYSQL_USERNAME=${MYSQL_USERNAME}"
+      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+      - "MYSQL_MAX_IDLE_CONNECTIONS=${MYSQL_MAX_IDLE_CONNECTIONS}"
+      - "MYSQL_MAX_OPEN_CONNECTIONS=${MYSQL_MAX_OPEN_CONNECTIONS}"
+      - "MYSQL_CONNECTION_MAX_LIFE_TIME=${MYSQL_CONNECTION_MAX_LIFE_TIME}"
+      - "MYSQL_PORT=${MYSQL_PORT}"
+      - "GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}"
+      - "GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}"
+      - "GOOGLE_REDIRECT_URL=${GOOGLE_REDIRECT_URL}"
+      - "GOOGLE_AUTH_SCOPE=${GOOGLE_AUTH_SCOPE}"
     volumes:
       - .:/go/src/scrubber
+    ports:
+      - 8081:8081
     networks:
       - esnet
   
+  mysql:
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    networks:
+      - esnet
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD:
+
   scrubber:
     build:
       context: ./

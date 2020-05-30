@@ -14,7 +14,7 @@ type User struct {
 // Indices implementation of the Modelable interface
 func (u *User) Indices() map[string][]string {
 	return map[string][]string{
-		"unique_account_email_deleted": []string{"account_id", "email", "deleted_at"},
+		"unique_email_deleted": []string{"email", "deleted_at"},
 	}
 }
 
