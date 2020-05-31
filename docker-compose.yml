@@ -50,7 +50,7 @@ services:
     volumes:
       - .:/go/src/scrubber
     ports:
-      - 8081:8081
+      - 8082:8082
     networks:
       - esnet
   
@@ -80,6 +80,16 @@ services:
     networks:
       - esnet
 
+  web:
+    container_name: web
+    build:
+      context: web/
+    volumes:
+      - ./web:/web
+      - ./web/node_modules
+    ports:
+      - '8081:8080'    
+  
 networks:
   esnet:
     driver: bridge
