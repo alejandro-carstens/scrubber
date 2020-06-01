@@ -88,7 +88,7 @@ services:
       - ./web:/web
       - ./web/node_modules
     ports:
-      - '8081:8080'    
+      - '8080:8080'    
   
 networks:
   esnet:

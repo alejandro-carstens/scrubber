@@ -74,8 +74,8 @@ func (gas *GoogleAuthService) Handle(context *contexts.GoogleAuthContext) (strin
 		user = &models.User{
 			Email:         profile.S("email").Data().(string),
 			EmailVerified: true,
-			Name:          profile.S("name").Data().(string),
-			LastName:      profile.S("last_name").Data().(string),
+			Name:          profile.S("given_name").Data().(string),
+			LastName:      profile.S("family_name").Data().(string),
 			Picture:       profile.S("picture").Data().(string),
 		}
 
