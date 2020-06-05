@@ -3,21 +3,27 @@ package repositories
 import (
 	"scrubber/app/models"
 	rp "scrubber/resourcepool"
+
+	"github.com/jinzhu/gorm"
 )
 
-func repo(model models.Modelable) Repositoryable {
-	var repo Repositoryable
+func repo(model models.Modelable, db *gorm.DB) Repositoryable {
+	var repository Repositoryable
 
 	switch model.Table() {
 	case "users":
-		repo = new(UserRepository)
+		repository = new(UserRepository)
 	case "access_controls":
-		repo = new(AccessControlRepository)
+		repository = new(AccessControlRepository)
 	}
 
-	repo.Init(model, rp.MySQL())
+	if db == nil {
+		db = rp.MySQL()
+	}
 
-	return repo
+	repository.Init(model, db)
+
+	return repository
 }
 
 func copyMap(m map[string][]interface{}) map[string][]interface{} {
@@ -28,4 +34,14 @@ func copyMap(m map[string][]interface{}) map[string][]interface{} {
 	}
 
 	return x
+}
+
+func inStringSlice(needle string, haystack []string) bool {
+	for _, value := range haystack {
+		if value == needle {
+			return true
+		}
+	}
+
+	return false
 }

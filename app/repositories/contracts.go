@@ -7,9 +7,9 @@ import (
 )
 
 type Repositoryable interface {
-	DB() *gorm.DB
+	Init(model models.Modelable, db *gorm.DB) Repositoryable
 
-	Tx(tx *gorm.DB) Repositoryable
+	DB() *gorm.DB
 
 	Unscoped() Repositoryable
 
@@ -28,8 +28,4 @@ type Repositoryable interface {
 	UpdateWhere(params map[string]interface{}, updates map[string]interface{}) (int64, error)
 
 	DeleteWhere(params map[string]interface{}, model models.Modelable, hard bool) (int64, error)
-
-	Init(model models.Modelable, db *gorm.DB) Repositoryable
-
-	ReleaseTx()
 }

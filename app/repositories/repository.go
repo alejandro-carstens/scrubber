@@ -18,18 +18,6 @@ type repository struct {
 	unscoped bool
 }
 
-func (r *repository) Tx(tx *gorm.DB) Repositoryable {
-	r = r.clone()
-
-	r.tx = tx
-
-	return r
-}
-
-func (r *repository) ReleaseTx() {
-	r.tx = nil
-}
-
 func (r *repository) DB() *gorm.DB {
 	return r.db
 }
@@ -139,6 +127,54 @@ func (r *repository) DeleteWhere(params map[string]interface{}, model models.Mod
 	res := query.Limit(LIMIT).Delete(model)
 
 	return res.RowsAffected, res.Error
+}
+
+func (r *repository) QueryByContext(context *QueryContext, dest interface{}) error {
+	query := r.connection().Table(r.model.Table()).LogMode(true)
+
+	if r.unscoped {
+		query = query.Unscoped()
+	}
+
+	for _, include := range context.Includes {
+		query = query.Preload(include)
+	}
+
+	for _, where := range context.Wheres {
+		query = query.Where(where.Prepare())
+	}
+
+	for _, whereNull := range context.WhereNulls {
+		query = query.Where(whereNull.Prepare())
+	}
+
+	for _, whereNotNull := range context.WhereNotNulls {
+		query = query.Where(whereNotNull.Prepare())
+	}
+
+	for _, orWhere := range context.OrWheres {
+		query = query.Or(orWhere.Prepare())
+	}
+
+	for _, whereIn := range context.WhereIns {
+		query = query.Where(whereIn.Prepare())
+	}
+
+	for _, whereNotIn := range context.WhereNotIns {
+		query = query.Not(whereNotIn.Prepare())
+	}
+
+	query.Offset(context.Offset)
+
+	if context.Limit > 0 {
+		query = query.Limit(context.Limit)
+	} else {
+		query = query.Limit(LIMIT)
+	}
+
+	query = query.Limit(LIMIT).Find(dest)
+
+	return query.Error
 }
 
 func (r *repository) clone() *repository {

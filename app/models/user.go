@@ -8,7 +8,7 @@ type User struct {
 	Name           string          `json:"name"            gorm:"type:varchar(512); not null;"`
 	LastName       string          `json:"last_name"       gorm:"type:varchar(512); not null"`
 	Picture        string          `json:"picture"         gorm:"type:varchar(2048); not null;"`
-	AccessControls []AccessControl `json:"access_controls" gorm:"foreignkey:UserId;"`
+	AccessControls []AccessControl `json:"access_controls" gorm:"foreignkey:user_id;"`
 }
 
 // Indices implementation of the Modelable interface

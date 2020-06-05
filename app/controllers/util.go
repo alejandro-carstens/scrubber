@@ -9,6 +9,7 @@ import (
 func registry() []Controllerable {
 	return []Controllerable{
 		&GoogleAuthController{},
+		&UserController{},
 	}
 }
 
