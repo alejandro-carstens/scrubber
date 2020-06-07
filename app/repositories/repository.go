@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"scrubber/app/models"
+	"sync"
 
 	"github.com/jinzhu/gorm"
 	gormbulk "github.com/t-tiger/gorm-bulk-insert"
@@ -129,7 +130,7 @@ func (r *repository) DeleteWhere(params map[string]interface{}, model models.Mod
 	return res.RowsAffected, res.Error
 }
 
-func (r *repository) QueryByContext(context *QueryContext, dest interface{}) error {
+func (r *repository) QueryByContext(context *QueryContext, dest interface{}) (*queryMeta, error) {
 	query := r.connection().Table(r.model.Table()).LogMode(true)
 
 	if r.unscoped {
@@ -164,17 +165,49 @@ func (r *repository) QueryByContext(context *QueryContext, dest interface{}) err
 		query = query.Not(whereNotIn.Prepare())
 	}
 
-	query.Offset(context.Offset)
+	metaQuery := query
+
+	query = query.Offset(context.Offset)
+
+	var limit int
 
 	if context.Limit > 0 {
-		query = query.Limit(context.Limit)
+		limit = context.Limit
 	} else {
-		query = query.Limit(LIMIT)
+		limit = LIMIT
 	}
 
-	query = query.Limit(LIMIT).Find(dest)
+	query = query.Limit(limit)
 
-	return query.Error
+	var wg sync.WaitGroup
+
+	wg.Add(2)
+
+	var total int
+
+	go func() {
+		defer wg.Done()
+
+		metaQuery = metaQuery.Count(&total)
+	}()
+
+	go func() {
+		defer wg.Done()
+
+		query = query.Find(dest)
+	}()
+
+	wg.Wait()
+
+	if metaQuery.Error != nil {
+		return nil, metaQuery.Error
+	}
+
+	if query.Error != nil {
+		return nil, query.Error
+	}
+
+	return buildQueryMeta(limit, context.Offset, total), nil
 }
 
 func (r *repository) clone() *repository {

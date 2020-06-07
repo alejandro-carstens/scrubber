@@ -6,22 +6,14 @@ import (
 	"fmt"
 )
 
-func BindQueryContext(payload interface{}) (*QueryContext, error) {
-	b, err := json.Marshal(payload)
-
-	if err != nil {
-		return nil, err
-	}
-
+func BindQueryContext(payload string) (*QueryContext, error) {
 	qc := &QueryContext{}
 
-	if err := json.Unmarshal(b, qc); err != nil {
+	if err := json.Unmarshal([]byte(payload), qc); err != nil {
 		return nil, err
 	}
 
-	err = qc.Validate()
-
-	return qc, err
+	return qc, qc.Validate()
 }
 
 type QueryContext struct {

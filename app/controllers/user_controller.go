@@ -34,13 +34,7 @@ func (uc *UserController) Routes() []*Route {
 // Index is responsible for returning all
 // users for a specified query context
 func (uc *UserController) Index(ctx echo.Context) error {
-	request := echo.Map{}
-
-	if err := ctx.Bind(&request); err != nil {
-		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{"error": true, "message": err.Error()})
-	}
-
-	queryContext, err := repositories.BindQueryContext(request["query"])
+	queryContext, err := repositories.BindQueryContext(ctx.QueryParam("query"))
 
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, echo.Map{"error": true, "message": err.Error()})
@@ -48,9 +42,11 @@ func (uc *UserController) Index(ctx echo.Context) error {
 
 	users := []*models.User{}
 
-	if err := uc.repository.QueryByContext(queryContext, &users); err != nil {
+	meta, err := uc.repository.QueryByContext(queryContext, &users)
+
+	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, echo.Map{"error": true, "message": err.Error()})
 	}
 
-	return ctx.JSON(http.StatusOK, echo.Map{"users": users})
+	return ctx.JSON(http.StatusOK, echo.Map{"meta": meta, "users": users})
 }
