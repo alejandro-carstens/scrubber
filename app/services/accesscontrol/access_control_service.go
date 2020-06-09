@@ -10,18 +10,20 @@ import (
 
 func NewAccessControlService() *AccessControlService {
 	return &AccessControlService{
-		repository: repositories.NewAcessControlRepository(),
+		accessControlRepository: repositories.NewAcessControlRepository(),
+		userRepository:          repositories.NewUserRepository(),
 	}
 }
 
 type AccessControlService struct {
-	repository *repositories.AccessControlRepository
+	accessControlRepository *repositories.AccessControlRepository
+	userRepository          *repositories.UserRepository
 }
 
-func (acs *AccessControlService) Handle(context *contexts.AccessControlContext) ([]*models.AccessControl, error) {
+func (acs *AccessControlService) Handle(context *contexts.AccessControlContext) (*models.User, error) {
 	accessControls := []*models.AccessControl{}
 
-	if err := acs.repository.FindWhere(map[string]interface{}{
+	if err := acs.accessControlRepository.FindWhere(map[string]interface{}{
 		"user_id = ?": context.UserID(),
 	}, &accessControls); err != nil {
 		return nil, err
@@ -65,11 +67,11 @@ func (acs *AccessControlService) Handle(context *contexts.AccessControlContext) 
 		})
 	}
 
-	if err := acs.repository.DB().Transaction(func(tx *gorm.DB) error {
-		repository := acs.repository.FromTx(tx)
+	if err := acs.accessControlRepository.DB().Transaction(func(tx *gorm.DB) error {
+		accessControlRepository := acs.accessControlRepository.FromTx(tx)
 
 		if len(readIds) > 0 {
-			if _, err := repository.UpdateWhere(map[string]interface{}{
+			if _, err := accessControlRepository.UpdateWhere(map[string]interface{}{
 				"id IN (?)": readIds,
 			}, map[string]interface{}{
 				"scope": repositories.ACCESS_CONTROL_READ_SCOPE,
@@ -79,7 +81,7 @@ func (acs *AccessControlService) Handle(context *contexts.AccessControlContext) 
 		}
 
 		if len(writeIds) > 0 {
-			if _, err := repository.UpdateWhere(map[string]interface{}{
+			if _, err := accessControlRepository.UpdateWhere(map[string]interface{}{
 				"id IN (?)": writeIds,
 			}, map[string]interface{}{
 				"scope": repositories.ACCESS_CONTROL_WRITE_SCOPE,
@@ -89,7 +91,7 @@ func (acs *AccessControlService) Handle(context *contexts.AccessControlContext) 
 		}
 
 		if len(noAccessIds) > 0 {
-			if _, err := repository.UpdateWhere(map[string]interface{}{
+			if _, err := accessControlRepository.UpdateWhere(map[string]interface{}{
 				"id IN (?)": noAccessIds,
 			}, map[string]interface{}{
 				"scope": repositories.ACCESS_CONTROL_NO_ACCESS_SCOPE,
@@ -99,7 +101,7 @@ func (acs *AccessControlService) Handle(context *contexts.AccessControlContext) 
 		}
 
 		if len(inserts) > 0 {
-			return repository.Insert(inserts...)
+			return accessControlRepository.Insert(inserts...)
 		}
 
 		return nil
@@ -107,11 +109,7 @@ func (acs *AccessControlService) Handle(context *contexts.AccessControlContext) 
 		return nil, err
 	}
 
-	accessControls = []*models.AccessControl{}
+	user := &models.User{}
 
-	err := acs.repository.FindWhere(map[string]interface{}{
-		"user_id = ?": context.UserID(),
-	}, &accessControls)
-
-	return accessControls, err
+	return user, acs.userRepository.Preload("AccessControls").Find(context.UserID(), user)
 }

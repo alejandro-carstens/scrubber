@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 	"scrubber/app/services/accesscontrol"
 	"scrubber/app/services/accesscontrol/contexts"
@@ -43,11 +42,11 @@ func (uacc *UserAccessControlController) Handle(ctx echo.Context) error {
 		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{"error": true, "message": err.Error()})
 	}
 
-	accessControls, err := uacc.service.Handle(context)
+	user, err := uacc.service.Handle(context)
 
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, echo.Map{"error": true, "message": err.Error()})
 	}
 
-	return ctx.JSON(http.StatusOK, echo.Map{"access_controls": accessControls})
+	return ctx.JSON(http.StatusOK, echo.Map{"user": user})
 }
