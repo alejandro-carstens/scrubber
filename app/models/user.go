@@ -5,6 +5,7 @@ type User struct {
 	Model
 	Email          string          `json:"email"           gorm:"type:varchar(512); not null;"`
 	EmailVerified  bool            `json:"email_verified"  gorm:"type:tinyint(1); not null;"`
+	FullName       string          `json:"full_name"       gorm:"type:varchar(512); not null;"`
 	Name           string          `json:"name"            gorm:"type:varchar(512); not null;"`
 	LastName       string          `json:"last_name"       gorm:"type:varchar(512); not null"`
 	Picture        string          `json:"picture"         gorm:"type:varchar(2048); not null;"`
@@ -14,7 +15,8 @@ type User struct {
 // Indices implementation of the Modelable interface
 func (u *User) Indices() map[string][]string {
 	return map[string][]string{
-		"unique_email_deleted": []string{"email", "deleted_at"},
+		"unique_email":      []string{"email"},
+		"full_name_deleted": []string{"full_name", "deleted_at"},
 	}
 }
 

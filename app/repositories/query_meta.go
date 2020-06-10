@@ -16,11 +16,17 @@ func buildQueryMeta(limit, offset, total int) *queryMeta {
 		currentPage = -1
 	}
 
+	to := offset + limit
+
+	if total == 0 {
+		to = 0
+	}
+
 	return &queryMeta{
 		CurrentPage: currentPage,
 		From:        offset,
 		PerPage:     limit,
-		To:          offset + limit,
+		To:          to,
 		LastPage:    total / limit,
 		Total:       total,
 	}

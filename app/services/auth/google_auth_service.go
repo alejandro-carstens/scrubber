@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -60,6 +61,8 @@ func (gas *GoogleAuthService) Handle(context *contexts.GoogleAuthContext) (strin
 				LastName:      profile.S("family_name").Data().(string),
 				Picture:       profile.S("picture").Data().(string),
 			}
+
+			user.FullName = fmt.Sprintf("%v %v", user.Name, user.LastName)
 
 			if err := userRepository.Create(user); err != nil {
 				return err

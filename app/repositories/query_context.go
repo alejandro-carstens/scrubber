@@ -181,7 +181,7 @@ func (w *where) validate() error {
 		return errors.New("field cannot be empty for where clause")
 	}
 
-	if !inStringSlice(w.Operator, []string{"=", ">", "<", "=>", "<=", "!="}) {
+	if !inStringSlice(w.Operator, []string{"=", ">", "<", "=>", "<=", "!=", "like"}) {
 		return errors.New("invalid operator for where clause")
 	}
 
@@ -193,7 +193,13 @@ func (w *where) validate() error {
 }
 
 func (w *where) Prepare() (interface{}, interface{}) {
-	return fmt.Sprintf("%v %v ?", w.Field, w.Operator), w.Value
+	value := w.Value
+
+	if w.Operator == "like" {
+		value = "%" + fmt.Sprint(w.Value) + "%"
+	}
+
+	return fmt.Sprintf("%v %v ?", w.Field, w.Operator), value
 }
 
 type orWhere struct {
@@ -207,7 +213,7 @@ func (ow *orWhere) validate() error {
 		return errors.New("field cannot be empty for orWhere clause")
 	}
 
-	if !inStringSlice(ow.Operator, []string{"=", ">", "<", "=>", "<=", "!="}) {
+	if !inStringSlice(ow.Operator, []string{"=", ">", "<", "=>", "<=", "!=", "like"}) {
 		return errors.New("invalid operator for orWhere clause")
 	}
 
@@ -219,7 +225,13 @@ func (ow *orWhere) validate() error {
 }
 
 func (ow *orWhere) Prepare() (interface{}, interface{}) {
-	return fmt.Sprintf("%v %v ?", ow.Field, ow.Operator), ow.Value
+	value := ow.Field
+
+	if ow.Operator == "like" {
+		value = "%" + fmt.Sprint(ow.Value) + "%"
+	}
+
+	return fmt.Sprintf("%v %v ?", ow.Field, ow.Operator), value
 }
 
 type whereNull struct {

@@ -73,9 +73,19 @@ func (r *repository) FindWhere(params map[string]interface{}, dest interface{}) 
 }
 
 func (r *repository) Find(id uint64, dest interface{}) error {
-	res := r.connection().LogMode(true).First(dest, id)
+	query := r.connection().Table(r.model.Table()).LogMode(true)
 
-	return res.Error
+	if r.unscoped {
+		query = query.Unscoped()
+	}
+
+	if len(r.preloads) > 0 {
+		for relation, conditions := range r.preloads {
+			query = query.Preload(relation, conditions...)
+		}
+	}
+
+	return query.First(dest, id).Error
 }
 
 func (r *repository) Create(model models.Modelable) error {
