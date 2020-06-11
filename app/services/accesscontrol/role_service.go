@@ -76,19 +76,25 @@ func (rs *RoleService) Handle(context *contexts.RoleContext) (*models.Role, erro
 		}
 
 		if len(readIds) > 0 {
-			if _, err := permissionRepository.UpdateWhere(rs.params(readIds, repositories.READ_SCOPE)); err != nil {
+			if _, err := permissionRepository.UpdateWhere(
+				rs.params(readIds, repositories.READ_SCOPE),
+			); err != nil {
 				return err
 			}
 		}
 
 		if len(writeIds) > 0 {
-			if _, err := permissionRepository.UpdateWhere(rs.params(writeIds, repositories.WRITE_SCOPE)); err != nil {
+			if _, err := permissionRepository.UpdateWhere(
+				rs.params(writeIds, repositories.WRITE_SCOPE),
+			); err != nil {
 				return err
 			}
 		}
 
 		if len(noAccessIds) > 0 {
-			if _, err := permissionRepository.UpdateWhere(rs.params(noAccessIds, repositories.NO_ACCESS_SCOPE)); err != nil {
+			if _, err := permissionRepository.UpdateWhere(
+				rs.params(noAccessIds, repositories.NO_ACCESS_SCOPE),
+			); err != nil {
 				return err
 			}
 		}

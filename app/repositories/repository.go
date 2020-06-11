@@ -142,7 +142,6 @@ func (r *repository) DeleteWhere(params map[string]interface{}, model models.Mod
 
 func (r *repository) QueryByContext(context *QueryContext, dest interface{}) (*queryMeta, error) {
 	query := r.buildQueryFromContext(context)
-
 	metaQuery := query
 
 	var limit int
