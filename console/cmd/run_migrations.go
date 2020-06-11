@@ -11,8 +11,10 @@ import (
 )
 
 var tableRegister map[string]models.Modelable = map[string]models.Modelable{
-	"users":           &models.User{},
-	"access_controls": &models.AccessControl{},
+	"users":       &models.User{},
+	"roles":       &models.Role{},
+	"users_roles": &models.UserRole{},
+	"permissions": &models.Permission{},
 }
 
 type runMigrations struct {

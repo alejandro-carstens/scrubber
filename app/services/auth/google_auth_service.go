@@ -17,14 +17,18 @@ import (
 
 func NewGoogleAuthService() *GoogleAuthService {
 	return &GoogleAuthService{
-		userRepository:          repositories.NewUserRepository(),
-		accessControlRepository: repositories.NewAcessControlRepository(),
+		permissionRepository: repositories.NewPermissionRepository(),
+		roleRepository:       repositories.NewRoleRepository(),
+		userRoleRepository:   repositories.NewUserRoleRepository(),
+		userRepository:       repositories.NewUserRepository(),
 	}
 }
 
 type GoogleAuthService struct {
-	userRepository          *repositories.UserRepository
-	accessControlRepository *repositories.AccessControlRepository
+	permissionRepository *repositories.PermissionRepository
+	roleRepository       *repositories.RoleRepository
+	userRoleRepository   *repositories.UserRoleRepository
+	userRepository       *repositories.UserRepository
 }
 
 func (gas *GoogleAuthService) Handle(context *contexts.GoogleAuthContext) (string, error) {
@@ -52,8 +56,6 @@ func (gas *GoogleAuthService) Handle(context *contexts.GoogleAuthContext) (strin
 		}
 
 		if err := gas.userRepository.DB().Transaction(func(tx *gorm.DB) error {
-			userRepository := gas.userRepository.FromTx(tx)
-
 			user = &models.User{
 				Email:         profile.S("email").Data().(string),
 				EmailVerified: true,
@@ -64,7 +66,7 @@ func (gas *GoogleAuthService) Handle(context *contexts.GoogleAuthContext) (strin
 
 			user.FullName = fmt.Sprintf("%v %v", user.Name, user.LastName)
 
-			if err := userRepository.Create(user); err != nil {
+			if err := gas.userRepository.FromTx(tx).Create(user); err != nil {
 				return err
 			}
 
@@ -72,11 +74,20 @@ func (gas *GoogleAuthService) Handle(context *contexts.GoogleAuthContext) (strin
 				return nil
 			}
 
-			return gas.accessControlRepository.FromTx(tx).Create(&models.AccessControl{
+			role := &models.Role{Name: repositories.ADMIN_ROLE}
+
+			if err := gas.roleRepository.FromTx(tx).Create(role); err != nil {
+				return err
+			}
+
+			if err := gas.userRoleRepository.FromTx(tx).Create(&models.UserRole{
 				UserID: user.ID,
-				Action: repositories.ACCESS_CONTROL_ALL_ACTIONS,
-				Scope:  repositories.ACCESS_CONTROL_WRITE_SCOPE,
-			})
+				RoleID: role.ID,
+			}); err != nil {
+				return err
+			}
+
+			return gas.permissionRepository.FromTx(tx).Insert(gas.adminPermissions(role.ID)...)
 		}); err != nil {
 			return "", err
 		}
@@ -119,4 +130,18 @@ func (gas *GoogleAuthService) exchangeCode(code string) (*gabs.Container, error)
 	}
 
 	return gabs.ParseJSON(data)
+}
+
+func (gas *GoogleAuthService) adminPermissions(roleId uint64) []interface{} {
+	permissions := []interface{}{}
+
+	for _, action := range repositories.AvailableActions {
+		permissions = append(permissions, &models.Permission{
+			RoleID: roleId,
+			Action: action,
+			Scope:  repositories.READ_SCOPE,
+		})
+	}
+
+	return permissions
 }

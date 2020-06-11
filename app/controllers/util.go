@@ -10,7 +10,7 @@ func registry() []Controllerable {
 	return []Controllerable{
 		&GoogleAuthController{},
 		&UserController{},
-		&UserAccessControlController{},
+		&RoleController{},
 	}
 }
 

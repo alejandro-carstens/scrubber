@@ -8,45 +8,50 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type UserAccessControlController struct {
-	service *accesscontrol.AccessControlService
+type RoleController struct {
+	service *accesscontrol.RoleService
 }
 
-func (uacc *UserAccessControlController) new() Controllerable {
-	return &UserAccessControlController{
-		service: accesscontrol.NewAccessControlService(),
+func (rc *RoleController) new() Controllerable {
+	return &RoleController{
+		service: accesscontrol.NewRoleService(),
 	}
 }
 
 // Routes implementation of the Controllable interface
-func (uacc *UserAccessControlController) Routes() []*Route {
+func (rc *RoleController) Routes() []*Route {
 	return []*Route{
 		&Route{
 			method:  "PUT",
-			route:   "/api/users/:user_id/access_controls",
-			handler: uacc.Handle,
+			route:   "/api/roles/:role_id/permissions",
+			handler: rc.Handle,
+		},
+		&Route{
+			method:  "POST",
+			route:   "/api/roles",
+			handler: rc.Handle,
 		},
 	}
 }
 
-func (uacc *UserAccessControlController) Handle(ctx echo.Context) error {
+func (rc *RoleController) Handle(ctx echo.Context) error {
 	request := echo.Map{}
 
 	if err := ctx.Bind(&request); err != nil {
 		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{"error": true, "message": err.Error()})
 	}
 
-	context, err := contexts.NewAccessControlContext(request)
+	context, err := contexts.NewRoleContext(request)
 
 	if err != nil {
 		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{"error": true, "message": err.Error()})
 	}
 
-	user, err := uacc.service.Handle(context)
+	role, err := rc.service.Handle(context)
 
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, echo.Map{"error": true, "message": err.Error()})
 	}
 
-	return ctx.JSON(http.StatusOK, echo.Map{"user": user})
+	return ctx.JSON(http.StatusOK, echo.Map{"role": role})
 }

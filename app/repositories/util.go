@@ -11,10 +11,18 @@ func repo(model models.Modelable, db *gorm.DB) Repositoryable {
 	var repository Repositoryable
 
 	switch model.Table() {
+	case "permissions":
+		repository = new(PermissionRepository)
+		break
+	case "roles":
+		repository = new(RoleRepository)
+		break
 	case "users":
 		repository = new(UserRepository)
-	case "access_controls":
-		repository = new(AccessControlRepository)
+		break
+	case "users_roles":
+		repository = new(UserRoleRepository)
+		break
 	}
 
 	if db == nil {
