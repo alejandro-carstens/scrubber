@@ -141,6 +141,53 @@ func (r *repository) DeleteWhere(params map[string]interface{}, model models.Mod
 }
 
 func (r *repository) QueryByContext(context *QueryContext, dest interface{}) (*queryMeta, error) {
+	query := r.buildQueryFromContext(context)
+
+	metaQuery := query
+
+	var limit int
+
+	if context.Limit > 0 {
+		limit = context.Limit
+	} else {
+		limit = LIMIT
+	}
+
+	query = query.Limit(limit)
+	query = query.Offset(context.Offset)
+
+	var wg sync.WaitGroup
+
+	wg.Add(2)
+
+	var total int
+
+	go func() {
+		defer wg.Done()
+
+		metaQuery = metaQuery.Count(&total)
+	}()
+
+	go func() {
+		defer wg.Done()
+
+		query = query.Find(dest)
+	}()
+
+	wg.Wait()
+
+	if metaQuery.Error != nil {
+		return nil, metaQuery.Error
+	}
+
+	if query.Error != nil {
+		return nil, query.Error
+	}
+
+	return buildQueryMeta(limit, context.Offset, total), nil
+}
+
+func (r *repository) buildQueryFromContext(context *QueryContext) *gorm.DB {
 	query := r.connection().Table(r.model.Table()).LogMode(true)
 
 	if r.unscoped {
@@ -175,49 +222,7 @@ func (r *repository) QueryByContext(context *QueryContext, dest interface{}) (*q
 		query = query.Not(whereNotIn.Prepare())
 	}
 
-	metaQuery := query
-
-	query = query.Offset(context.Offset)
-
-	var limit int
-
-	if context.Limit > 0 {
-		limit = context.Limit
-	} else {
-		limit = LIMIT
-	}
-
-	query = query.Limit(limit)
-
-	var wg sync.WaitGroup
-
-	wg.Add(2)
-
-	var total int
-
-	go func() {
-		defer wg.Done()
-
-		metaQuery = metaQuery.Count(&total)
-	}()
-
-	go func() {
-		defer wg.Done()
-
-		query = query.Find(dest)
-	}()
-
-	wg.Wait()
-
-	if metaQuery.Error != nil {
-		return nil, metaQuery.Error
-	}
-
-	if query.Error != nil {
-		return nil, query.Error
-	}
-
-	return buildQueryMeta(limit, context.Offset, total), nil
+	return query
 }
 
 func (r *repository) clone() *repository {
