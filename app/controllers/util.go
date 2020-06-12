@@ -11,6 +11,8 @@ func registry() []Controllerable {
 		&GoogleAuthController{},
 		&UserController{},
 		&RoleController{},
+		&RolePermissionController{},
+		&UserRoleController{},
 	}
 }
 

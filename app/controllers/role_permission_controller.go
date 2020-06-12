@@ -8,28 +8,28 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type RoleController struct {
+type RolePermissionController struct {
 	service *accesscontrol.RoleService
 }
 
-func (rc *RoleController) new() Controllerable {
-	return &RoleController{
+func (rc *RolePermissionController) new() Controllerable {
+	return &RolePermissionController{
 		service: accesscontrol.NewRoleService(),
 	}
 }
 
 // Routes implementation of the Controllable interface
-func (rc *RoleController) Routes() []*Route {
+func (rc *RolePermissionController) Routes() []*Route {
 	return []*Route{
 		&Route{
-			method:  "POST",
-			route:   "/api/roles",
+			method:  "PUT",
+			route:   "/api/roles/:role_id/permissions",
 			handler: rc.Handle,
 		},
 	}
 }
 
-func (rc *RoleController) Handle(ctx echo.Context) error {
+func (rc *RolePermissionController) Handle(ctx echo.Context) error {
 	request := echo.Map{}
 
 	if err := ctx.Bind(&request); err != nil {
