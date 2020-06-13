@@ -11,9 +11,9 @@ import (
 )
 
 var tableRegister map[string]models.Modelable = map[string]models.Modelable{
+	"users_roles": &models.UserRole{},
 	"users":       &models.User{},
 	"roles":       &models.Role{},
-	"users_roles": &models.UserRole{},
 	"permissions": &models.Permission{},
 }
 

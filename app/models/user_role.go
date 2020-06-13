@@ -18,3 +18,8 @@ func (ur *UserRole) Indices() map[string][]string {
 func (ur *UserRole) Table() string {
 	return "users_roles"
 }
+
+// Table implementation of the Modelable interface
+func (ur *UserRole) TableName() string {
+	return ur.Table()
+}
