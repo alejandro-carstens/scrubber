@@ -139,7 +139,7 @@ func (gas *GoogleAuthService) adminPermissions(roleId uint64) []interface{} {
 		permissions = append(permissions, &models.Permission{
 			RoleID: roleId,
 			Action: action,
-			Scope:  repositories.READ_SCOPE,
+			Scope:  repositories.WRITE_SCOPE,
 		})
 	}
 

@@ -11,14 +11,16 @@ import (
 )
 
 type RoleController struct {
-	service    *accesscontrol.RoleService
-	repository *repositories.RoleRepository
+	service       *accesscontrol.RoleService
+	deleteService *accesscontrol.DeleteRoleService
+	repository    *repositories.RoleRepository
 }
 
 func (rc *RoleController) new() Controllerable {
 	return &RoleController{
-		service:    accesscontrol.NewRoleService(),
-		repository: repositories.NewRoleRepository(),
+		service:       accesscontrol.NewRoleService(),
+		deleteService: accesscontrol.NewDeleteRoleService(),
+		repository:    repositories.NewRoleRepository(),
 	}
 }
 
@@ -34,6 +36,11 @@ func (rc *RoleController) Routes() []*Route {
 			method:  "GET",
 			route:   "/api/roles",
 			handler: rc.Index,
+		},
+		&Route{
+			method:  "DELETE",
+			route:   "/api/roles/:role_id",
+			handler: rc.Delete,
 		},
 	}
 }
@@ -76,4 +83,24 @@ func (rc *RoleController) Index(ctx echo.Context) error {
 	}
 
 	return ctx.JSON(http.StatusOK, echo.Map{"meta": meta, "roles": roles})
+}
+
+func (rc *RoleController) Delete(ctx echo.Context) error {
+	request := echo.Map{}
+
+	if err := ctx.Bind(&request); err != nil {
+		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{"error": true, "message": err.Error()})
+	}
+
+	context, err := contexts.NewDeleteRoleContext(request)
+
+	if err != nil {
+		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{"error": true, "message": err.Error()})
+	}
+
+	if err := rc.deleteService.Handle(context); err != nil {
+		return ctx.JSON(http.StatusInternalServerError, echo.Map{"error": true, "message": err.Error()})
+	}
+
+	return ctx.JSON(http.StatusOK, echo.Map{"deleted": true})
 }

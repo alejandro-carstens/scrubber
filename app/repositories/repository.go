@@ -127,7 +127,7 @@ func (r *repository) Update(model models.Modelable) error {
 func (r *repository) DeleteWhere(params map[string]interface{}, model models.Modelable, hard bool) (int64, error) {
 	query := r.connection().Table(r.model.Table()).LogMode(true)
 
-	if r.unscoped {
+	if r.unscoped || hard {
 		query.Unscoped()
 	}
 
@@ -136,6 +136,18 @@ func (r *repository) DeleteWhere(params map[string]interface{}, model models.Mod
 	}
 
 	res := query.Limit(LIMIT).Delete(model)
+
+	return res.RowsAffected, res.Error
+}
+
+func (r *repository) Delete(model models.Modelable, hard bool) (int64, error) {
+	query := r.connection().Table(r.model.Table()).LogMode(true)
+
+	if r.unscoped || hard {
+		query.Unscoped()
+	}
+
+	res := query.Delete(model)
 
 	return res.RowsAffected, res.Error
 }
@@ -163,6 +175,10 @@ func (r *repository) QueryByContext(context *QueryContext, dest interface{}) (*q
 
 	go func() {
 		defer wg.Done()
+
+		if !r.unscoped {
+			metaQuery = metaQuery.Where("deleted_at IS NULL")
+		}
 
 		metaQuery = metaQuery.Count(&total)
 	}()
