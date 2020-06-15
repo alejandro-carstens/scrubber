@@ -2,8 +2,8 @@ package models
 
 type Role struct {
 	Model
-	Name        string       `json:"name"  gorm:"type:varchar(512); not null"`
-	Users       []User       `json:"users,omitempty" gorm:"many2many:users_roles;association_foreignkey:user_id;association_foreignkey:role_id;"`
+	Name        string       `json:"name"            gorm:"type:varchar(512); not null"`
+	Users       []User       `json:"users,omitempty" gorm:"many2many:users_roles;"`
 	Permissions []Permission `json:"permissions"`
 }
 

@@ -336,3 +336,7 @@ func (o *order) validate() error {
 
 	return nil
 }
+
+func (o *order) Prepare() (string, bool) {
+	return fmt.Sprintf("%v %v", o.Field, o.Direction), true
+}

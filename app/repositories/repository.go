@@ -186,6 +186,10 @@ func (r *repository) QueryByContext(context *QueryContext, dest interface{}) (*q
 	go func() {
 		defer wg.Done()
 
+		for _, include := range context.Includes {
+			query = query.Preload(include)
+		}
+
 		query = query.Find(dest)
 	}()
 
@@ -207,10 +211,6 @@ func (r *repository) buildQueryFromContext(context *QueryContext) *gorm.DB {
 
 	if r.unscoped {
 		query = query.Unscoped()
-	}
-
-	for _, include := range context.Includes {
-		query = query.Preload(include)
 	}
 
 	for _, where := range context.Wheres {
@@ -235,6 +235,10 @@ func (r *repository) buildQueryFromContext(context *QueryContext) *gorm.DB {
 
 	for _, whereNotIn := range context.WhereNotIns {
 		query = query.Not(whereNotIn.Prepare())
+	}
+
+	for _, order := range context.Orders {
+		query = query.Order(order.Prepare())
 	}
 
 	return query

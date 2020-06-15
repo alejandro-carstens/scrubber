@@ -9,7 +9,7 @@ type User struct {
 	Name          string `json:"name"            gorm:"type:varchar(512); not null;"`
 	LastName      string `json:"last_name"       gorm:"type:varchar(512); not null"`
 	Picture       string `json:"picture"         gorm:"type:varchar(2048); not null;"`
-	Roles         []Role `json:"roles,omitempty" gorm:"many2many:users_roles;association_foreignkey:user_id;association_foreignkey:role_id;"`
+	Roles         []Role `json:"roles,omitempty" gorm:"many2many:users_roles;"`
 }
 
 // Indices implementation of the Modelable interface

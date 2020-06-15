@@ -38,12 +38,13 @@ func (urs *UserRoleService) Handle(context *contexts.UserRoleContext) (*models.U
 
 	if err := urs.userRoleRepository.FindWhere(map[string]interface{}{
 		"user_id = ?": user.ID,
+		"role_id = ?": role.ID,
 	}, &userRoles); err != nil {
 		return nil, err
 	}
 
 	if len(userRoles) > 1 {
-		return nil, errors.New("There can be at most one role per user")
+		return nil, errors.New("role is already associated to user")
 	}
 
 	if len(userRoles) == 0 {
