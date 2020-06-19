@@ -11,14 +11,14 @@ import (
 func NewDeleteRoleService() *DeleteRoleService {
 	return &DeleteRoleService{
 		roleRepository:       repositories.NewRoleRepository(),
-		userRoleRespository:  repositories.NewUserRoleRepository(),
+		userRoleRepository:   repositories.NewUserRoleRepository(),
 		permissionRepository: repositories.NewPermissionRepository(),
 	}
 }
 
 type DeleteRoleService struct {
 	roleRepository       *repositories.RoleRepository
-	userRoleRespository  *repositories.UserRoleRepository
+	userRoleRepository   *repositories.UserRoleRepository
 	permissionRepository *repositories.PermissionRepository
 }
 
@@ -36,7 +36,7 @@ func (drs *DeleteRoleService) Handle(context *contexts.DeleteRoleContext) error 
 			return err
 		}
 
-		if _, err := drs.userRoleRespository.FromTx(tx).DeleteWhere(map[string]interface{}{
+		if _, err := drs.userRoleRepository.FromTx(tx).DeleteWhere(map[string]interface{}{
 			"role_id = ?": role.ID,
 		}, &models.UserRole{}, false); err != nil {
 			return err

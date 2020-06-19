@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"scrubber/app/models"
 	"scrubber/app/repositories"
+	"scrubber/app/services/user"
+	"scrubber/app/services/user/contexts"
 
 	"github.com/labstack/echo/v4"
 )
@@ -11,12 +13,14 @@ import (
 // UserController controls access and
 // edits to the user model
 type UserController struct {
-	repository *repositories.UserRepository
+	repository    *repositories.UserRepository
+	deleteService *user.DeleteUserService
 }
 
 func (uc *UserController) new() Controllerable {
 	return &UserController{
-		repository: repositories.NewUserRepository(),
+		repository:    repositories.NewUserRepository(),
+		deleteService: user.NewDeleteUserService(),
 	}
 }
 
@@ -27,6 +31,11 @@ func (uc *UserController) Routes() []*Route {
 			method:  "GET",
 			route:   "/api/users",
 			handler: uc.Index,
+		},
+		&Route{
+			method:  "DELETE",
+			route:   "/api/users/:user_id",
+			handler: uc.Delete,
 		},
 	}
 }
@@ -49,4 +58,25 @@ func (uc *UserController) Index(ctx echo.Context) error {
 	}
 
 	return ctx.JSON(http.StatusOK, echo.Map{"meta": meta, "users": users})
+}
+
+// Delete deletes a given user
+func (uc *UserController) Delete(ctx echo.Context) error {
+	request := echo.Map{}
+
+	if err := ctx.Bind(&request); err != nil {
+		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{"error": true, "message": err.Error()})
+	}
+
+	context, err := contexts.NewDeleteUserContext(request)
+
+	if err != nil {
+		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{"error": true, "message": err.Error()})
+	}
+
+	if err := uc.deleteService.Handle(context); err != nil {
+		return ctx.JSON(http.StatusInternalServerError, echo.Map{"error": true, "message": err.Error()})
+	}
+
+	return ctx.JSON(http.StatusOK, echo.Map{"deleted": true})
 }
