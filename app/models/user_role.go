@@ -15,11 +15,11 @@ func (ur *UserRole) Indices() map[string][]string {
 }
 
 // Table implementation of the Modelable interface
-func (ur *UserRole) Table() string {
-	return "users_roles"
+func (ur *UserRole) TableName() string {
+	return ur.Table()
 }
 
 // Table implementation of the Modelable interface
-func (ur *UserRole) TableName() string {
-	return ur.Table()
+func (ur *UserRole) Table() string {
+	return "users_roles"
 }
