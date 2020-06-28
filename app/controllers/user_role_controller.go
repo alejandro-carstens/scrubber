@@ -23,7 +23,7 @@ func (rc *UserRoleController) Routes() []*Route {
 	return []*Route{
 		&Route{
 			method:  "PUT",
-			route:   "/api/users/:user_id/roles/:role_id",
+			route:   "/api/users/:user_id/roles",
 			handler: rc.Handle,
 		},
 	}

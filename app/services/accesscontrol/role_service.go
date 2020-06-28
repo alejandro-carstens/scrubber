@@ -34,10 +34,10 @@ func (rs *RoleService) Handle(context *contexts.RoleContext) (*models.Role, erro
 	readIds := []uint64{}
 	writeIds := []uint64{}
 	noAccessIds := []uint64{}
-	permissionMap := context.PermissionMap()
+	permissionsMap := context.PermissionsMap()
 
 	for _, permission := range permissions {
-		entity, valid := permissionMap[permission.Action]
+		entity, valid := permissionsMap[permission.Action]
 
 		if !valid {
 			continue
@@ -55,7 +55,7 @@ func (rs *RoleService) Handle(context *contexts.RoleContext) (*models.Role, erro
 			noAccessIds = append(noAccessIds, permission.ID)
 		}
 
-		delete(permissionMap, permission.Action)
+		delete(permissionsMap, permission.Action)
 	}
 
 	role := &models.Role{Name: context.Name()}
@@ -97,8 +97,8 @@ func (rs *RoleService) Handle(context *contexts.RoleContext) (*models.Role, erro
 			}
 		}
 
-		if len(permissionMap) > 0 {
-			return rs.permissionRepository.FromTx(tx).Insert(rs.prepareInserts(role.ID, permissionMap)...)
+		if len(permissionsMap) > 0 {
+			return rs.permissionRepository.FromTx(tx).Insert(rs.prepareInserts(role.ID, permissionsMap)...)
 		}
 
 		return nil

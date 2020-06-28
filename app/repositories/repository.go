@@ -128,7 +128,7 @@ func (r *repository) DeleteWhere(params map[string]interface{}, model models.Mod
 	query := r.connection().Table(r.model.Table()).LogMode(true)
 
 	if r.unscoped || hard {
-		query.Unscoped()
+		query = query.Unscoped()
 	}
 
 	for condition, value := range params {

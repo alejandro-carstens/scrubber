@@ -1,58 +1,72 @@
 package contexts
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
 )
 
 func NewUserRoleContext(params map[string]interface{}) (*UserRoleContext, error) {
-	if _, valid := params["role_id"]; !valid {
-		return nil, errors.New("no role_id specified")
+	if _, valid := params["user_id"]; valid {
+		userId, err := strconv.Atoi(fmt.Sprint(params["user_id"]))
+
+		if err != nil {
+			return nil, err
+		}
+
+		params["user_id"] = uint64(userId)
+	} else {
+		params["user_id"] = uint64(0)
 	}
 
-	roleId, err := strconv.Atoi(fmt.Sprint(params["role_id"]))
+	b, err := json.Marshal(params)
 
 	if err != nil {
 		return nil, err
 	}
 
-	if _, valid := params["user_id"]; !valid {
-		return nil, errors.New("no user_id specified")
-	}
+	entity := struct {
+		UserId  uint64   `json:"user_id"`
+		RoleIds []uint64 `json:"role_ids"`
+	}{}
 
-	userId, err := strconv.Atoi(fmt.Sprint(params["user_id"]))
-
-	if err != nil {
+	if err := json.Unmarshal(b, &entity); err != nil {
 		return nil, err
 	}
 
 	ctx := &UserRoleContext{
-		userId: uint64(userId),
-		roleId: uint64(roleId),
+		userId:  entity.UserId,
+		roleIds: entity.RoleIds,
 	}
 
 	return ctx, ctx.validate()
 }
 
 type UserRoleContext struct {
-	userId uint64
-	roleId uint64
+	userId  uint64
+	roleIds []uint64
 }
 
 func (urc *UserRoleContext) UserID() uint64 {
 	return urc.userId
 }
 
-func (urc *UserRoleContext) RoleID() uint64 {
-	return urc.roleId
+func (urc *UserRoleContext) RoleIDs() []uint64 {
+	return urc.roleIds
+}
+
+func (urc *UserRoleContext) RoleIDsMap() map[uint64]uint64 {
+	roleIdsMap := map[uint64]uint64{}
+
+	for _, roleId := range urc.roleIds {
+		roleIdsMap[roleId] = roleId
+	}
+
+	return roleIdsMap
 }
 
 func (urc *UserRoleContext) validate() error {
-	if urc.roleId <= 0 {
-		return errors.New("role_id needs to be greater than 0")
-	}
-
 	if urc.userId <= 0 {
 		return errors.New("user_id needs to be greater than 0")
 	}

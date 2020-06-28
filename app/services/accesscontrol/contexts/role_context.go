@@ -11,13 +11,13 @@ import (
 
 func NewRoleContext(params map[string]interface{}) (*RoleContext, error) {
 	if _, valid := params["role_id"]; valid {
-		userId, err := strconv.Atoi(fmt.Sprint(params["role_id"]))
+		roleId, err := strconv.Atoi(fmt.Sprint(params["role_id"]))
 
 		if err != nil {
 			return nil, err
 		}
 
-		params["role_id"] = uint64(userId)
+		params["role_id"] = uint64(roleId)
 	} else {
 		params["role_id"] = uint64(0)
 	}
@@ -65,14 +65,14 @@ func (rc *RoleContext) Name() string {
 	return rc.name
 }
 
-func (rc *RoleContext) PermissionMap() map[string]*PermissionEntity {
-	permissionMap := map[string]*PermissionEntity{}
+func (rc *RoleContext) PermissionsMap() map[string]*PermissionEntity {
+	permissionsMap := map[string]*PermissionEntity{}
 
 	for _, permission := range rc.permissions {
-		permissionMap[permission.Action] = permission
+		permissionsMap[permission.Action] = permission
 	}
 
-	return permissionMap
+	return permissionsMap
 }
 
 func (rc *RoleContext) validate() error {
