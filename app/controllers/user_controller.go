@@ -13,20 +13,27 @@ import (
 // UserController controls access and
 // edits to the user model
 type UserController struct {
-	repository    *repositories.UserRepository
-	deleteService *user.DeleteUserService
+	repository        *repositories.UserRepository
+	addUserService    *user.AddUserService
+	deleteUserService *user.DeleteUserService
 }
 
 func (uc *UserController) new() Controllerable {
 	return &UserController{
-		repository:    repositories.NewUserRepository(),
-		deleteService: user.NewDeleteUserService(),
+		repository:        repositories.NewUserRepository(),
+		addUserService:    user.NewAddUserService(),
+		deleteUserService: user.NewDeleteUserService(),
 	}
 }
 
 // Routes implementation of the Controllable interface
 func (uc *UserController) Routes() []*Route {
 	return []*Route{
+		&Route{
+			method:  "POST",
+			route:   "/api/users",
+			handler: uc.Create,
+		},
 		&Route{
 			method:  "GET",
 			route:   "/api/users",
@@ -60,6 +67,29 @@ func (uc *UserController) Index(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, echo.Map{"meta": meta, "users": users})
 }
 
+// Create is responsible for creating a new user
+func (uc *UserController) Create(ctx echo.Context) error {
+	request := echo.Map{}
+
+	if err := ctx.Bind(&request); err != nil {
+		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{"error": true, "message": err.Error()})
+	}
+
+	context, err := contexts.NewAddUserContext(request)
+
+	if err != nil {
+		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{"error": true, "message": err.Error()})
+	}
+
+	user, err := uc.addUserService.Handle(context)
+
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, echo.Map{"error": true, "message": err.Error()})
+	}
+
+	return ctx.JSON(http.StatusOK, echo.Map{"user": user})
+}
+
 // Delete deletes a given user
 func (uc *UserController) Delete(ctx echo.Context) error {
 	request := echo.Map{}
@@ -74,7 +104,7 @@ func (uc *UserController) Delete(ctx echo.Context) error {
 		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{"error": true, "message": err.Error()})
 	}
 
-	if err := uc.deleteService.Handle(context); err != nil {
+	if err := uc.deleteUserService.Handle(context); err != nil {
 		return ctx.JSON(http.StatusInternalServerError, echo.Map{"error": true, "message": err.Error()})
 	}
 
